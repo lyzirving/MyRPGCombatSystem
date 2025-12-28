@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerCameraControl : MonoBehaviour
+public class PlayerCameraController : MonoBehaviour
 {
     [SerializeField] private Transform m_FollowTarget;
     [SerializeField] private float m_HorizontalRotationSpeed = 0.3f;   

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public interface IStateMachineOwner { }
 
@@ -69,6 +70,7 @@ public class StateMachine
     {
         if (m_CurrentState != null)
         {
+            Debug.Log($"[{m_CurrentState.GetType()}] exit");
             m_CurrentState.Exit();
             MonoManager.instance.RemoveUpdateListener(m_CurrentState.Update);
             MonoManager.instance.RemoveLateUpdateListener(m_CurrentState.LateUpdate);
@@ -80,6 +82,7 @@ public class StateMachine
     private void OnDispatchNewState<T>() where T : StateBase, new()
     {
         m_CurrentState = GetState<T>();
+        Debug.Log($"[{m_CurrentState.GetType()}] enter");
         m_CurrentState.Enter();
         MonoManager.instance.AddUpdateListener(m_CurrentState.Update);
         MonoManager.instance.AddLateUpdateListener(m_CurrentState.LateUpdate);
