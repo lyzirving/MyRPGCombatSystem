@@ -2,28 +2,27 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : Singleton<InputManager>
+public partial class InputManager : Singleton<InputManager>
 {
     private bool m_Enabled = false;
-    private IA_Player m_PlayerAction;
+    private IA_Player m_PlayerActionMap;
 
-    public IA_Player playerAction { get => m_PlayerAction; }
     public bool isEnabled { get => m_Enabled; }
 
     public override void Init()
     {
-        m_PlayerAction = new IA_Player();
+        m_PlayerActionMap = new IA_Player();        
     }
 
     public void Enable()
     {
-        m_PlayerAction?.Enable();        
-        m_Enabled = (m_PlayerAction != null);
+        m_PlayerActionMap?.Enable();        
+        m_Enabled = (m_PlayerActionMap != null);
     }
 
     public void Disable()
     {
-        m_PlayerAction?.Disable();
+        m_PlayerActionMap?.Disable();
         m_Enabled = false;
     }
 

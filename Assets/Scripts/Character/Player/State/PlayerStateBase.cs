@@ -1,7 +1,9 @@
+using UnityEngine;
 
 public enum PlayerState : uint
 { 
     Idle = 0,
+    Move,
 }
 
 public class PlayerStateBase : StateBase

@@ -20,7 +20,7 @@ public class PlayerCameraController : MonoBehaviour
         if (m_FollowTarget == null || !InputManager.instance.isEnabled)
             return;
         
-        var input = InputManager.instance.playerAction.PlayerAction.CameraMove.ReadValue<Vector2>();
+        var input = InputManager.instance.cameraMovement;
         m_CinemachineTargetPitch = UpdateRotation(m_CinemachineTargetPitch, input.y, m_BottomClamp, m_TopClamp, true, m_VerticalRotationSpeed);
         m_CinemachineTargetYaw = UpdateRotation(m_CinemachineTargetYaw, input.x, float.MinValue, float.MaxValue, false, m_HorizontalRotationSpeed);
         
