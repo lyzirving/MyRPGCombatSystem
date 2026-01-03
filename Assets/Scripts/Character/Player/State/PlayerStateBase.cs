@@ -3,7 +3,8 @@ using UnityEngine;
 public enum PlayerState : uint
 { 
     Idle = 0,
-    Move,
+    Walk,
+    Run
 }
 
 public class PlayerStateBase : StateBase

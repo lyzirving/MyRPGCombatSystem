@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class PlayerStateIdle : PlayerStateBase
 {
-    public override void Enter()
+    public override void Enter(StateBase exitState)
     {
         m_Player.model.StartAnimation(m_Player.animConsts.idleHash);
     }
 
-    public override void Exit()
+    public override void Exit(StateBase newState)
     {
         m_Player.model.StopAnimation(m_Player.animConsts.idleHash);
     }
@@ -18,7 +18,7 @@ public class PlayerStateIdle : PlayerStateBase
 
         if (InputManager.instance.isPlayerMoving)
         {
-            m_Player.ChangeState(PlayerState.Move);
+            m_Player.ChangeState(InputManager.instance.shouldPlayerRun ? PlayerState.Run : PlayerState.Walk);
             return;
         }
     }

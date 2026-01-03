@@ -610,11 +610,13 @@ MonoBehaviour:
   config:
     gravity: -9.8
     walkSpeed: 2.5
+    runSpeed: 5
     rotateSpeed: 8
-  m_PlayerModel: {fileID: 1601179484}
   m_AnimationConsts:
     idleParamName: isIdling
     movingParamName: isMoving
+    walkParamName: isWalking
+    runParamName: isRunning
 --- !u!143 &496888500
 CharacterController:
   m_ObjectHideFlags: 0

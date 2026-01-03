@@ -22,12 +22,12 @@ public abstract class StateBase
     /// <summary>
     /// 状态每次进入都执行一次
     /// </summary>
-    public virtual void Enter() { }
+    public virtual void Enter(StateBase exitState) { }
 
     /// <summary>
     /// 状态退出时执行一次
     /// </summary>
-    public virtual void Exit() { }
+    public virtual void Exit(StateBase newState) { }
 
     public virtual void Update() { }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,18 +12,20 @@ public partial class InputManager : Singleton<InputManager>
 
     public override void Init()
     {
-        m_PlayerActionMap = new IA_Player();        
+        m_PlayerActionMap = new IA_Player();
     }
 
     public void Enable()
     {
-        m_PlayerActionMap?.Enable();        
-        m_Enabled = (m_PlayerActionMap != null);
+        m_PlayerActionMap.Enable();
+        m_PlayerActionMap.PlayerAction.RunToggle.performed += OnSwitchRunToggle;
+        m_Enabled = true;
     }
 
     public void Disable()
     {
-        m_PlayerActionMap?.Disable();
+        m_PlayerActionMap.PlayerAction.RunToggle.performed -= OnSwitchRunToggle;
+        m_PlayerActionMap.Disable();
         m_Enabled = false;
     }
 

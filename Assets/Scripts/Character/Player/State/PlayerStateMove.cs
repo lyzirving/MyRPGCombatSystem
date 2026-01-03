@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class PlayerStateMove : PlayerStateBase
 {
-    private Vector3 m_Velocity = Vector3.zero;
-
-    public override void Enter()
+    public override void Enter(StateBase exitState)
     {
         m_Player.model.StartAnimation(m_Player.animConsts.moveHash);
     }
 
-    public override void Exit()
+    public override void Exit(StateBase newState)
     {
         m_Player.model.StopAnimation(m_Player.animConsts.moveHash);
     }
@@ -31,8 +29,8 @@ public class PlayerStateMove : PlayerStateBase
     protected void Move()
     {
         // Slight downward velocity to keep grounded stable
-        if (m_Velocity.y < -2f)
-            m_Velocity.y = -2f;
+        if (m_Player.attrs.yVelocity < -2f)
+            m_Player.attrs.yVelocity = -2f;
 
         Vector2 input = InputManager.instance.playerMovement;
         Vector3 move = new Vector3(input.x, 0, input.y);
@@ -45,10 +43,12 @@ public class PlayerStateMove : PlayerStateBase
             Quaternion.LookRotation(targetDir), Time.deltaTime *  m_Player.config.rotateSpeed);
 
         // Apply gravity
-        m_Velocity.y += m_Player.config.gravity * Time.deltaTime;
+        m_Player.attrs.yVelocity += m_Player.config.gravity * Time.deltaTime;
+
+        float speed = m_Player.GetMoveSpeed();
 
         // Move
-        Vector3 finalMove = targetDir * m_Player.config.walkSpeed + Vector3.up * m_Velocity.y;
+        Vector3 finalMove = targetDir * speed + Vector3.up * m_Player.attrs.yVelocity;
         m_Player.character.Move(finalMove * Time.deltaTime);
     }
 }

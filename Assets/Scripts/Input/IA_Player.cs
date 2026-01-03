@@ -109,6 +109,15 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""RunToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""8b662217-5dfb-443e-976b-2db8b0a7983a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -177,6 +186,17 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d97a4f5c-4135-4aae-adf4-f93881e0e881"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RunToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -187,6 +207,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         m_PlayerAction = asset.FindActionMap("PlayerAction", throwIfNotFound: true);
         m_PlayerAction_Move = m_PlayerAction.FindAction("Move", throwIfNotFound: true);
         m_PlayerAction_CameraMove = m_PlayerAction.FindAction("CameraMove", throwIfNotFound: true);
+        m_PlayerAction_RunToggle = m_PlayerAction.FindAction("RunToggle", throwIfNotFound: true);
     }
 
     ~@IA_Player()
@@ -269,6 +290,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
     private List<IPlayerActionActions> m_PlayerActionActionsCallbackInterfaces = new List<IPlayerActionActions>();
     private readonly InputAction m_PlayerAction_Move;
     private readonly InputAction m_PlayerAction_CameraMove;
+    private readonly InputAction m_PlayerAction_RunToggle;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerAction".
     /// </summary>
@@ -288,6 +310,10 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerAction/CameraMove".
         /// </summary>
         public InputAction @CameraMove => m_Wrapper.m_PlayerAction_CameraMove;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerAction/RunToggle".
+        /// </summary>
+        public InputAction @RunToggle => m_Wrapper.m_PlayerAction_RunToggle;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -320,6 +346,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @CameraMove.started += instance.OnCameraMove;
             @CameraMove.performed += instance.OnCameraMove;
             @CameraMove.canceled += instance.OnCameraMove;
+            @RunToggle.started += instance.OnRunToggle;
+            @RunToggle.performed += instance.OnRunToggle;
+            @RunToggle.canceled += instance.OnRunToggle;
         }
 
         /// <summary>
@@ -337,6 +366,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @CameraMove.started -= instance.OnCameraMove;
             @CameraMove.performed -= instance.OnCameraMove;
             @CameraMove.canceled -= instance.OnCameraMove;
+            @RunToggle.started -= instance.OnRunToggle;
+            @RunToggle.performed -= instance.OnRunToggle;
+            @RunToggle.canceled -= instance.OnRunToggle;
         }
 
         /// <summary>
@@ -391,5 +423,12 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCameraMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RunToggle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRunToggle(InputAction.CallbackContext context);
     }
 }

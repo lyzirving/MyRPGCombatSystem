@@ -34,8 +34,11 @@ public class StateMachine
         if (hasState && currentStateType == typeof(T) && !reCurrstate) 
             return false;
 
-        OnCurrentStateExit();
-        OnDispatchNewState<T>();        
+        var exitState = m_CurrentState;
+        var newState = GetState<T>();
+        OnStateExit(exitState, newState);
+        OnStateEnter(exitState, newState);
+        m_CurrentState = newState;     
         return true;
     }    
 
@@ -44,7 +47,8 @@ public class StateMachine
     /// </summary>
     public void Stop()
     {
-        OnCurrentStateExit();
+        OnStateExit(m_CurrentState, null);
+        m_CurrentState = null;
 
         foreach (var item in m_StateDic.Values)
         {
@@ -66,26 +70,27 @@ public class StateMachine
         return state;
     }
 
-    private void OnCurrentStateExit()
+    private void OnStateExit(StateBase exitState, StateBase newState)
     {
-        if (m_CurrentState != null)
+        if (exitState != null)
         {
-            Debug.Log($"[{m_CurrentState.GetType()}] exit");
-            m_CurrentState.Exit();
-            MonoManager.instance.RemoveUpdateListener(m_CurrentState.Update);
-            MonoManager.instance.RemoveLateUpdateListener(m_CurrentState.LateUpdate);
-            MonoManager.instance.RemoveFixedUpdateListener(m_CurrentState.FxiedUpdate);
-            m_CurrentState = null;
+            Debug.Log($"[{exitState.GetType()}] exit");
+            exitState.Exit(newState);
+            MonoManager.instance.RemoveUpdateListener(exitState.Update);
+            MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
+            MonoManager.instance.RemoveFixedUpdateListener(exitState.FxiedUpdate);
         }
     }
 
-    private void OnDispatchNewState<T>() where T : StateBase, new()
+    private void OnStateEnter(StateBase exitState, StateBase newState)
     {
-        m_CurrentState = GetState<T>();
-        Debug.Log($"[{m_CurrentState.GetType()}] enter");
-        m_CurrentState.Enter();
-        MonoManager.instance.AddUpdateListener(m_CurrentState.Update);
-        MonoManager.instance.AddLateUpdateListener(m_CurrentState.LateUpdate);
-        MonoManager.instance.AddFixedUpdateListener(m_CurrentState.FxiedUpdate);
-    }    
+        if (newState != null)
+        {
+            Debug.Log($"[{newState.GetType()}] enter");
+            newState.Enter(exitState);
+            MonoManager.instance.AddUpdateListener(newState.Update);
+            MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);
+            MonoManager.instance.AddFixedUpdateListener(newState.FxiedUpdate);
+        }
+    }  
 }

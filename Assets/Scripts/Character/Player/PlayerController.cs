@@ -3,8 +3,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour, IStateMachineOwner
 {
     public PlayerConfig config = new PlayerConfig();
-    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;    
+    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
 
+    private PlayerAttrs m_Attrs = new PlayerAttrs();
     private StateMachine m_StateMachine;
     private CharacterController m_CharacterController;
     private PlayerModel m_PlayerModel;
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
     public CharacterController character { get => m_CharacterController; }
+    public PlayerAttrs attrs { get => m_Attrs; }
 
     #region State Methods
     private void Awake()
@@ -29,6 +31,8 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
 
         m_StateMachine.Init(this);
         m_AnimationConsts.Init();
+
+        InputManager.instance.runToggleChange += OnRunToggleChange;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -37,26 +41,55 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         ChangeState(PlayerState.Idle);
     }
 
-    // Update is called once per frame
-    private void Update()
+    private void OnDestroy()
     {
-        
+        InputManager.instance.runToggleChange -= OnRunToggleChange;
     }
     #endregion
 
     #region Main Methods
     public void ChangeState(PlayerState state)
     {
+        m_Attrs.currentState = state;
         switch (state)
         {
             case PlayerState.Idle:
                 m_StateMachine?.ChangeState<PlayerStateIdle>();
                 break;
-            case PlayerState.Move:
-                m_StateMachine?.ChangeState<PlayerStateMove>();
+            case PlayerState.Walk:
+                m_StateMachine?.ChangeState<PlayerStateWalk>();
+                break;
+            case PlayerState.Run:
+                m_StateMachine?.ChangeState<PlayerStateRun>();
                 break;
             default:
                 break;
+        }
+    }
+
+    public float GetMoveSpeed()
+    {
+        switch (m_Attrs.currentState)
+        {
+            case PlayerState.Walk:
+                return config.walkSpeed;
+            case PlayerState.Run:
+                return config.runSpeed;
+            case PlayerState.Idle:
+            default:
+                return 0f;
+        }
+    }
+
+    private void OnRunToggleChange(bool shouldRun)
+    {
+        if (shouldRun && m_Attrs.currentState == PlayerState.Walk)
+        {
+            ChangeState(PlayerState.Run);
+        }
+        else if (!shouldRun && m_Attrs.currentState == PlayerState.Run)
+        {
+            ChangeState(PlayerState.Walk);
         }
     }
     #endregion
