@@ -21,4 +21,13 @@ public abstract class SingletonMono<T> : MonoBehaviour where T : SingletonMono<T
     public virtual void Init()
     { 
     }
+
+    public virtual void DeInit()
+    {
+        if (m_Instance != null)
+        {            
+            Destroy(m_Instance.gameObject);
+            m_Instance = null;
+        }
+    }
 }

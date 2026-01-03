@@ -1,4 +1,3 @@
-using UnityEngine;
 
 public abstract class Singleton<T> where T : class, new()
 {
@@ -18,5 +17,10 @@ public abstract class Singleton<T> where T : class, new()
 
     public virtual void Init()
     { 
+    }
+
+    public virtual void DeInit()
+    {
+        m_Instance = null;
     }
 }
