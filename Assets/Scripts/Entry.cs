@@ -7,14 +7,15 @@ public class Entry : MonoBehaviour
     void Start()
     {
         Debug.Log("App entry");
-        InputManager.instance.Init();
-        AnimationEventReceiver.instance.Init();
+        InputManager.Init();        
+        AnimationEventReceiver.Init();
     }
 
     private void OnDestroy()
     {
-        AnimationEventReceiver.instance.DeInit();
-        MonoManager.instance.DeInit();
-        InputManager.instance.DeInit();        
+        Debug.Log("App destroy");
+        AnimationEventReceiver.DeInit();
+        MonoManager.DeInit();
+        InputManager.DeInit();        
     }
 }

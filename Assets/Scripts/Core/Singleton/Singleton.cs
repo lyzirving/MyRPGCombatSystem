@@ -1,5 +1,4 @@
-
-public abstract class Singleton<T> where T : class, new()
+public abstract class Singleton<T> : ISingleton where T : class, new()
 {
     private static T m_Instance;
 
@@ -15,12 +14,28 @@ public abstract class Singleton<T> where T : class, new()
         }
     }
 
-    public virtual void Init()
-    { 
+    public static void Init()
+    {
+        var ins = instance;
+        var singletonIns = ins as ISingleton;
+        singletonIns?.OnInit();
     }
 
-    public virtual void DeInit()
+    public static void DeInit()
     {
-        m_Instance = null;
+        if (m_Instance != null)
+        {
+            var singletonIns = m_Instance as ISingleton;
+            singletonIns?.OnDeInit();
+            m_Instance = null;
+        }        
+    }
+
+    public virtual void OnInit()
+    {        
+    }
+
+    public virtual void OnDeInit()
+    {        
     }
 }

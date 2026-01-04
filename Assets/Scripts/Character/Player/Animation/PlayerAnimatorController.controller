@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f55d7efbceaa5ac429636720a372c2e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  event0: 0
-  triggerTime0: 0
-  event1: 0
-  triggerTime1: 0
+  event0: 1
+  triggerTime0: 0.264
+  event1: 2
+  triggerTime1: 0.605
 --- !u!1102 &-8637745040010046042
 AnimatorState:
   serializedVersion: 6
@@ -155,10 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f55d7efbceaa5ac429636720a372c2e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  event0: 0
-  triggerTime0: 0
-  event1: 0
-  triggerTime1: 0
+  event0: 1
+  triggerTime0: 0.327
+  event1: 2
+  triggerTime1: 0.814
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0

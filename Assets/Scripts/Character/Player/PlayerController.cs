@@ -3,17 +3,19 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour, IStateMachineOwner
 {
     public PlayerConfig config = new PlayerConfig();
-    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
+    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;    
 
     private PlayerAttrs m_Attrs = new PlayerAttrs();
     private StateMachine m_StateMachine;
     private CharacterController m_CharacterController;
     private PlayerModel m_PlayerModel;
+    private AudioSource m_AudioSource;
 
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
     public CharacterController character { get => m_CharacterController; }
     public PlayerAttrs attrs { get => m_Attrs; }
+    public AudioClip[] footStepAudioClips;
 
     #region State Methods
     private void Awake()
@@ -21,10 +23,16 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
         if (m_PlayerModel == null)
             throw new System.Exception("err, PlayerModel hasn't been asigned in children.");
+        m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
+        m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);
 
         m_CharacterController = GetComponent<CharacterController>();
         if (m_CharacterController == null)
             throw new System.Exception("err, CharacterController hasn't been asigned.");
+
+        m_AudioSource = GetComponent<AudioSource>();
+        if (m_AudioSource == null)
+            throw new System.Exception("err, AudioSource hasn't been asigned.");
 
         m_StateMachine = new StateMachine();        
         m_AnimationConsts = new PlayerAnimationConsts();
@@ -39,6 +47,12 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     private void Start()
     {
         ChangeState(PlayerState.Idle);
+    }
+
+    private void OnDisable()
+    {
+        m_PlayerModel.RemoveLeftFootStepAction(OnLeftFootDown);
+        m_PlayerModel.RemoveRightFootStepAction(OnRightFootDown);
     }
 
     private void OnDestroy()
@@ -91,6 +105,22 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         {
             ChangeState(PlayerState.Walk);
         }
+    }
+
+    private void OnLeftFootDown()
+    {
+        if (footStepAudioClips == null || footStepAudioClips.Length == 0)
+            return;
+
+        m_AudioSource.PlayOneShot(footStepAudioClips[1]);
+    }
+
+    private void OnRightFootDown()
+    {
+        if (footStepAudioClips == null || footStepAudioClips.Length == 0)
+            return;
+
+        m_AudioSource.PlayOneShot(footStepAudioClips[1]);
     }
     #endregion
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AnimationDefine;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -20,10 +21,14 @@ public class DoubleEventTriggerBehaviourEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector();
+        // Use custom DrawBehaviorAttrs instead of DrawDefaultInspector
+        //DrawDefaultInspector();        
 
         DoubleAnimationEventTriggerBehaviour behaviour = (DoubleAnimationEventTriggerBehaviour)target;
-        if(!Validate(behaviour, out string errorMessage))
+
+        DrawBehaviorAttrs(behaviour);
+
+        if (!Validate(behaviour, out string errorMessage))
         { 
             EditorGUILayout.HelpBox(errorMessage, MessageType.Info);
             return;
@@ -42,11 +47,27 @@ public class DoubleEventTriggerBehaviourEditor : Editor
         {
             m_Preview = preview;
             if (m_Preview == PreviewStatus.StopPreview)
-                ForceTPose();
+                EnforceTPose();
         }
 
-        if (m_Preview != PreviewStatus.StopPreview) 
+        if (m_Preview != PreviewStatus.StopPreview)
+        {
             PreviewAnimationClip(behaviour);
+            GUILayout.Label($"Previewing at {m_PreviewTime}s", EditorStyles.helpBox);
+        }
+    }
+
+    private void DrawBehaviorAttrs(DoubleAnimationEventTriggerBehaviour behaviour)
+    {
+        EditorGUI.BeginDisabledGroup(true);
+        EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
+        EditorGUI.EndDisabledGroup();
+
+        behaviour.event0 = (PlayerAnimationEvent)EditorGUILayout.EnumPopup("Event0", behaviour.event0);
+        behaviour.triggerTime0 = EditorGUILayout.Slider("TriggerTime0", behaviour.triggerTime0, 0f, 1f);
+
+        behaviour.event1 = (PlayerAnimationEvent)EditorGUILayout.EnumPopup("Event1", behaviour.event1);
+        behaviour.triggerTime1 = EditorGUILayout.Slider("TriggerTime1", behaviour.triggerTime1, 0f, 1f);
     }
 
     private void PreviewAnimationClip(DoubleAnimationEventTriggerBehaviour behaviour)
@@ -58,11 +79,9 @@ public class DoubleEventTriggerBehaviourEditor : Editor
         AnimationMode.StartAnimationMode();
         AnimationMode.SampleAnimationClip(Selection.activeGameObject, m_PreviewClip, m_PreviewTime);
         AnimationMode.StopAnimationMode();
-
-        //Todo
     }
 
-    private void ForceTPose()
+    private void EnforceTPose()
     {
         GameObject selected = Selection.activeGameObject;
         if(selected == null || !selected.TryGetComponent(out Animator animator) || animator.avatar == null)

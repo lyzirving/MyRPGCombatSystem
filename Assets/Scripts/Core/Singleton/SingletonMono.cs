@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class SingletonMono<T> : MonoBehaviour where T : SingletonMono<T>
+public abstract class SingletonMono<T> : MonoBehaviour, ISingleton where T : SingletonMono<T>
 {
     private static T m_Instance;
 
@@ -18,16 +18,28 @@ public abstract class SingletonMono<T> : MonoBehaviour where T : SingletonMono<T
         }
     }
 
-    public virtual void Init()
-    { 
+    public static void Init()
+    {
+        var ins = instance;
+        var singletonIns = ins as ISingleton;
+        singletonIns?.OnInit();
     }
 
-    public virtual void DeInit()
+    public static void DeInit()
     {
         if (m_Instance != null)
-        {            
-            Destroy(m_Instance.gameObject);
+        {
+            var singletonIns = m_Instance as ISingleton;
+            singletonIns?.OnDeInit();
             m_Instance = null;
         }
+    }
+
+    public virtual void OnInit()
+    {        
+    }
+
+    public virtual void OnDeInit()
+    {
     }
 }

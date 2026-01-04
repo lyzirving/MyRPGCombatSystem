@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,9 +9,14 @@ public partial class InputManager : Singleton<InputManager>
 
     public bool isEnabled { get => m_Enabled; }
 
-    public override void Init()
+    public override void OnInit()
     {
         m_PlayerActionMap = new IA_Player();
+    }
+
+    public override void OnDeInit()
+    {
+        m_PlayerActionMap = null;
     }
 
     public void Enable()
@@ -39,5 +43,5 @@ public partial class InputManager : Singleton<InputManager>
         action?.Disable();
         yield return new WaitForSeconds(time);
         action?.Enable();
-    }
+    }    
 }

@@ -6,12 +6,12 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
 {
     private Dictionary<PlayerAnimationEvent, UnityEvent> m_Map;
 
-    public override void Init()
+    public override void OnInit()
     {
         m_Map = new Dictionary<PlayerAnimationEvent, UnityEvent>();
     }
 
-    public override void DeInit()
+    public override void OnDeInit()
     {
         if (m_Map != null)
         {
@@ -22,7 +22,6 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
             m_Map.Clear();
             m_Map = null;            
         }
-        base.DeInit();
     }
 
     public void OnAnimationEventTrigger(PlayerAnimationEvent @event)
