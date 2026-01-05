@@ -23,8 +23,8 @@ public class PlayerModel : MonoBehaviour
 
     private void OnDisable()
     {
-        AnimationEventReceiver.instance.RemoveHandler(PlayerAnimationEvent.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance.RemoveHandler(PlayerAnimationEvent.RightFootStep, OnRightFootStep);
+        AnimationEventReceiver.instance?.RemoveHandler(PlayerAnimationEvent.LeftFootStep, OnLeftFootStep);
+        AnimationEventReceiver.instance?.RemoveHandler(PlayerAnimationEvent.RightFootStep, OnRightFootStep);
     }
 
     public void StartAnimation(int hash)

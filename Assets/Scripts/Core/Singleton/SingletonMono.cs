@@ -3,12 +3,13 @@ using UnityEngine;
 public abstract class SingletonMono<T> : MonoBehaviour, ISingleton where T : SingletonMono<T>
 {
     private static T m_Instance;
+    private static bool m_IsQuitting = false;
 
     public static T instance
     {
         get
         {
-            if (m_Instance == null)
+            if (!m_IsQuitting && m_Instance == null)
             {
                 var go = new GameObject(typeof(T).Name);
                 DontDestroyOnLoad(go);
@@ -41,5 +42,15 @@ public abstract class SingletonMono<T> : MonoBehaviour, ISingleton where T : Sin
 
     public virtual void OnDeInit()
     {
+    }
+
+    private void OnApplicationQuit()
+    {
+        m_IsQuitting = true;
+    }
+
+    private void OnDestroy()
+    {
+        DeInit();
     }
 }

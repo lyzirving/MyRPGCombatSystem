@@ -1,4 +1,5 @@
 using AnimationDefine;
+using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
@@ -15,6 +16,7 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
     {
         if (m_Map != null)
         {
+            Debug.Log("AnimationEventReceiver: OnDeInit");
             foreach (var handle in m_Map.Values)
             {
                 handle.RemoveAllListeners();
