@@ -6,6 +6,7 @@ namespace AnimationDefine
     {
         None = 0,
         LeftFootStep,
-        RightFootStep
+        RightFootStep,
+        Jump
     }
 }

@@ -118,6 +118,15 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d1090ab-c7c0-4cb1-95f6-fa9a05a6c5bd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -197,6 +206,17 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""action"": ""RunToggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""faba7922-d661-435f-9fde-b96ec8a75318"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +228,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         m_PlayerAction_Move = m_PlayerAction.FindAction("Move", throwIfNotFound: true);
         m_PlayerAction_CameraMove = m_PlayerAction.FindAction("CameraMove", throwIfNotFound: true);
         m_PlayerAction_RunToggle = m_PlayerAction.FindAction("RunToggle", throwIfNotFound: true);
+        m_PlayerAction_Jump = m_PlayerAction.FindAction("Jump", throwIfNotFound: true);
     }
 
     ~@IA_Player()
@@ -291,6 +312,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerAction_Move;
     private readonly InputAction m_PlayerAction_CameraMove;
     private readonly InputAction m_PlayerAction_RunToggle;
+    private readonly InputAction m_PlayerAction_Jump;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerAction".
     /// </summary>
@@ -314,6 +336,10 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerAction/RunToggle".
         /// </summary>
         public InputAction @RunToggle => m_Wrapper.m_PlayerAction_RunToggle;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerAction/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_PlayerAction_Jump;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -349,6 +375,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @RunToggle.started += instance.OnRunToggle;
             @RunToggle.performed += instance.OnRunToggle;
             @RunToggle.canceled += instance.OnRunToggle;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         /// <summary>
@@ -369,6 +398,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @RunToggle.started -= instance.OnRunToggle;
             @RunToggle.performed -= instance.OnRunToggle;
             @RunToggle.canceled -= instance.OnRunToggle;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         /// <summary>
@@ -430,5 +462,12 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRunToggle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJump(InputAction.CallbackContext context);
     }
 }

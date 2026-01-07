@@ -12,23 +12,25 @@ public partial class InputManager : Singleton<InputManager>
     public override void OnInit()
     {
         m_PlayerActionMap = new IA_Player();
+        m_PlayerActionMap.PlayerAction.RunToggle.performed += OnSwitchRunToggle;
+        m_PlayerActionMap.PlayerAction.Jump.performed += OnJumpPerformed;
     }
 
     public override void OnDeInit()
     {
+        m_PlayerActionMap.PlayerAction.RunToggle.performed -= OnSwitchRunToggle;
+        m_PlayerActionMap.PlayerAction.Jump.performed -= OnJumpPerformed;
         m_PlayerActionMap = null;
     }
 
     public void Enable()
     {
-        m_PlayerActionMap.Enable();
-        m_PlayerActionMap.PlayerAction.RunToggle.performed += OnSwitchRunToggle;
+        m_PlayerActionMap.Enable();        
         m_Enabled = true;
     }
 
     public void Disable()
-    {
-        m_PlayerActionMap.PlayerAction.RunToggle.performed -= OnSwitchRunToggle;
+    {        
         m_PlayerActionMap.Disable();
         m_Enabled = false;
     }

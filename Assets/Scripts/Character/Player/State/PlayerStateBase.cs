@@ -4,7 +4,8 @@ public enum PlayerState : uint
 { 
     Idle = 0,
     Walk,
-    Run
+    Run,
+    Jump
 }
 
 public class PlayerStateBase : StateBase

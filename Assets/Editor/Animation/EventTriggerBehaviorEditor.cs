@@ -1,21 +1,20 @@
+using AnimationDefine;
 using System;
 using System.Linq;
-using AnimationDefine;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-[CustomEditor(typeof(DoubleAnimationEventTriggerBehaviour))]
-public class DoubleEventTriggerBehaviourEditor : Editor
+[CustomEditor(typeof(AnimationEventTriggerBehaviour))]
+public class EventTriggerBehaviorEditor : Editor
 {
     private enum PreviewStatus : uint
     {
         StopPreview = 0,
-        PreviewEvent_0,
-        PreviewEvent_1
+        PreviewEvent,
     }
 
-    private AnimationClip m_PreviewClip;    
+    private AnimationClip m_PreviewClip;
     private PreviewStatus m_Preview = PreviewStatus.StopPreview;
     private float m_PreviewTime = 0f;
 
@@ -24,12 +23,12 @@ public class DoubleEventTriggerBehaviourEditor : Editor
         // Use custom DrawBehaviorAttrs instead of DrawDefaultInspector
         //DrawDefaultInspector();        
 
-        DoubleAnimationEventTriggerBehaviour behaviour = (DoubleAnimationEventTriggerBehaviour)target;
+        AnimationEventTriggerBehaviour behaviour = (AnimationEventTriggerBehaviour)target;
 
         DrawBehaviorAttrs(behaviour);
 
         if (!Validate(behaviour, out string errorMessage))
-        { 
+        {
             EditorGUILayout.HelpBox(errorMessage, MessageType.Info);
             return;
         }
@@ -57,55 +56,17 @@ public class DoubleEventTriggerBehaviourEditor : Editor
         }
     }
 
-    private void DrawBehaviorAttrs(DoubleAnimationEventTriggerBehaviour behaviour)
+    private void DrawBehaviorAttrs(AnimationEventTriggerBehaviour behaviour)
     {
         EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
         EditorGUI.EndDisabledGroup();
 
-        behaviour.event0 = (PlayerAnimationEvent)EditorGUILayout.EnumPopup("Event0", behaviour.event0);
-        behaviour.triggerTime0 = EditorGUILayout.Slider("TriggerTime0", behaviour.triggerTime0, 0f, 1f);
-
-        behaviour.event1 = (PlayerAnimationEvent)EditorGUILayout.EnumPopup("Event1", behaviour.event1);
-        behaviour.triggerTime1 = EditorGUILayout.Slider("TriggerTime1", behaviour.triggerTime1, 0f, 1f);
+        behaviour.event0 = (PlayerAnimationEvent)EditorGUILayout.EnumPopup("Event", behaviour.event0);
+        behaviour.triggerTime = EditorGUILayout.Slider("TriggerTime", behaviour.triggerTime, 0f, 1f);
     }
 
-    private void PreviewAnimationClip(DoubleAnimationEventTriggerBehaviour behaviour)
-    {
-        if (m_PreviewClip == null) return;
-
-        m_PreviewTime = (m_Preview == PreviewStatus.PreviewEvent_0) ? behaviour.triggerTime0 : behaviour.triggerTime1;
-
-        AnimationMode.StartAnimationMode();
-        AnimationMode.SampleAnimationClip(Selection.activeGameObject, m_PreviewClip, m_PreviewTime * m_PreviewClip.length);
-        AnimationMode.StopAnimationMode();
-    }
-
-    private void EnforceTPose()
-    {
-        GameObject selected = Selection.activeGameObject;
-        if(selected == null || !selected.TryGetComponent(out Animator animator) || animator.avatar == null)
-            return;
-
-        SkeletonBone[] skeletonBones = animator.avatar.humanDescription.skeleton;
-        foreach (HumanBodyBones hbb in Enum.GetValues(typeof(HumanBodyBones)))
-        { 
-            if(hbb == HumanBodyBones.LastBone) continue;
-
-            Transform boneTransform = animator.GetBoneTransform(hbb);
-            if(!boneTransform) continue;
-
-            SkeletonBone skeletonBone = skeletonBones.FirstOrDefault(sb => sb.name == boneTransform.name);
-            if (skeletonBone.name == null) continue;
-
-            if(hbb == HumanBodyBones.Hips) boneTransform.localPosition = skeletonBone.position;
-            boneTransform.localRotation = skeletonBone.rotation;
-        }
-
-        Debug.Log($"T-Pose enforced successfully on {selected.name}");
-    }    
-
-    private bool Validate(DoubleAnimationEventTriggerBehaviour behaviour, out string errorMessage)
+    private bool Validate(AnimationEventTriggerBehaviour behaviour, out string errorMessage)
     {
         AnimatorController controller = GetValidAnimatorController(out errorMessage);
         if (controller == null) return false;
@@ -161,8 +122,8 @@ public class DoubleEventTriggerBehaviourEditor : Editor
         return animatorController;
     }
 
-    private bool FindMatchingStateInChildStateMachine(ChildAnimatorStateMachine[] stateMachines, DoubleAnimationEventTriggerBehaviour behaviour, ref ChildAnimatorState matchingTarget)
-    {        
+    private bool FindMatchingStateInChildStateMachine(ChildAnimatorStateMachine[] stateMachines, AnimationEventTriggerBehaviour behaviour, ref ChildAnimatorState matchingTarget)
+    {
         foreach (ChildAnimatorStateMachine machine in stateMachines)
         {
             if (machine.stateMachine.stateMachines.Length != 0 &&
@@ -178,8 +139,43 @@ public class DoubleEventTriggerBehaviourEditor : Editor
                     matchingTarget = state;
                     return true;
                 }
-            }            
+            }
         }
         return false;
+    }
+
+    private void EnforceTPose()
+    {
+        GameObject selected = Selection.activeGameObject;
+        if (selected == null || !selected.TryGetComponent(out Animator animator) || animator.avatar == null)
+            return;
+
+        SkeletonBone[] skeletonBones = animator.avatar.humanDescription.skeleton;
+        foreach (HumanBodyBones hbb in Enum.GetValues(typeof(HumanBodyBones)))
+        {
+            if (hbb == HumanBodyBones.LastBone) continue;
+
+            Transform boneTransform = animator.GetBoneTransform(hbb);
+            if (!boneTransform) continue;
+
+            SkeletonBone skeletonBone = skeletonBones.FirstOrDefault(sb => sb.name == boneTransform.name);
+            if (skeletonBone.name == null) continue;
+
+            if (hbb == HumanBodyBones.Hips) boneTransform.localPosition = skeletonBone.position;
+            boneTransform.localRotation = skeletonBone.rotation;
+        }
+
+        Debug.Log($"T-Pose enforced successfully on {selected.name}");
+    }
+
+    private void PreviewAnimationClip(AnimationEventTriggerBehaviour behaviour)
+    {
+        if (m_PreviewClip == null) return;
+
+        m_PreviewTime = behaviour.triggerTime;        
+
+        AnimationMode.StartAnimationMode();
+        AnimationMode.SampleAnimationClip(Selection.activeGameObject, m_PreviewClip, m_PreviewTime * m_PreviewClip.length);
+        AnimationMode.StopAnimationMode();
     }
 }

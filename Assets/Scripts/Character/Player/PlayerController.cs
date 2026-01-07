@@ -76,6 +76,9 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             case PlayerState.Run:
                 m_StateMachine?.ChangeState<PlayerStateRun>();
                 break;
+            case PlayerState.Jump:
+                m_StateMachine?.ChangeState<PlayerStateJump>();
+                break;
             default:
                 break;
         }

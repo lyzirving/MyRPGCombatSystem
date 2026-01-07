@@ -10,9 +10,6 @@ public class PlayerStateRun : PlayerStateMove
     public override void Exit(StateBase newState)
     {
         m_Player.model.StopAnimation(m_Player.animConsts.runHash); ;
-        if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateMove)))
-        {
-            base.Exit(newState);
-        }
+        base.Exit(newState);
     }
 }

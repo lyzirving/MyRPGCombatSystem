@@ -9,11 +9,20 @@ public class PlayerStateMove : PlayerStateBase
 
     public override void Exit(StateBase newState)
     {
-        m_Player.model.StopAnimation(m_Player.animConsts.moveHash);
+        if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateMove)))
+        {
+            m_Player.model.StopAnimation(m_Player.animConsts.moveHash);
+        }
     }
 
     public override void Update()
     {
+        if (InputManager.instance.isPlayerJumpPerformed)
+        {
+            m_Player.ChangeState(PlayerState.Jump);
+            return;
+        }
+
         if (!InputManager.instance.isPlayerMoving)
         {
             m_Player.ChangeState(PlayerState.Idle);
