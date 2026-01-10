@@ -35,7 +35,7 @@ public class PlayerStateMove : PlayerStateBase
     /// <summary>
     /// Move function reference to Unity's ScriptReference/CharacterController.Move.html
     /// </summary>
-    protected void Move()
+    protected void Move(bool useGravity = true)
     {
         // Slight downward velocity to keep grounded stable
         if (m_Player.attrs.yVelocity < -2f)
@@ -54,10 +54,12 @@ public class PlayerStateMove : PlayerStateBase
         // Apply gravity
         m_Player.attrs.yVelocity += m_Player.config.gravity * Time.deltaTime;
 
-        float speed = m_Player.GetMoveSpeed();
-
         // Move
-        Vector3 finalMove = targetDir * speed + Vector3.up * m_Player.attrs.yVelocity;
+        Vector3 finalMove = targetDir * m_Player.GetMoveSpeed() + Vector3.up * m_Player.attrs.yVelocity * (useGravity ? 1f : 0f);
         m_Player.character.Move(finalMove * Time.deltaTime);
+
+        m_Player.attrs.moveHorizonSpeed.x = m_Player.character.velocity.x;
+        m_Player.attrs.moveHorizonSpeed.y = 0f;
+        m_Player.attrs.moveHorizonSpeed.z = m_Player.character.velocity.z;
     }
 }

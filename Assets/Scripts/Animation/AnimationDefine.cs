@@ -7,6 +7,8 @@ namespace AnimationDefine
         None = 0,
         LeftFootStep,
         RightFootStep,
-        JumpTop
+        JumpStart,
+        JumpTop,
+        LandFinish
     }
 }

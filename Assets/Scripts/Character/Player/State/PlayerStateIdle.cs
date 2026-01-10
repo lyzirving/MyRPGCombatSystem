@@ -15,6 +15,7 @@ public class PlayerStateIdle : PlayerStateBase
     public override void Update()
     {
         ApplyGravity();
+        m_Player.attrs.moveHorizonSpeed = Vector3.zero;
 
         if (InputManager.instance.isPlayerJumpPerformed)
         {

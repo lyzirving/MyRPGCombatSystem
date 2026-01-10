@@ -655,6 +655,9 @@ MonoBehaviour:
     gravity: -9.8
     walkSpeed: 2.5
     runSpeed: 5
+    jumpMoveSpeed: 2
+    jumpRatio: 2
+    floatingRatio: 0.35
     rotateSpeed: 8
   m_AnimationConsts:
     idleParamName: isIdling
@@ -663,6 +666,7 @@ MonoBehaviour:
     runParamName: isRunning
     jumpParamName: isJumpping
     fallParamName: isFalling
+    landParamName: isLanding
   footStepAudioClips:
   - {fileID: 8300000, guid: f3558fa2213d261489d41540785339f1, type: 3}
   - {fileID: 8300000, guid: 022ac6ca1e548f243b8007b7f905c374, type: 3}

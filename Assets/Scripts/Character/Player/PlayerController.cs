@@ -82,6 +82,9 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             case PlayerState.Falling:
                 m_StateMachine?.ChangeState<PlayerStateFalling>();
                 break;
+            case PlayerState.Land:
+                m_StateMachine?.ChangeState<PlayerStateLand>();
+                break;
             default:
                 break;
         }
@@ -95,6 +98,8 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
                 return config.walkSpeed;
             case PlayerState.Run:
                 return config.runSpeed;
+            case PlayerState.Jump:
+                return config.jumpMoveSpeed;
             case PlayerState.Idle:
             default:
                 return 0f;

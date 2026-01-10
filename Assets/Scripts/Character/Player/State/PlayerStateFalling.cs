@@ -15,8 +15,16 @@ public class PlayerStateFalling : PlayerStateMove
     }
 
     public override void Update()
-    {
-        ApplyGravity(0.4f);
-        Debug.Log($"PlayerStateFalling is grounded[{m_Player.character.isGrounded}]");
+    {        
+        if (m_Player.character.isGrounded)
+        {
+            m_Player.ChangeState(PlayerState.Land);
+            return;
+        }
+
+        Vector3 speed = m_Player.attrs.moveHorizonSpeed;
+        speed.y = m_Player.config.floatingRatio * m_Player.config.gravity;
+
+        m_Player.character.Move(speed * Time.deltaTime);
     }
 }
