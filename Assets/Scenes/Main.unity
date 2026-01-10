@@ -662,6 +662,7 @@ MonoBehaviour:
     walkParamName: isWalking
     runParamName: isRunning
     jumpParamName: isJumpping
+    fallParamName: isFalling
   footStepAudioClips:
   - {fileID: 8300000, guid: f3558fa2213d261489d41540785339f1, type: 3}
   - {fileID: 8300000, guid: 022ac6ca1e548f243b8007b7f905c374, type: 3}

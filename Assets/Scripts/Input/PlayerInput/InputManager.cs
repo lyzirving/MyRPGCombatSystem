@@ -14,6 +14,8 @@ public partial class InputManager : Singleton<InputManager>
         m_PlayerActionMap = new IA_Player();
         m_PlayerActionMap.PlayerAction.RunToggle.performed += OnSwitchRunToggle;
         m_PlayerActionMap.PlayerAction.Jump.performed += OnJumpPerformed;
+
+        Enable();
     }
 
     public override void OnDeInit()

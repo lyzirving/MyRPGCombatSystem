@@ -21,7 +21,7 @@ public class AnimationEventTriggerBehaviour : StateMachineBehaviour
         int currentLoopCount = Mathf.FloorToInt(stateInfo.normalizedTime);
 
         // Finish one loop
-        if (currentLoopCount > m_LoopCount)
+        if (stateInfo.loop && (currentLoopCount > m_LoopCount))
         {
             m_LoopCount = currentLoopCount;
             m_IsTriggerEvent = false;

@@ -16,22 +16,16 @@ public class PlayerStateIdle : PlayerStateBase
     {
         ApplyGravity();
 
-        // TODO add jump, floating, and land state
-        //if (InputManager.instance.isPlayerJumpPerformed)
-        //{
-        //    m_Player.ChangeState(PlayerState.Jump);
-        //    return; 
-        //}
+        if (InputManager.instance.isPlayerJumpPerformed)
+        {
+            m_Player.ChangeState(PlayerState.Jump);
+            return;
+        }
 
         if (InputManager.instance.isPlayerMoving)
         {
             m_Player.ChangeState(InputManager.instance.shouldPlayerRun ? PlayerState.Run : PlayerState.Walk);
             return;
         }
-    }
-
-    protected void ApplyGravity()
-    {
-        m_Player.character.Move(new Vector3(0f, m_Player.config.gravity * Time.deltaTime, 0f));
     }
 }
