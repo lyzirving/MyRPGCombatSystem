@@ -22,9 +22,6 @@ public class PlayerStateFalling : PlayerStateMove
             return;
         }
 
-        Vector3 speed = m_Player.attrs.moveHorizonSpeed;
-        speed.y = m_Player.config.floatingRatio * m_Player.config.gravity;
-
-        m_Player.character.Move(speed * Time.deltaTime);
+        Move();
     }
 }

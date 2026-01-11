@@ -24,6 +24,7 @@ public partial class InputManager
     private void OnSwitchRunToggle(InputAction.CallbackContext context)
     {
         m_ShouldPlayerRun = !m_ShouldPlayerRun;
+        Debug.Log($"OnSwitchRunToggle[{m_ShouldPlayerRun}]");
         runToggleChange?.Invoke(m_ShouldPlayerRun);
     }
 

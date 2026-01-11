@@ -39,8 +39,6 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
 
         m_StateMachine.Init(this);
         m_AnimationConsts.Init();
-
-        InputManager.instance.runToggleChange += OnRunToggleChange;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -55,10 +53,6 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         m_PlayerModel.RemoveRightFootStepAction(OnRightFootDown);
     }
 
-    private void OnDestroy()
-    {
-        InputManager.instance.runToggleChange -= OnRunToggleChange;
-    }
     #endregion
 
     #region Main Methods
@@ -102,6 +96,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             case PlayerState.Run:
                 return config.runSpeed;
             case PlayerState.Jump:
+            case PlayerState.Falling:
                 return config.jumpMoveSpeed;
             case PlayerState.Idle:
             default:
@@ -109,15 +104,14 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         }
     }
 
-    private void OnRunToggleChange(bool shouldRun)
+    public float GetGravityRatio()
     {
-        if (shouldRun && m_Attrs.currentState == PlayerState.Walk)
+        switch (m_Attrs.currentState)
         {
-            ChangeState(PlayerState.Run);
-        }
-        else if (!shouldRun && m_Attrs.currentState == PlayerState.Run)
-        {
-            ChangeState(PlayerState.Walk);
+            case PlayerState.Falling:
+                return config.fallGravityRatio;
+            default:
+                return 1f;
         }
     }
 

@@ -41,25 +41,33 @@ public class PlayerStateMove : PlayerStateBase
         if (m_Player.attrs.yVelocity < -2f)
             m_Player.attrs.yVelocity = -2f;
 
-        Vector2 input = InputManager.instance.playerMovement;
-        Vector3 move = new Vector3(input.x, 0, input.y);
-        move = Vector3.ClampMagnitude(move, 1f);
-
-        // deal rotation from camera
-        Vector3 euler = new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f);
-        Vector3 targetDir = Quaternion.Euler(euler) * move;
-        m_Player.transform.rotation = Quaternion.Slerp(m_Player.transform.rotation,
-            Quaternion.LookRotation(targetDir), Time.deltaTime *  m_Player.config.rotateSpeed);
-
         // Apply gravity
         m_Player.attrs.yVelocity += m_Player.config.gravity * Time.deltaTime;
 
-        // Move
-        Vector3 finalMove = targetDir * m_Player.GetMoveSpeed() + Vector3.up * m_Player.attrs.yVelocity * (useGravity ? 1f : 0f);
-        m_Player.character.Move(finalMove * Time.deltaTime);
+        Vector3 move = Vector3.zero;
+        Vector3 finalMove = Vector3.zero;
+        if (InputManager.instance.isPlayerMoving)
+        {
+            Vector2 input = InputManager.instance.playerMovement;
+            move.x = input.x;
+            move.z = input.y;
+            move = Vector3.ClampMagnitude(move, 1f);
 
-        m_Player.attrs.moveHorizonSpeed.x = m_Player.character.velocity.x;
-        m_Player.attrs.moveHorizonSpeed.y = 0f;
-        m_Player.attrs.moveHorizonSpeed.z = m_Player.character.velocity.z;
+            // deal rotation from camera
+            Vector3 euler = new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f);
+            Vector3 targetDir = Quaternion.Euler(euler) * move;
+            m_Player.transform.rotation = Quaternion.Slerp(m_Player.transform.rotation,
+                Quaternion.LookRotation(targetDir), Time.deltaTime * m_Player.config.rotateSpeed);
+
+            // Move horizontally
+            finalMove = targetDir * m_Player.GetMoveSpeed();
+        }
+
+        if (useGravity)
+        {
+            // Move vertically
+            finalMove += Vector3.up * m_Player.attrs.yVelocity * m_Player.GetGravityRatio();
+        }
+        m_Player.character.Move(finalMove * Time.deltaTime);
     }
 }

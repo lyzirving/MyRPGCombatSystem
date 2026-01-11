@@ -31,10 +31,7 @@ public class PlayerStateJump : PlayerStateMove
             return;
 
         if (!InputManager.instance.isPlayerMoving)
-        {
-            m_Player.attrs.moveHorizonSpeed = Vector3.zero;
             return;
-        }
 
         Move(false);
     }

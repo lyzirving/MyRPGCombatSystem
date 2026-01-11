@@ -1,4 +1,4 @@
-
+using UnityEngine;
 
 public class PlayerStateRun : PlayerStateMove
 {
@@ -14,14 +14,27 @@ public class PlayerStateRun : PlayerStateMove
 
     public override void Exit(StateBase newState)
     {
+        if (newState.GetType() == typeof(PlayerStateWalk) || 
+            newState.GetType() == typeof(PlayerStateJump))
+        {
+            m_Player.model.StopAnimation(m_Player.animConsts.leftFootStopHash);
+            m_Player.model.StopAnimation(m_Player.animConsts.rightFootStopHash);
+            Debug.Log($"run state is interrupted, new state[{newState.GetType().Name}]");
+        }
         m_Player.model.RemoveLeftFootStepAction(OnLeftFootDown);
         m_Player.model.RemoveRightFootStepAction(OnRightFootDown);
-        m_Player.model.StopAnimation(m_Player.animConsts.runHash); ;
+        m_Player.model.StopAnimation(m_Player.animConsts.runHash); 
         base.Exit(newState);
     }
 
     public override void Update()
     {
+        if (!InputManager.instance.shouldPlayerRun)
+        {
+            m_Player.ChangeState(PlayerState.Walk);
+            return;
+        }
+
         if (InputManager.instance.isPlayerJumpPerformed)
         {
             m_Player.ChangeState(PlayerState.Jump);
