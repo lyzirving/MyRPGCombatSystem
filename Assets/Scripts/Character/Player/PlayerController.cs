@@ -62,28 +62,31 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     #endregion
 
     #region Main Methods
-    public void ChangeState(PlayerState state)
+    public void ChangeState(PlayerState state, in ChangeStateArgs args = default(ChangeStateArgs))
     {
         m_Attrs.currentState = state;
         switch (state)
         {
             case PlayerState.Idle:
-                m_StateMachine?.ChangeState<PlayerStateIdle>();
+                m_StateMachine?.ChangeState<PlayerStateIdle>(args);
                 break;
             case PlayerState.Walk:
-                m_StateMachine?.ChangeState<PlayerStateWalk>();
+                m_StateMachine?.ChangeState<PlayerStateWalk>(args);
                 break;
             case PlayerState.Run:
-                m_StateMachine?.ChangeState<PlayerStateRun>();
+                m_StateMachine?.ChangeState<PlayerStateRun>(args);
                 break;
             case PlayerState.Jump:
-                m_StateMachine?.ChangeState<PlayerStateJump>();
+                m_StateMachine?.ChangeState<PlayerStateJump>(args);
                 break;
             case PlayerState.Falling:
-                m_StateMachine?.ChangeState<PlayerStateFalling>();
+                m_StateMachine?.ChangeState<PlayerStateFalling>(args);
                 break;
             case PlayerState.Land:
-                m_StateMachine?.ChangeState<PlayerStateLand>();
+                m_StateMachine?.ChangeState<PlayerStateLand>(args);
+                break;
+            case PlayerState.Stop:
+                m_StateMachine?.ChangeState<PlayerStateStop>(args);
                 break;
             default:
                 break;

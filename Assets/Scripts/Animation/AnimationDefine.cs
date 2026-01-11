@@ -9,6 +9,7 @@ namespace AnimationDefine
         RightFootStep,
         JumpStart,
         JumpTop,
-        LandFinish
+        LandFinish,
+        RunStopFinish
     }
 }

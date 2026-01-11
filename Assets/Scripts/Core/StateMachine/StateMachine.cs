@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IStateMachineOwner { }
-
 public class StateMachine
 {
     private IStateMachineOwner m_Owner;
@@ -22,22 +20,16 @@ public class StateMachine
         m_Owner = owner;
     }
 
-    /// <summary>
-    /// 切换状态
-    /// </summary>
-    /// <typeparam name="T">具体要切换到的状态类型</typeparam>
-    /// <param name="reCurrstate">如果状态没变，是否需要刷新状态</param>
-    /// <returns></returns>
-    public bool ChangeState<T>(bool reCurrstate = false) where T : StateBase, new()
+    public bool ChangeState<T>(in ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
     {
         // 状态一致，并且不需要刷新状态，则不需要进行切换
-        if (hasState && currentStateType == typeof(T) && !reCurrstate) 
+        if (hasState && currentStateType == typeof(T) && !args.reCurrstate) 
             return false;
 
         var exitState = m_CurrentState;
         var newState = GetState<T>();
         OnStateExit(exitState, newState);
-        OnStateEnter(exitState, newState);
+        OnStateEnter(exitState, newState, args);
         m_CurrentState = newState;     
         return true;
     }    
@@ -82,12 +74,12 @@ public class StateMachine
         }
     }
 
-    private void OnStateEnter(StateBase exitState, StateBase newState)
+    private void OnStateEnter(StateBase exitState, StateBase newState, in ChangeStateArgs args)
     {
         if (newState != null)
         {
             Debug.Log($"[{newState.GetType()}] enter");
-            newState.Enter(exitState);
+            newState.Enter(exitState, args);
             MonoManager.instance.AddUpdateListener(newState.Update);
             MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);
             MonoManager.instance.AddFixedUpdateListener(newState.FxiedUpdate);

@@ -1,9 +1,9 @@
 
 public class PlayerStateWalk : PlayerStateMove
 {
-    public override void Enter(StateBase exitState)
+    public override void Enter(StateBase exitState, in ChangeStateArgs args)
     {
-        base.Enter(exitState);
+        base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.animConsts.walkHash);
     }
 

@@ -5,10 +5,10 @@ public class PlayerStateJump : PlayerStateMove
 {
     private bool m_HasJumpStarted = false;
 
-    public override void Enter(StateBase exitState)
+    public override void Enter(StateBase exitState, in ChangeStateArgs args)
     {
         m_HasJumpStarted = false;
-        base.Enter(exitState);
+        base.Enter(exitState, args);
         AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.JumpStart, HandleJumpStart);
         AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.JumpTop, HandleJumpToTop);
         m_Player.model.StartAnimation(m_Player.animConsts.jumpHash);
@@ -41,7 +41,8 @@ public class PlayerStateJump : PlayerStateMove
 
     private void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
     {
-        m_Player.character.Move(deltaPosition * m_Player.config.jumpRatio);
+        deltaPosition.y *= m_Player.config.jumpPower;
+        m_Player.character.Move(deltaPosition);
     }
 
     private void HandleJumpStart()

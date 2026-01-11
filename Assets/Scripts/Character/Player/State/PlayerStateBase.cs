@@ -7,7 +7,8 @@ public enum PlayerState : uint
     Run,
     Jump,
     Falling,
-    Land
+    Land,
+    Stop
 }
 
 public class PlayerStateBase : StateBase

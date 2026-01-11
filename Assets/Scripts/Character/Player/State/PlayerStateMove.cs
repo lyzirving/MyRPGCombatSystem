@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerStateMove : PlayerStateBase
 {
-    public override void Enter(StateBase exitState)
+    public override void Enter(StateBase exitState, in ChangeStateArgs args)
     {
         m_Player.model.StartAnimation(m_Player.animConsts.moveHash);
     }

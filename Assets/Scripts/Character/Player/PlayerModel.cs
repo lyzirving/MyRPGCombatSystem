@@ -1,7 +1,6 @@
 using UnityEngine;
 using AnimationDefine;
 using UnityEngine.Events;
-using System;
 
 public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRotation);
 

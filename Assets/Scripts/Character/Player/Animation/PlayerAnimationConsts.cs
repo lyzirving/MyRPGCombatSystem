@@ -11,6 +11,8 @@ public class PlayerAnimationConsts
     [SerializeField] private string jumpParamName = "isJumpping";
     [SerializeField] private string fallParamName = "isFalling";
     [SerializeField] private string landParamName = "isLanding";
+    [SerializeField] private string leftFootStopParamName = "isLeftFootStop";
+    [SerializeField] private string rightFootStopParamName = "isRightFootStop";
 
     public int idleHash { get; private set; }
     public int moveHash { get; private set; }
@@ -19,6 +21,8 @@ public class PlayerAnimationConsts
     public int jumpHash { get; private set; }
     public int fallHash { get; private set; }
     public int landHash { get; private set; }
+    public int leftFootStopHash { get; private set; }
+    public int rightFootStopHash { get; private set; }
 
     public void Init()
     {
@@ -29,5 +33,7 @@ public class PlayerAnimationConsts
         jumpHash = Animator.StringToHash(jumpParamName);
         fallHash = Animator.StringToHash(fallParamName);
         landHash = Animator.StringToHash(landParamName);
+        leftFootStopHash = Animator.StringToHash(leftFootStopParamName);
+        rightFootStopHash = Animator.StringToHash(rightFootStopParamName);
     }
 }
