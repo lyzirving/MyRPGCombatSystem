@@ -10,4 +10,5 @@ public class PlayerConfig
     public float jumpPower = 2f;
     public float fallGravityRatio = 1.3f;
     public float rotateSpeed = 8f;
+    public bool drawDebug = false;
 }

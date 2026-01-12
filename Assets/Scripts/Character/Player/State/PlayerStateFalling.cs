@@ -15,12 +15,14 @@ public class PlayerStateFalling : PlayerStateMove
     }
 
     public override void Update()
-    {        
-        if (m_Player.character.isGrounded)
+    {
+        if (CheckPlayerOnGround())
         {
             m_Player.ChangeState(PlayerState.Land);
             return;
         }
+
+        DrawGroundCheckRay();
 
         Move();
     }

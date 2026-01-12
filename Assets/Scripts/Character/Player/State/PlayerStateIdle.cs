@@ -16,6 +16,12 @@ public class PlayerStateIdle : PlayerStateBase
     {
         ApplyGravity();
 
+        if (!CheckPlayerOnGround())
+        {
+            m_Player.ChangeState(PlayerState.Falling);
+            return;
+        }
+
         if (InputManager.instance.isPlayerJumpPerformed)
         {
             m_Player.ChangeState(PlayerState.Jump);

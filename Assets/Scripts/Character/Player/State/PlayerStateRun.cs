@@ -14,13 +14,6 @@ public class PlayerStateRun : PlayerStateMove
 
     public override void Exit(StateBase newState)
     {
-        if (newState.GetType() == typeof(PlayerStateWalk) || 
-            newState.GetType() == typeof(PlayerStateJump))
-        {
-            m_Player.model.StopAnimation(m_Player.animConsts.leftFootStopHash);
-            m_Player.model.StopAnimation(m_Player.animConsts.rightFootStopHash);
-            Debug.Log($"run state is interrupted, new state[{newState.GetType().Name}]");
-        }
         m_Player.model.RemoveLeftFootStepAction(OnLeftFootDown);
         m_Player.model.RemoveRightFootStepAction(OnRightFootDown);
         m_Player.model.StopAnimation(m_Player.animConsts.runHash); 
@@ -29,9 +22,15 @@ public class PlayerStateRun : PlayerStateMove
 
     public override void Update()
     {
-        if (!InputManager.instance.shouldPlayerRun)
+        if (!CheckPlayerOnGround())
         {
-            m_Player.ChangeState(PlayerState.Walk);
+            m_Player.ChangeState(PlayerState.Falling);
+            return;
+        }
+
+        if (!InputManager.instance.isPlayerMoving)
+        {
+            m_Player.ChangeState(PlayerState.Idle);
             return;
         }
 
@@ -41,13 +40,11 @@ public class PlayerStateRun : PlayerStateMove
             return;
         }
 
-        if (!InputManager.instance.isPlayerMoving)
+        if (!InputManager.instance.shouldPlayerRun)
         {
-            ChangeStateArgs.Builder builder = new ChangeStateArgs.Builder();
-            builder.Footstep(m_FootStep);
-            m_Player.ChangeState(PlayerState.Stop, builder.Build());
+            m_Player.ChangeState(PlayerState.Walk);
             return;
-        }
+        }              
 
         Move();
     }

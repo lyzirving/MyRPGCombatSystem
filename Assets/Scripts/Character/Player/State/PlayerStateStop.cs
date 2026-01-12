@@ -9,8 +9,7 @@ public class PlayerStateStop : PlayerStateMove
     {
         m_AnimHash = (args.footStep == EFootStep.LeftFoot) ? m_Player.animConsts.rightFootStopHash : m_Player.animConsts.leftFootStopHash;
         base.Enter(exitState, args);
-        Debug.Log($"foot step is [{args.footStep}]");
-        m_Player.model.StopAnimation(m_Player.animConsts.walkHash);
+        Debug.Log($"PlayerStateStop starts with foot[{args.footStep}]");
         m_Player.model.StartAnimation(m_AnimHash);
         m_Player.model.RegisterRootMotionAction(HandleRootMotion);
         AnimationEventReceiver.instance.RegisterHandler(AnimationDefine.PlayerAnimationEvent.RunStopFinish, HandleStopFinish);
