@@ -7,15 +7,17 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
 
     private PlayerAttrs m_Attrs = new PlayerAttrs();
     private StateMachine m_StateMachine;
-    private CharacterController m_CharacterController;
+    private Rigidbody m_Rigidbody;
+    private CapsuleCollider m_CapsuleCollider;
     private PlayerModel m_PlayerModel;
     private AudioSource m_AudioSource;
 
+    public AudioClip[] footStepAudioClips;
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
-    public CharacterController character { get => m_CharacterController; }
-    public PlayerAttrs attrs { get => m_Attrs; }
-    public AudioClip[] footStepAudioClips;
+    public Rigidbody rigidBody { get => m_Rigidbody; }
+    public CapsuleCollider capsuleCollider { get => m_CapsuleCollider; }
+    public PlayerAttrs attrs { get => m_Attrs; }    
 
     #region State Methods
     private void Awake()
@@ -26,9 +28,13 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
         m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);
 
-        m_CharacterController = GetComponent<CharacterController>();
-        if (m_CharacterController == null)
-            throw new System.Exception("err, CharacterController hasn't been asigned.");
+        m_Rigidbody = GetComponent<Rigidbody>();
+        if (m_Rigidbody == null)
+            throw new System.Exception("err, Rigidbody hasn't been asigned.");
+
+        m_CapsuleCollider = GetComponent<CapsuleCollider>();
+        if (m_CapsuleCollider == null)
+            throw new System.Exception("err, CapsuleCollider hasn't been asigned.");
 
         m_AudioSource = GetComponent<AudioSource>();
         if (m_AudioSource == null)
@@ -44,7 +50,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        ChangeState(PlayerState.Idle);
+        ChangeState(EPlayerState.Idle);
     }
 
     private void OnDisable()
@@ -56,31 +62,28 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     #endregion
 
     #region Main Methods
-    public void ChangeState(PlayerState state, in ChangeStateArgs args = default(ChangeStateArgs))
+    public void ChangeState(EPlayerState state, in ChangeStateArgs args = default(ChangeStateArgs))
     {
         m_Attrs.currentState = state;
         switch (state)
         {
-            case PlayerState.Idle:
+            case EPlayerState.Idle:
                 m_StateMachine?.ChangeState<PlayerStateIdle>(args);
                 break;
-            case PlayerState.Walk:
+            case EPlayerState.Walk:
                 m_StateMachine?.ChangeState<PlayerStateWalk>(args);
                 break;
-            case PlayerState.Run:
+            case EPlayerState.Run:
                 m_StateMachine?.ChangeState<PlayerStateRun>(args);
                 break;
-            case PlayerState.Jump:
+            case EPlayerState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
                 break;
-            case PlayerState.Falling:
+            case EPlayerState.Falling:
                 m_StateMachine?.ChangeState<PlayerStateFalling>(args);
                 break;
-            case PlayerState.Land:
-                m_StateMachine?.ChangeState<PlayerStateLand>(args);
-                break;
-            case PlayerState.Stop:
-                m_StateMachine?.ChangeState<PlayerStateStop>(args);
+            case EPlayerState.Land:
+                m_StateMachine?.ChangeState<PlayerStateLand>(args);                
                 break;
             default:
                 break;
@@ -91,14 +94,14 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     {
         switch (m_Attrs.currentState)
         {
-            case PlayerState.Walk:
+            case EPlayerState.Walk:
                 return config.walkSpeed;
-            case PlayerState.Run:
+            case EPlayerState.Run:
                 return config.runSpeed;
-            case PlayerState.Jump:
-            case PlayerState.Falling:
+            case EPlayerState.Jump:
+            case EPlayerState.Falling:
                 return config.jumpMoveSpeed;
-            case PlayerState.Idle:
+            case EPlayerState.Idle:
             default:
                 return 0f;
         }
@@ -108,7 +111,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     {
         switch (m_Attrs.currentState)
         {
-            case PlayerState.Falling:
+            case EPlayerState.Falling:
                 return config.fallGravityRatio;
             default:
                 return 1f;

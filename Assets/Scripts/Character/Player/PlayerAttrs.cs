@@ -4,6 +4,6 @@ using UnityEngine;
 [Serializable]
 public class PlayerAttrs
 {
-    public PlayerState currentState = PlayerState.Idle;
+    public EPlayerState currentState = EPlayerState.Idle;
     public float yVelocity = 0f;
 }

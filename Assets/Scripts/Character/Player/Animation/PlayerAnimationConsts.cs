@@ -6,6 +6,7 @@ public class PlayerAnimationConsts
 {
     [SerializeField] private string idleParamName = "isIdling";
     [SerializeField] private string movingParamName = "isMoving";
+    [SerializeField] private string airborneParamName = "isAirborne";
     [SerializeField] private string walkParamName = "isWalking";
     [SerializeField] private string runParamName = "isRunning";
     [SerializeField] private string jumpParamName = "isJumpping";
@@ -16,6 +17,7 @@ public class PlayerAnimationConsts
 
     public int idleHash { get; private set; }
     public int moveHash { get; private set; }
+    public int airborneHash { get; private set; }
     public int walkHash { get; private set; }
     public int runHash { get; private set; }
     public int jumpHash { get; private set; }
@@ -28,6 +30,7 @@ public class PlayerAnimationConsts
     {
         idleHash = Animator.StringToHash(idleParamName);
         moveHash = Animator.StringToHash(movingParamName);
+        airborneHash = Animator.StringToHash(airborneParamName);
         walkHash = Animator.StringToHash(walkParamName);
         runHash = Animator.StringToHash(runParamName);
         jumpHash = Animator.StringToHash(jumpParamName);

@@ -15,31 +15,13 @@ public class PlayerStateRun : PlayerStateMove
     }
 
     public override void Update()
-    {
-        if (!CheckPlayerOnGround())
-        {
-            m_Player.ChangeState(PlayerState.Falling);
-            return;
-        }
-
-        if (!InputManager.instance.isPlayerMoving)
-        {
-            m_Player.ChangeState(PlayerState.Idle);
-            return;
-        }
-
-        if (InputManager.instance.isPlayerJumpPerformed)
-        {
-            m_Player.ChangeState(PlayerState.Jump);
-            return;
-        }
-
+    {        
         if (!InputManager.instance.shouldPlayerRun)
         {
-            m_Player.ChangeState(PlayerState.Walk);
+            m_Player.ChangeState(EPlayerState.Walk);
             return;
-        }              
+        }
 
-        Move();
+        base.Update();
     }
 }

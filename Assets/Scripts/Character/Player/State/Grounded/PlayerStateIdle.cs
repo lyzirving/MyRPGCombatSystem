@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStateIdle : PlayerStateBase
+public class PlayerStateIdle : PlayerStateGrounded
 {
     public override void Enter(StateBase exitState, in ChangeStateArgs args)
     {
@@ -14,23 +14,15 @@ public class PlayerStateIdle : PlayerStateBase
 
     public override void Update()
     {
-        ApplyGravity();
-
-        if (!CheckPlayerOnGround())
-        {
-            m_Player.ChangeState(PlayerState.Falling);
-            return;
-        }
-
         if (InputManager.instance.isPlayerJumpPerformed)
         {
-            m_Player.ChangeState(PlayerState.Jump);
+            m_Player.ChangeState(EPlayerState.Jump);
             return;
         }
 
         if (InputManager.instance.isPlayerMoving)
         {
-            m_Player.ChangeState(InputManager.instance.shouldPlayerRun ? PlayerState.Run : PlayerState.Walk);
+            m_Player.ChangeState(InputManager.instance.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
             return;
         }
     }

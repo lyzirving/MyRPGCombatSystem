@@ -1,14 +1,14 @@
 using UnityEngine;
 using AnimationDefine;
 
-public class PlayerStateJump : PlayerStateMove
+public class PlayerStateJump : PlayerStateAirborne
 {
     private bool m_HasJumpStarted = false;
 
     public override void Enter(StateBase exitState, in ChangeStateArgs args)
     {
-        m_HasJumpStarted = false;
         base.Enter(exitState, args);
+        m_HasJumpStarted = false;
         AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.JumpStart, HandleJumpStart);
         AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.JumpTop, HandleJumpToTop);
         m_Player.model.StartAnimation(m_Player.animConsts.jumpHash);
@@ -31,15 +31,11 @@ public class PlayerStateJump : PlayerStateMove
             return;
 
         if (!InputManager.instance.isPlayerMoving)
-            return;
-
-        Move(false);
+            return;        
     }
 
     private void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
     {
-        deltaPosition.y *= m_Player.config.jumpPower;
-        m_Player.character.Move(deltaPosition);
     }
 
     private void HandleJumpStart()
@@ -49,6 +45,6 @@ public class PlayerStateJump : PlayerStateMove
 
     private void HandleJumpToTop()
     {
-        m_Player.ChangeState(PlayerState.Falling);
+        m_Player.ChangeState(EPlayerState.Falling);
     }
 }
