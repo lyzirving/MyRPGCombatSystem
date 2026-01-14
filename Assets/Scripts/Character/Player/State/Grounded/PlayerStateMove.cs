@@ -32,6 +32,8 @@ public class PlayerStateMove : PlayerStateGrounded
 
     public override void FxiedUpdate()
     {
+        Float();
+
         Move();
     }
 
@@ -52,15 +54,7 @@ public class PlayerStateMove : PlayerStateGrounded
 
         m_Player.transform.rotation = Quaternion.Slerp(m_Player.transform.rotation,
             Quaternion.LookRotation(targetDir), Time.deltaTime * m_Player.config.rotateSpeed);
-
-        Vector3 velocity = GetPlayerHorizontalVelocity();
-        m_Player.rigidBody.AddForce(m_Player.GetMoveSpeed() * targetDir - velocity, ForceMode.VelocityChange);
-    }
-
-    protected Vector3 GetPlayerHorizontalVelocity()
-    {
-        var velocity = m_Player.rigidBody.linearVelocity;
-        velocity.y = 0f;
-        return velocity;
+    
+        m_Player.rigidBody.AddForce(m_Player.GetMoveSpeed() * targetDir - playerHorizonVelocity, ForceMode.VelocityChange);
     }
 }

@@ -34,4 +34,8 @@ public abstract class StateBase
     public virtual void LateUpdate() { }
 
     public virtual void FxiedUpdate() { }
+
+    public virtual void HandleTriggerEnter(Collider other) { }
+
+    public virtual void HandleTriggerExit(Collider other) { }
 }

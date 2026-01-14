@@ -8,9 +8,10 @@ public class StateMachine
     private Dictionary<Type, StateBase> m_StateDic = new Dictionary<Type, StateBase>();
     private StateBase m_CurrentState;
 
+    public StateBase currentState { get => m_CurrentState; }
     public bool hasState { get => m_CurrentState != null; }
-    public Type currentStateType { get => m_CurrentState.GetType(); }    
-    
+    public Type currentStateType { get => m_CurrentState.GetType(); }     
+
 
     /// <summary>
     /// ≥ı ºªØ

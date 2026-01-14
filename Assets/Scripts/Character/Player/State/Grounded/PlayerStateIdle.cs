@@ -26,4 +26,11 @@ public class PlayerStateIdle : PlayerStateGrounded
             return;
         }
     }
+
+    public override void FxiedUpdate()
+    {
+        ResetVelocity();
+
+        Float();        
+    }
 }

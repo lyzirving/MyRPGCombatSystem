@@ -11,12 +11,14 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     private CapsuleCollider m_CapsuleCollider;
     private PlayerModel m_PlayerModel;
     private AudioSource m_AudioSource;
+    private ResizableCapsuleCollider m_ResizableCapsuleCollider;
 
     public AudioClip[] footStepAudioClips;
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
     public Rigidbody rigidBody { get => m_Rigidbody; }
     public CapsuleCollider capsuleCollider { get => m_CapsuleCollider; }
+    public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
     public PlayerAttrs attrs { get => m_Attrs; }    
 
     #region State Methods
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         if (m_AudioSource == null)
             throw new System.Exception("err, AudioSource hasn't been asigned.");
 
+        m_ResizableCapsuleCollider = gameObject.AddComponent<ResizableCapsuleCollider>();
         m_StateMachine = new StateMachine();        
         m_AnimationConsts = new PlayerAnimationConsts();
 
@@ -59,6 +62,15 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         m_PlayerModel.RemoveRightFootStepAction(OnRightFootDown);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+       m_StateMachine.currentState?.HandleTriggerEnter(other);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        m_StateMachine.currentState?.HandleTriggerExit(other);
+    }
     #endregion
 
     #region Main Methods
@@ -107,17 +119,6 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
         }
     }
 
-    public float GetGravityRatio()
-    {
-        switch (m_Attrs.currentState)
-        {
-            case EPlayerState.Falling:
-                return config.fallGravityRatio;
-            default:
-                return 1f;
-        }
-    }
-
     private void OnLeftFootDown()
     {
         if (footStepAudioClips == null || footStepAudioClips.Length == 0)
@@ -132,6 +133,6 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             return;
 
         m_AudioSource.PlayOneShot(footStepAudioClips[1]);
-    }
+    }    
     #endregion
 }
