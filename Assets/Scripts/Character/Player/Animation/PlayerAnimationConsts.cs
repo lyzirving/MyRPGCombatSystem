@@ -4,39 +4,48 @@ using UnityEngine;
 [Serializable]
 public class PlayerAnimationConsts
 {
+    [SerializeField] private string groundParamName = "isGrounded";    
     [SerializeField] private string idleParamName = "isIdling";
-    [SerializeField] private string movingParamName = "isMoving";
-    [SerializeField] private string airborneParamName = "isAirborne";
+    [SerializeField] private string movingParamName = "isMoving";    
     [SerializeField] private string walkParamName = "isWalking";
     [SerializeField] private string runParamName = "isRunning";
-    [SerializeField] private string jumpParamName = "isJumpping";
-    [SerializeField] private string fallParamName = "isFalling";
-    [SerializeField] private string landParamName = "isLanding";
-    [SerializeField] private string leftFootStopParamName = "isLeftFootStop";
-    [SerializeField] private string rightFootStopParamName = "isRightFootStop";
+    [SerializeField] private string landParamName = "isLand";
 
+    [SerializeField] private string airborneParamName = "isAirborne";
+    [SerializeField] private string jumpStartLeftParamName = "isJumpStartLeft";
+    [SerializeField] private string jumpStartRightParamName = "isJumpStartRight";
+    [SerializeField] private string jumpIdleParamName = "isJumpIdle";
+    [SerializeField] private string fallLeftParamName = "isFallingLeft";
+    [SerializeField] private string fallRightParamName = "isFallingRight";          
+
+    public int groundHash { get; private set; }    
     public int idleHash { get; private set; }
-    public int moveHash { get; private set; }
-    public int airborneHash { get; private set; }
+    public int moveHash { get; private set; }    
     public int walkHash { get; private set; }
     public int runHash { get; private set; }
-    public int jumpHash { get; private set; }
-    public int fallHash { get; private set; }
     public int landHash { get; private set; }
-    public int leftFootStopHash { get; private set; }
-    public int rightFootStopHash { get; private set; }
+
+    public int airborneHash { get; private set; }
+    public int jumpStartLeftHash { get; private set; }
+    public int jumpStartRightHash { get; private set; }
+    public int jumpIdleHash { get; private set; }
+    public int fallLeftHash { get; private set; }
+    public int fallRightHash { get; private set; }
 
     public void Init()
     {
+        groundHash = Animator.StringToHash(groundParamName);        
         idleHash = Animator.StringToHash(idleParamName);
-        moveHash = Animator.StringToHash(movingParamName);
-        airborneHash = Animator.StringToHash(airborneParamName);
+        moveHash = Animator.StringToHash(movingParamName);        
         walkHash = Animator.StringToHash(walkParamName);
         runHash = Animator.StringToHash(runParamName);
-        jumpHash = Animator.StringToHash(jumpParamName);
-        fallHash = Animator.StringToHash(fallParamName);
         landHash = Animator.StringToHash(landParamName);
-        leftFootStopHash = Animator.StringToHash(leftFootStopParamName);
-        rightFootStopHash = Animator.StringToHash(rightFootStopParamName);
+
+        airborneHash = Animator.StringToHash(airborneParamName);
+        jumpStartLeftHash = Animator.StringToHash(jumpStartLeftParamName);
+        jumpStartRightHash = Animator.StringToHash(jumpStartRightParamName);
+        jumpIdleHash = Animator.StringToHash(jumpIdleParamName);
+        fallLeftHash = Animator.StringToHash(fallLeftParamName);
+        fallRightHash = Animator.StringToHash(fallRightParamName);
     }
 }

@@ -41,7 +41,7 @@ public class PlayerModel : MonoBehaviour
     #region Main Methods
     public void StartAnimation(int hash)
     {
-        m_Animator?.SetBool(hash, true);
+        m_Animator?.SetBool(hash, true);       
     }
 
     public void StopAnimation(int hash)

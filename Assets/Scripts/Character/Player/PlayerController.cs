@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
 
     private void OnTriggerEnter(Collider other)
     {
-       m_StateMachine.currentState?.HandleTriggerEnter(other);
+        m_StateMachine.currentState?.HandleTriggerEnter(other);
     }
 
     private void OnTriggerExit(Collider other)
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     #endregion
 
     #region Main Methods
-    public void ChangeState(EPlayerState state, in ChangeStateArgs args = default(ChangeStateArgs))
+    public void ChangeState(EPlayerState state, ChangeStateArgs args = default(ChangeStateArgs))
     {
         m_Attrs.currentState = state;
         switch (state)
@@ -91,31 +91,17 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             case EPlayerState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
                 break;
+            case EPlayerState.JumpIdle:
+                m_StateMachine?.ChangeState<PlayerStateJumpIdle>(args);
+                break;
             case EPlayerState.Falling:
-                m_StateMachine?.ChangeState<PlayerStateFalling>(args);
+                m_StateMachine?.ChangeState<PlayerStateFalling>(args);                               
                 break;
             case EPlayerState.Land:
-                m_StateMachine?.ChangeState<PlayerStateLand>(args);                
+                m_StateMachine?.ChangeState<PlayerStateLand>(args);
                 break;
             default:
                 break;
-        }
-    }
-
-    public float GetMoveSpeed()
-    {
-        switch (m_Attrs.currentState)
-        {
-            case EPlayerState.Walk:
-                return config.walkSpeed;
-            case EPlayerState.Run:
-                return config.runSpeed;
-            case EPlayerState.Jump:
-            case EPlayerState.Falling:
-                return config.jumpMoveSpeed;
-            case EPlayerState.Idle:
-            default:
-                return 0f;
         }
     }
 

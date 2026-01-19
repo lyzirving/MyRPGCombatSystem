@@ -8,8 +8,7 @@ namespace AnimationDefine
         LeftFootStep,
         RightFootStep,
         JumpStart,
-        JumpTop,
+        JumpStartTransit,
         LandFinish,
-        RunStopFinish
     }
 }

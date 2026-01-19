@@ -1,12 +1,5 @@
 using System;
 
-public enum EFootStep : UInt16
-{
-    None = 0,
-    LeftFoot,
-    RightFoot
-}
-
 public interface IStateMachineOwner { }
 
 public struct ChangeStateArgs
@@ -20,10 +13,16 @@ public struct ChangeStateArgs
     /// </summary>
     public EFootStep footStep;
 
-    public class Builder
+    public struct Builder
     {
-        private bool m_ReCurrstate = false;
-        private EFootStep m_FootStep = EFootStep.None;
+        private bool m_ReCurrstate;
+        private EFootStep m_FootStep;
+
+        public Builder(bool recreate = false)
+        {
+            m_ReCurrstate = recreate;
+            m_FootStep = EFootStep.None;
+        }
 
         public Builder Refresh(bool refresh)
         {

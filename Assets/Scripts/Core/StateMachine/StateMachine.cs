@@ -21,7 +21,7 @@ public class StateMachine
         m_Owner = owner;
     }
 
-    public bool ChangeState<T>(in ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
+    public bool ChangeState<T>(ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
     {
         // 状态一致，并且不需要刷新状态，则不需要进行切换
         if (hasState && currentStateType == typeof(T) && !args.reCurrstate) 
@@ -71,11 +71,11 @@ public class StateMachine
             exitState.Exit(newState);
             MonoManager.instance.RemoveUpdateListener(exitState.Update);
             MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
-            MonoManager.instance.RemoveFixedUpdateListener(exitState.FxiedUpdate);
+            MonoManager.instance.RemoveFixedUpdateListener(exitState.FixedUpdate);
         }
     }
 
-    private void OnStateEnter(StateBase exitState, StateBase newState, in ChangeStateArgs args)
+    private void OnStateEnter(StateBase exitState, StateBase newState, ChangeStateArgs args)
     {
         if (newState != null)
         {
@@ -83,7 +83,7 @@ public class StateMachine
             newState.Enter(exitState, args);
             MonoManager.instance.AddUpdateListener(newState.Update);
             MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);
-            MonoManager.instance.AddFixedUpdateListener(newState.FxiedUpdate);
+            MonoManager.instance.AddFixedUpdateListener(newState.FixedUpdate);
         }
     }  
 }

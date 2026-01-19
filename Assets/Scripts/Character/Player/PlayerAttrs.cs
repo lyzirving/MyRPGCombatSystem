@@ -5,5 +5,7 @@ using UnityEngine;
 public class PlayerAttrs
 {
     public EPlayerState currentState = EPlayerState.Idle;
-    public float yVelocity = 0f;
+
+    public float speedModify = 0f;
+    public Vector3 jumpForce = Vector3.zero;
 }

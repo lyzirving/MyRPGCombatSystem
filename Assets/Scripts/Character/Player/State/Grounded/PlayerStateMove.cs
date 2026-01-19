@@ -2,17 +2,25 @@ using UnityEngine;
 
 public class PlayerStateMove : PlayerStateGrounded
 {
-    public override void Enter(StateBase exitState, in ChangeStateArgs args)
+    protected EFootStep m_FootStep = EFootStep.LeftFootStep;
+
+    public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
+        base.Enter(exitState, args);
+        m_Player.model.RegisterLeftFootStepAction(OnLeftFootStep);
+        m_Player.model.RegisterRightFootStepAction(OnRightFootStep);
         m_Player.model.StartAnimation(m_Player.animConsts.moveHash);
     }
 
     public override void Exit(StateBase newState)
     {
+        m_Player.model.RemoveLeftFootStepAction(OnLeftFootStep);
+        m_Player.model.RemoveRightFootStepAction(OnRightFootStep);
         if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateMove)))
         {
             m_Player.model.StopAnimation(m_Player.animConsts.moveHash);
         }
+        base.Exit(newState);
     }
 
     public override void Update()
@@ -25,36 +33,39 @@ public class PlayerStateMove : PlayerStateGrounded
 
         if (InputManager.instance.isPlayerJumpPerformed)
         {
-            m_Player.ChangeState(EPlayerState.Jump);
+            ChangeStateArgs.Builder builder = new ChangeStateArgs.Builder();
+            builder.Footstep(m_FootStep);
+            m_Player.ChangeState(EPlayerState.Jump, builder.Build());
             return;
         }
     }
 
-    public override void FxiedUpdate()
+    public override void FixedUpdate()
     {
         Float();
 
         Move();
-    }
+    }    
 
     protected void Move()
     {
         if (!InputManager.instance.isPlayerMoving)
             return;
 
-        Vector3 move = Vector3.zero;
-        Vector2 input = InputManager.instance.playerMovement;
-        move.x = input.x;
-        move.z = input.y;
-        move = Vector3.ClampMagnitude(move, 1f);
+        Vector3 targetDir = GetTargetDirection();
 
-        // deal rotation from camera
-        Vector3 euler = new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f);
-        Vector3 targetDir = Quaternion.Euler(euler) * move;
-
-        m_Player.transform.rotation = Quaternion.Slerp(m_Player.transform.rotation,
-            Quaternion.LookRotation(targetDir), Time.deltaTime * m_Player.config.rotateSpeed);
+        RotateToTargetDir(targetDir);
     
-        m_Player.rigidBody.AddForce(m_Player.GetMoveSpeed() * targetDir - playerHorizonVelocity, ForceMode.VelocityChange);
+        m_Player.rigidBody.AddForce(targetDir * movementSpeed - playerHorizonVelocity, ForceMode.VelocityChange);
+    }
+
+    protected void OnLeftFootStep()
+    {
+        m_FootStep = EFootStep.LeftFootStep;
+    }
+
+    protected void OnRightFootStep()
+    {
+        m_FootStep = EFootStep.RightFootStep;
     }
 }

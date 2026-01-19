@@ -1,17 +1,42 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class ResizableCapsuleCollider : MonoBehaviour
 {    
-    public BoxCollider walkableCheckBox { get { return m_WalkableCheckBox; } }
     public CapsuleColliderData colliderData { get { return m_CapsuleColliderData; } }
     public SlopeData slopeData { get { return m_SlopeData; } }
+
+    /// <summary>
+    /// Position of center in world space.
+    /// </summary>
+    public Vector3 center
+    {
+        get { return m_CapsuleColliderData.collider.bounds.center; }
+    }
+
+    /// <summary>
+    /// Walkable check box's center position in world space
+    /// </summary>
+    public Vector3 checkBoxCenter
+    {
+        get { return m_WalkableCheckBox.bounds.center; }
+    }
+
+    /// <summary>
+    /// Walkable check box's extent
+    /// </summary>
+    public Vector3 checkBoxExtents
+    {
+        get { return m_WalkableCheckBox.bounds.extents; }
+    }
 
     [SerializeField] private CapsuleColliderData m_CapsuleColliderData = null;
     [SerializeField] private DefaultColliderData m_DefaultColliderData;
     [SerializeField] private SlopeData m_SlopeData;
     private BoxCollider m_WalkableCheckBox = null;
+    private Queue<float> m_StepHeightPercentQueue;
 
     private void Awake()
     {
@@ -35,12 +60,34 @@ public class ResizableCapsuleCollider : MonoBehaviour
         CalculateCapsuleColliderDimensions();
     }
 
-    public void Initialize(GameObject gameObject)
+    public void SetStepHeightPercent(float val)
+    {
+        m_SlopeData.stepHeightPercentage = Mathf.Clamp01(val);
+        Resize();
+    }
+
+    public void StoreStepHeightPercent()
+    { 
+        m_StepHeightPercentQueue.Enqueue(m_SlopeData.stepHeightPercentage);        
+    }
+
+    public void RestoreStepHeightPercent()
+    {
+        if (m_StepHeightPercentQueue.Count == 0)
+            return;
+
+        m_SlopeData.stepHeightPercentage = m_StepHeightPercentQueue.Dequeue();
+        Resize();
+    }
+
+    private void Initialize(GameObject gameObject)
     {
         if ((m_CapsuleColliderData != null && m_CapsuleColliderData.collider != null) || gameObject == null)
         {
             return;
         }
+
+        m_StepHeightPercentQueue = new Queue<float>();        
 
         m_SlopeData = new SlopeData(0.25f, 2f, 25f);
 
@@ -55,21 +102,6 @@ public class ResizableCapsuleCollider : MonoBehaviour
                 m_CapsuleColliderData.collider.center.y,
                 m_CapsuleColliderData.collider.radius);
         }
-    }    
-
-    public Vector3 CenterInWordSpace()
-    {
-        return m_CapsuleColliderData.collider.bounds.center;
-    }
-
-    public Vector3 WalkableCheckBoxCenterInWorldSpace()
-    {
-        return m_WalkableCheckBox.bounds.center;
-    }
-
-    public Vector3 WalkableCheckBoxExtents()
-    {
-        return m_WalkableCheckBox.bounds.extents;
     }
 
     private void CalculateCapsuleColliderDimensions()

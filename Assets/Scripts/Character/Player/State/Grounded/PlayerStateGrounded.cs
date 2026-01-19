@@ -2,12 +2,30 @@ using UnityEngine;
 
 public class PlayerStateGrounded : PlayerStateBase
 {
+    public override void Enter(StateBase exitState, ChangeStateArgs args)
+    {
+        m_Player.model.StartAnimation(m_Player.animConsts.groundHash);
+    }
+
+    public override void Exit(StateBase newState)
+    {
+        if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateGrounded)))
+        {
+            m_Player.model.StopAnimation(m_Player.animConsts.groundHash);
+        }
+    }
+
+    protected override void OnExitGround(Collider collider)
+    {
+        m_Player.ChangeState(EPlayerState.Falling);
+    }
+
     protected void Float()
     {
-        Vector3 centerInWorldSpace = m_Player.resizableCapsule.CenterInWordSpace();
+        Vector3 centerInWorldSpace = m_Player.resizableCapsule.center;
         var ray = new Ray(centerInWorldSpace, -m_Player.transform.up);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, m_Player.resizableCapsule.slopeData.floatRayDistance, GameConsts.EnvLayer, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, m_Player.resizableCapsule.slopeData.floatRayDistance, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore))
         {
             float groundAngle = Vector3.Angle(hit.normal, -ray.direction);
 

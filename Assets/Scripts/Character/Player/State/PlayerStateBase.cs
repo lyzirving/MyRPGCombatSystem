@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class PlayerStateBase : StateBase
-{
+{    
     public Vector3 playerHorizonVelocity 
     {
         get 
@@ -20,6 +20,11 @@ public class PlayerStateBase : StateBase
         }
     }
 
+    public float movementSpeed
+    {
+        get { return m_Player.config.baseSpeed * m_Player.attrs.speedModify; }
+    }
+
     public bool isMoveHorizontally
     {
         get
@@ -29,16 +34,77 @@ public class PlayerStateBase : StateBase
         }
     }
 
+    public bool isMovingUp
+    {
+        get
+        {
+            return m_Player.rigidBody.linearVelocity.y > 0f;
+        }
+    }
+
     protected PlayerController m_Player;
 
+    #region State Methods
     public override void Init(IStateMachineOwner owner)
     {
         base.Init(owner);
         m_Player = owner as PlayerController;
     }
 
+    public override void HandleTriggerEnter(Collider other)
+    {
+        if (GameUtility.IsWalkableLayer(other.gameObject.layer))
+        {            
+            OnContactGround(other);
+        }
+    }
+
+    public override void HandleTriggerExit(Collider other)
+    {
+        if (GameUtility.IsWalkableLayer(other.gameObject.layer))
+        {
+            OnExitGround(other);
+        }
+    }
+
+    protected virtual void OnContactGround(Collider collider) { }
+
+    protected virtual void OnExitGround(Collider collider) { }
+    #endregion
+
+    #region Main Methods
+
     protected void ResetVelocity()
     {
         m_Player.rigidBody.linearVelocity = Vector3.zero;
     }
+
+    protected void ResetVerticalVelocity()
+    {
+        m_Player.rigidBody.linearVelocity = playerHorizonVelocity;
+    }
+
+    protected Vector3 GetTargetDirection()
+    {
+        if (!InputManager.instance.isPlayerMoving)
+            return m_Player.transform.forward;
+
+        Vector3 move = Vector3.zero;
+        Vector2 input = InputManager.instance.playerMovement;
+        move.x = input.x;
+        move.z = input.y;
+        move = Vector3.ClampMagnitude(move, 1f);
+
+        // deal rotation from camera
+        Vector3 euler = new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f);
+        Vector3 targetDir = Quaternion.Euler(euler) * move;
+        return targetDir;
+    }
+
+    protected void RotateToTargetDir(Vector3 targetDir)
+    {
+        m_Player.transform.rotation = Quaternion.Slerp(m_Player.transform.rotation,
+            Quaternion.LookRotation(targetDir), Time.deltaTime * m_Player.config.rotateSpeed);
+    }
+    #endregion
 }
