@@ -5,14 +5,11 @@ using UnityEngine;
 public class PlayerConfig
 {
     [Header("Base Movement")]
-    [Range(0f, 25f)]
-    public float baseSpeed = 3f;
-    [Range(0f, 1f)]
-    public float walkSpeedModify = 0.4f;
-    [Range(1f, 2f)]
-    public float runSpeedModify = 1f;
-    [Range(1f, 20f)]
-    public float rotateSpeed = 8f;
+    [Range(0f, 25f)] public float baseSpeed = 3f;
+    [Range(0f, 1f)] public float walkSpeedModify = 0.4f;
+    [Range(1f, 3f)] public float runSpeedModify = 1f;
+    [Range(0f, 2f)] public float rollSpeedModify = 0.8f;
+    [Range(1f, 20f)] public float rotateSpeed = 8f;
 
     [Header("Jumpping Data")]
     public Vector3 stationaryJumpForce = new Vector3(0, 5f, 0f);
@@ -22,10 +19,8 @@ public class PlayerConfig
     public float jumpStartRatio = 1.3f;
 
     [Header("Falling Data")]
-    [Range(1f, 15f)]
-    public float fallSpeedLimit = 15f;
+    [Range(1f, 15f)] public float fallSpeedLimit = 15f;
 
     [Header("Landing Data")]
-    [Range(1f, 100f)]
-    public float minuDistanceToBeConsiderHardFall = 3f;
+    [Range(1f, 100f)] public float minuDistanceToBeConsiderHardFall = 3f;
 }

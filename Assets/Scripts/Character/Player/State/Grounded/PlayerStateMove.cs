@@ -31,6 +31,12 @@ public class PlayerStateMove : PlayerStateGrounded
             return;
         }
 
+        if (InputManager.instance.isPlayerRollPerformed)
+        {
+            m_Player.ChangeState(EPlayerState.Roll);
+            return;
+        }
+
         if (InputManager.instance.isPlayerJumpPerformed)
         {
             ChangeStateArgs.Builder builder = new ChangeStateArgs.Builder();
@@ -55,7 +61,12 @@ public class PlayerStateMove : PlayerStateGrounded
         Vector3 targetDir = GetTargetDirection();
 
         RotateToTargetDir(targetDir);
-    
+
+        MoveAt(targetDir);
+    }
+
+    protected void MoveAt(in Vector3 targetDir)
+    {
         m_Player.rigidBody.AddForce(targetDir * movementSpeed - playerHorizonVelocity, ForceMode.VelocityChange);
     }
 

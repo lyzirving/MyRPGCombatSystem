@@ -10,5 +10,6 @@ namespace AnimationDefine
         JumpStart,
         JumpStartTransit,
         LandFinish,
+        RollTransit,
     }
 }

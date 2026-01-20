@@ -978,6 +978,7 @@ MonoBehaviour:
     baseSpeed: 3
     walkSpeedModify: 0.4
     runSpeedModify: 1
+    rollSpeedModify: 0.8
     rotateSpeed: 8
     stationaryJumpForce: {x: 0, y: 5, z: 0}
     weakJumpForce: {x: 1, y: 5, z: 1}
@@ -992,6 +993,7 @@ MonoBehaviour:
     movingParamName: isMoving
     walkParamName: isWalking
     runParamName: isRunning
+    rollParamName: isRolling
     landParamName: isLand
     airborneParamName: isAirborne
     jumpStartLeftParamName: isJumpStartLeft

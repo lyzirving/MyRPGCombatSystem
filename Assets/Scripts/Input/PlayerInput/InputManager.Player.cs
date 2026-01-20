@@ -8,6 +8,7 @@ public partial class InputManager
 
     private bool m_ShouldPlayerRun = true;
     private bool m_IsJumpPerformed = false;
+    private bool m_IsRollPerformed = false;
     private WaitForEndOfFrame m_WaitForEndOfFrame = new WaitForEndOfFrame();
 
     public bool shouldPlayerRun { get => m_ShouldPlayerRun; }
@@ -20,6 +21,7 @@ public partial class InputManager
 
     public bool isPlayerMoving { get => playerMovement != Vector2.zero; }
     public bool isPlayerJumpPerformed { get => m_IsJumpPerformed; }
+    public bool isPlayerRollPerformed { get => m_IsRollPerformed; }
 
     private void OnSwitchRunToggle(InputAction.CallbackContext context)
     {
@@ -34,9 +36,21 @@ public partial class InputManager
         MonoManager.Run(OnJumpCancel());
     }
 
+    private void OnRollPerformed(InputAction.CallbackContext context)
+    {
+        m_IsRollPerformed = true;
+        MonoManager.Run(OnRollCancel());
+    }
+
     private IEnumerator OnJumpCancel()
     {
         yield return m_WaitForEndOfFrame;
         m_IsJumpPerformed = false;
+    }
+
+    private IEnumerator OnRollCancel()
+    {
+        yield return m_WaitForEndOfFrame;
+        m_IsRollPerformed = false;
     }
 }

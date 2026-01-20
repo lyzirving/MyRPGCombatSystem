@@ -8,6 +8,7 @@ public enum EPlayerState : UInt16
     Run,
     Jump,
     JumpIdle,
+    Roll,
     Falling,
     Land,
 }

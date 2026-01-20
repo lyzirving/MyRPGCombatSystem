@@ -94,6 +94,9 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             case EPlayerState.JumpIdle:
                 m_StateMachine?.ChangeState<PlayerStateJumpIdle>(args);
                 break;
+            case EPlayerState.Roll:
+                m_StateMachine?.ChangeState<PlayerStateRoll>(args);
+                break;
             case EPlayerState.Falling:
                 m_StateMachine?.ChangeState<PlayerStateFalling>(args);                               
                 break;

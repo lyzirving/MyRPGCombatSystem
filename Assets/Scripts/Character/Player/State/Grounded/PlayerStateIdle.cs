@@ -19,6 +19,12 @@ public class PlayerStateIdle : PlayerStateGrounded
 
     public override void Update()
     {
+        if (InputManager.instance.isPlayerRollPerformed)
+        {
+            m_Player.ChangeState(EPlayerState.Roll);
+            return;
+        }
+
         if (InputManager.instance.isPlayerJumpPerformed)
         {
             m_Player.ChangeState(EPlayerState.Jump);

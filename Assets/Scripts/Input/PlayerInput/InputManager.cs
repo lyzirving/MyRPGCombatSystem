@@ -14,12 +14,14 @@ public partial class InputManager : Singleton<InputManager>
         m_PlayerActionMap = new IA_Player();
         m_PlayerActionMap.PlayerAction.RunToggle.performed += OnSwitchRunToggle;
         m_PlayerActionMap.PlayerAction.Jump.performed += OnJumpPerformed;
+        m_PlayerActionMap.PlayerAction.Roll.performed += OnRollPerformed;
     }
 
     public override void OnDeInit()
     {
         m_PlayerActionMap.PlayerAction.RunToggle.performed -= OnSwitchRunToggle;
         m_PlayerActionMap.PlayerAction.Jump.performed -= OnJumpPerformed;
+        m_PlayerActionMap.PlayerAction.Roll.performed -= OnRollPerformed;
         m_PlayerActionMap = null;
     }
 
