@@ -34,6 +34,10 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
         }
     }
 
+    public void OnAnimationEventTrigger(AnimationEventInfo eventInfo)
+    {
+    }
+
     public void RegisterHandler(PlayerAnimationEvent key, UnityAction handler)
     {
         UnityEvent unityEvent = null;
