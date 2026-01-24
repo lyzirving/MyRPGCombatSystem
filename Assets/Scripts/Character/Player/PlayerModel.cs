@@ -1,5 +1,4 @@
 using UnityEngine;
-using AnimationDefine;
 using UnityEngine.Events;
 
 public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRotation);
@@ -22,14 +21,14 @@ public class PlayerModel : MonoBehaviour
 
     private void Start()
     {
-        AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.RightFootStep, OnRightFootStep);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.RightFootStep, OnRightFootStep);
     }
 
     private void OnDisable()
     {
-        AnimationEventReceiver.instance?.RemoveHandler(PlayerAnimationEvent.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance?.RemoveHandler(PlayerAnimationEvent.RightFootStep, OnRightFootStep);
+        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
+        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.RightFootStep, OnRightFootStep);
     }
 
     private void OnAnimatorMove()
@@ -88,12 +87,12 @@ public class PlayerModel : MonoBehaviour
     #endregion
 
     #region Behavior Methods
-    private void OnLeftFootStep()
+    private void OnLeftFootStep(AnimationEventInfo info)
     {
         m_LeftFootStepAc?.Invoke();
     }
 
-    private void OnRightFootStep()
+    private void OnRightFootStep(AnimationEventInfo info)
     {
         m_RightFootStepAc?.Invoke();
     }

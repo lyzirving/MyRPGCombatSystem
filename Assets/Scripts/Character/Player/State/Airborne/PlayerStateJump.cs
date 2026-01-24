@@ -1,5 +1,4 @@
 using UnityEngine;
-using AnimationDefine;
 
 public class PlayerStateJump : PlayerStateAirborne
 {
@@ -15,16 +14,16 @@ public class PlayerStateJump : PlayerStateAirborne
         m_FootStep = args.footStep;
         m_AnimHash = m_FootStep == EFootStep.LeftFootStep ? m_Player.animConsts.jumpStartLeftHash : m_Player.animConsts.jumpStartRightHash;
         m_Player.model.StartAnimation(m_AnimHash);
-        AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.JumpStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.JumpStartTransit, HandleJumpStartTransit);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.JumpStart, HandleJumpStart);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.JumpStartTransit, HandleJumpStartTransit);
 
         m_IsJumpTrigger = m_ShouldStartJump = m_ShouldTransit = false;        
     }
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveHandler(PlayerAnimationEvent.JumpStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RemoveHandler(PlayerAnimationEvent.JumpStartTransit, HandleJumpStartTransit);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.JumpStart, HandleJumpStart);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.JumpStartTransit, HandleJumpStartTransit);
         m_Player.resizableCapsule.RestoreStepHeightPercent();
         m_Player.model.StopAnimation(m_AnimHash);
         base.Exit(newState);
@@ -82,12 +81,12 @@ public class PlayerStateJump : PlayerStateAirborne
         return !Physics.Raycast(ray, out RaycastHit hit, extents.y * m_Player.config.jumpStartRatio, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore);
     }
 
-    private void HandleJumpStart()
+    private void HandleJumpStart(AnimationEventInfo info)
     {
         m_ShouldStartJump = true;
     }
 
-    private void HandleJumpStartTransit()
+    private void HandleJumpStartTransit(AnimationEventInfo info)
     {
         m_ShouldTransit = true;
     }

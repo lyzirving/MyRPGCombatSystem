@@ -1,19 +1,5 @@
 using System;
 
-namespace AnimationDefine
-{
-    public enum PlayerAnimationEvent : UInt16
-    {
-        None = 0,
-        LeftFootStep,
-        RightFootStep,
-        JumpStart,
-        JumpStartTransit,
-        LandFinish,
-        RollTransit,
-    }    
-}
-
 public enum AnimationEventType : UInt32
 {
     None = 0,

@@ -1,15 +1,15 @@
-using AnimationDefine;
 using UnityEngine;
-using UnityEngine.Events;
 using System.Collections.Generic;
+
+public delegate void AnimationEventHandle(AnimationEventInfo info);
 
 public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
 {
-    private Dictionary<PlayerAnimationEvent, UnityEvent> m_Map;
+    private Dictionary<AnimationEventType, AnimationEventHandle> m_Map;
 
     public override void OnInit()
     {
-        m_Map = new Dictionary<PlayerAnimationEvent, UnityEvent>();
+        m_Map = new Dictionary<AnimationEventType, AnimationEventHandle>();
     }
 
     public override void OnDeInit()
@@ -17,43 +17,40 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
         if (m_Map != null)
         {
             Debug.Log("AnimationEventReceiver: OnDeInit");
-            foreach (var handle in m_Map.Values)
-            {
-                handle.RemoveAllListeners();
-            }
             m_Map.Clear();
             m_Map = null;            
         }
-    }
+    }  
 
-    public void OnAnimationEventTrigger(PlayerAnimationEvent @event)
+    public void RegisterAction(AnimationEventType key, AnimationEventHandle action)
     {
-        if (m_Map.TryGetValue(@event, out UnityEvent handler))
+        if (!m_Map.ContainsKey(key))
         {
-            handler?.Invoke();
+            m_Map.Add(key, null);
+            m_Map[key] = action;
+        }
+        else
+        {
+            var instance = m_Map[key];
+            m_Map[key] = instance + action;
         }
     }
 
-    public void OnAnimationEventTrigger(AnimationEventInfo eventInfo)
+    public void RemoveAction(AnimationEventType key, AnimationEventHandle action)
     {
-    }
-
-    public void RegisterHandler(PlayerAnimationEvent key, UnityAction handler)
-    {
-        UnityEvent unityEvent = null;
-        if (!m_Map.TryGetValue(key, out unityEvent))
+        if (m_Map.ContainsKey(key))
         {
-            unityEvent = new UnityEvent();
-            m_Map[key] = unityEvent;
+            var instance = m_Map[key];
+            m_Map[key] = instance - action;
         }
-        unityEvent.AddListener(handler);
     }
 
-    public void RemoveHandler(PlayerAnimationEvent key, UnityAction handler)
+    public void OnAnimationEventTrigger(AnimationEventInfo info)
     {
-        if (m_Map.TryGetValue(key, out UnityEvent unityEvent))
-        {
-            unityEvent.RemoveListener(handler);
+        if (m_Map.ContainsKey(info.type))
+        {            
+            var instance = m_Map[info.type];
+            instance.Invoke(info);
         }
     }
 }

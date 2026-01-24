@@ -7,16 +7,11 @@ using UnityEditor.Animations;
 [CustomEditor(typeof(AnimationEventTrigger))]
 public class AnimationEventTriggerEditor : Editor
 {
-    private enum PreviewStatus : uint
-    {
-        StopPreview = 0,
-        PreviewEvent,
-    }
-
     private AnimationClip m_PreviewClip;
-    private PreviewStatus m_Preview = PreviewStatus.StopPreview;
+    private bool m_PreviewAnimation = false;
     private float m_PreviewTime = 0f;
-    private int m_Selection = 0;
+    private int m_PreviewSelection = 0;
+    private int m_RemoveSelection = 0;
 
     public override void OnInspectorGUI()
     {        
@@ -35,18 +30,24 @@ public class AnimationEventTriggerEditor : Editor
         GUI.enabled = true;
 
         GUILayout.Space(10);
-        PreviewStatus preview = (PreviewStatus)EditorGUILayout.EnumPopup("Preview Status", m_Preview);
+        bool preview = m_PreviewAnimation;
+        m_PreviewAnimation = EditorGUILayout.Toggle("Preview Animation", m_PreviewAnimation);
 
         // Selection change
-        if (m_Preview != preview)
+        if (m_PreviewAnimation != preview && !m_PreviewAnimation)
         {
-            m_Preview = preview;
-            if (m_Preview == PreviewStatus.StopPreview)
-                EnforceTPose();
+            EnforceTPose();
+            return;
         }
 
-        if (m_Preview != PreviewStatus.StopPreview)
+        if (GUILayout.Button("Enforce T-Pose"))
         {
+            EnforceTPose();
+        }
+
+        if (m_PreviewAnimation)
+        {
+            EditorGUILayout.HelpBox("Please enable Preview in Animation window, and drag LaunchTime to see realtime animation change in Scene.", MessageType.Info);
             PreviewAnimationClip(behaviour);
             GUILayout.Label($"Previewing at {m_PreviewTime}s", EditorStyles.helpBox);
         }
@@ -58,38 +59,50 @@ public class AnimationEventTriggerEditor : Editor
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
         EditorGUI.EndDisabledGroup();
 
-        behaviour.num = EditorGUILayout.IntField("Event Num", behaviour.num);
-        if(behaviour.num < 0)
-            behaviour.num = 0;
+        if (GUILayout.Button("Add Event"))
+        {
+            behaviour.events.Add(new AnimationEventInfo());
+        }
 
-        if (behaviour.num == 0)
+        if (behaviour.events.Count <= 1)
+        {
+            if (GUILayout.Button("Remove Event") && behaviour.events.Count > 0)
+            {
+                behaviour.events.RemoveAt(behaviour.events.Count - 1);
+            }
+        }
+        else
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            string[] eventItems = new string[behaviour.events.Count];
+            for (int i = 0; i < eventItems.Count(); ++i)
+                eventItems[i] = new string($"Event{i}");
+
+            if(m_RemoveSelection >= eventItems.Length)
+                m_RemoveSelection = eventItems.Length - 1;
+            m_RemoveSelection = EditorGUILayout.Popup("Remove Selected Event", m_RemoveSelection, eventItems);
+            
+            if (GUILayout.Button($"Remove {eventItems[m_RemoveSelection]}", GUILayout.ExpandWidth(true)))
+            {
+                behaviour.events.RemoveAt(m_RemoveSelection);
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        if (GUILayout.Button("Clear All Events"))
         {
             behaviour.events.Clear();
-        }
-        else if (behaviour.num > behaviour.events.Count)
-        {
-            for (int i = 0; i < behaviour.num - behaviour.events.Count; ++i)
-            {
-                behaviour.events.Add(new AnimationEventInfo());
-            }
-        }
-        else if (behaviour.num < behaviour.events.Count)
-        {
-            for (int i = behaviour.events.Count - 1; i >= behaviour.num; --i)
-            {
-                behaviour.events.RemoveAt(i);
-            }
-        }
+        }      
 
         if (behaviour.events.Count == 0)
             return;
 
-        string[]options = new string[behaviour.events.Count];
-        for (int i = 0; i < options.Count(); ++i)
-        {
-            options[i] = new string($"Event{i}");
-        }
-        m_Selection = EditorGUILayout.Popup("Preview Selection", m_Selection, options);
+        string[]items = new string[behaviour.events.Count];
+        for (int i = 0; i < items.Count(); ++i)
+            items[i] = new string($"Event{i}");
+        m_PreviewSelection = EditorGUILayout.Popup("Preview Selection", m_PreviewSelection, items);
 
         EditorGUILayout.Space();
         for (int i = 0; i < behaviour.events.Count; ++i)
@@ -207,13 +220,13 @@ public class AnimationEventTriggerEditor : Editor
     {
         if (m_PreviewClip == null) return;
 
-        if (m_Selection < 0 || m_Selection >= behaviour.events.Count)
+        if (m_PreviewSelection < 0 || m_PreviewSelection >= behaviour.events.Count)
         {
-            Debug.LogError($"err! invalid selection[{m_Selection}] for event list with [{behaviour.events.Count}] items");
+            Debug.LogError($"err! invalid selection[{m_PreviewSelection}] for event list with [{behaviour.events.Count}] items");
             return;
         }
 
-        m_PreviewTime = behaviour.events[m_Selection].launchTime;
+        m_PreviewTime = behaviour.events[m_PreviewSelection].launchTime;
         AnimationMode.StartAnimationMode();
         AnimationMode.SampleAnimationClip(Selection.activeGameObject, m_PreviewClip, m_PreviewTime * m_PreviewClip.length);
         AnimationMode.StopAnimationMode();

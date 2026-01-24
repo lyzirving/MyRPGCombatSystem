@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class AnimationEventInfo
 {
     public AnimationEventType type = AnimationEventType.None;
@@ -9,11 +11,11 @@ public class AnimationEventInfo
 
     public int loopCnt = 0;    
     public bool hasTriggered = false;
+    public float triggerTime = 0f;
 }
 
 public class AnimationEventTrigger : StateMachineBehaviour
-{
-    public int num = 0;
+{  
     public List<AnimationEventInfo> events = new List<AnimationEventInfo>();
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -30,7 +32,6 @@ public class AnimationEventTrigger : StateMachineBehaviour
     {
         float time = stateInfo.normalizedTime % 1f;
         int loop = Mathf.FloorToInt(stateInfo.normalizedTime);
-
         for (int i = 0; i < events.Count; i++)
         {
             var e = events[i];
@@ -41,8 +42,9 @@ public class AnimationEventTrigger : StateMachineBehaviour
                     e.hasTriggered = false;
             }
 
-            if (!e.hasTriggered && e.launchTime >= time && e.type != AnimationEventType.None)
+            if (e.type != AnimationEventType.None && !e.hasTriggered && time >= e.launchTime)
             {
+                e.triggerTime = time;
                 AnimationEventReceiver.instance.OnAnimationEventTrigger(e);
                 e.hasTriggered = true;
             }

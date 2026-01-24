@@ -1,5 +1,3 @@
-using UnityEngine;
-using AnimationDefine;
 
 public class PlayerStateLand : PlayerStateGrounded
 {
@@ -7,7 +5,7 @@ public class PlayerStateLand : PlayerStateGrounded
     {
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.animConsts.landHash);
-        AnimationEventReceiver.instance.RegisterHandler(PlayerAnimationEvent.LandFinish, HandleLandFinish);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.LandFinish, HandleLandFinish);
 
         m_Player.attrs.speedModify = 0f;
         m_Player.attrs.jumpForce = m_Player.config.stationaryJumpForce;
@@ -16,7 +14,7 @@ public class PlayerStateLand : PlayerStateGrounded
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveHandler(PlayerAnimationEvent.LandFinish, HandleLandFinish);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.LandFinish, HandleLandFinish);
         m_Player.model.StopAnimation(m_Player.animConsts.landHash);
         base.Exit(newState);
     }
@@ -41,7 +39,7 @@ public class PlayerStateLand : PlayerStateGrounded
         Float();
     }
 
-    private void HandleLandFinish()
+    private void HandleLandFinish(AnimationEventInfo info)
     {
         m_Player.ChangeState(EPlayerState.Idle);
     }

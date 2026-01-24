@@ -9,7 +9,7 @@ public class PlayerStateRoll : PlayerStateMove
     {
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.animConsts.rollHash);
-        AnimationEventReceiver.instance.RegisterHandler(AnimationDefine.PlayerAnimationEvent.RollTransit, HandleRollTransit);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.RollTransit, HandleRollTransit);
 
         m_IsRollTransit = false;
         m_Player.attrs.speedModify = m_Player.config.rollSpeedModify;
@@ -18,7 +18,7 @@ public class PlayerStateRoll : PlayerStateMove
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveHandler(AnimationDefine.PlayerAnimationEvent.RollTransit, HandleRollTransit);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.RollTransit, HandleRollTransit);
         m_Player.model.StopAnimation(m_Player.animConsts.rollHash);
         base.Exit(newState);
     }
@@ -48,7 +48,7 @@ public class PlayerStateRoll : PlayerStateMove
         MoveAt(m_Direction);
     }
 
-    private void HandleRollTransit()
+    private void HandleRollTransit(AnimationEventInfo info)
     {
         m_IsRollTransit = true;
     }
