@@ -103,6 +103,9 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             case EPlayerState.Land:
                 m_StateMachine?.ChangeState<PlayerStateLand>(args);
                 break;
+            case EPlayerState.LightAttack:
+                m_StateMachine?.ChangeState<PlayerStateLightAttack>(args);
+                break;
             default:
                 break;
         }

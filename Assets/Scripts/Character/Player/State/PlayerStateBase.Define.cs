@@ -11,6 +11,7 @@ public enum EPlayerState : UInt16
     Roll,
     Falling,
     Land,
+    LightAttack
 }
 
 public enum EFootStep : UInt16

@@ -19,6 +19,12 @@ public class PlayerStateIdle : PlayerStateGrounded
 
     public override void Update()
     {
+        if (InputManager.instance.isPlayerAttackPerformed)
+        {
+            m_Player.ChangeState(EPlayerState.LightAttack);
+            return;
+        }
+
         if (InputManager.instance.isPlayerRollPerformed)
         {
             m_Player.ChangeState(EPlayerState.Roll);

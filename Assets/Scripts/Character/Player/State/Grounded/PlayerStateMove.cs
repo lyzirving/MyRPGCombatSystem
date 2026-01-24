@@ -25,6 +25,12 @@ public class PlayerStateMove : PlayerStateGrounded
 
     public override void Update()
     {
+        if (InputManager.instance.isPlayerAttackPerformed)
+        {
+            m_Player.ChangeState(EPlayerState.LightAttack);
+            return;
+        }
+
         if (!InputManager.instance.isPlayerMoving)
         {
             m_Player.ChangeState(EPlayerState.Idle);

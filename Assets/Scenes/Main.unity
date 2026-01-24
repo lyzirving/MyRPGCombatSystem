@@ -995,6 +995,8 @@ MonoBehaviour:
     runParamName: isRunning
     rollParamName: isRolling
     landParamName: isLand
+    combatParamName: isCombat
+    lightAttackParamName: isLightAttack
     airborneParamName: isAirborne
     jumpStartLeftParamName: isJumpStartLeft
     jumpStartRightParamName: isJumpStartRight

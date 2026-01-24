@@ -15,6 +15,7 @@ public partial class InputManager : Singleton<InputManager>
         m_PlayerActionMap.PlayerAction.RunToggle.performed += OnSwitchRunToggle;
         m_PlayerActionMap.PlayerAction.Jump.performed += OnJumpPerformed;
         m_PlayerActionMap.PlayerAction.Roll.performed += OnRollPerformed;
+        m_PlayerActionMap.PlayerAction.Attack.performed += OnAttackPerformed;
     }
 
     public override void OnDeInit()
@@ -22,6 +23,7 @@ public partial class InputManager : Singleton<InputManager>
         m_PlayerActionMap.PlayerAction.RunToggle.performed -= OnSwitchRunToggle;
         m_PlayerActionMap.PlayerAction.Jump.performed -= OnJumpPerformed;
         m_PlayerActionMap.PlayerAction.Roll.performed -= OnRollPerformed;
+        m_PlayerActionMap.PlayerAction.Attack.performed -= OnAttackPerformed;
         m_PlayerActionMap = null;
     }
 

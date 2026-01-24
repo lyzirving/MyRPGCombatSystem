@@ -13,4 +13,5 @@ public enum AnimationEventType : UInt32
     RollTransit,
     // Events for combat
     Combat = 100,
+    AttackTransit,
 }

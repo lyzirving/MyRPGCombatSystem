@@ -50,7 +50,7 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
         if (m_Map.ContainsKey(info.type))
         {            
             var instance = m_Map[info.type];
-            instance.Invoke(info);
+            instance?.Invoke(info);
         }
     }
 }
