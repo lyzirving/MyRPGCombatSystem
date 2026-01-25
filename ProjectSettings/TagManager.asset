@@ -11,11 +11,11 @@ TagManager:
   - Player
   - Water
   - UI
+  - Env
   - Walkable
   - WalkableCheck
-  - 
-  - 
-  - 
+  - Weapon
+  - Enemy
   - 
   - 
   - 

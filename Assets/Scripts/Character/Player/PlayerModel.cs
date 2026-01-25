@@ -6,6 +6,8 @@ public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRot
 public class PlayerModel : MonoBehaviour
 {
     private Animator m_Animator;
+    private WeaponController[] m_Weapons;
+
     private UnityAction m_LeftFootStepAc;
     private UnityAction m_RightFootStepAc;
 
@@ -16,11 +18,22 @@ public class PlayerModel : MonoBehaviour
     {
         m_Animator = GetComponent<Animator>();
         if (m_Animator == null)
-            throw new System.Exception("Err, Animator hasn't been assigned");
+            throw new System.Exception("Err, Animator hasn't been assigned");        
     }
 
     private void Start()
     {
+        m_Weapons = GetComponentsInChildren<WeaponController>();
+        int len = m_Weapons == null ? 0 : m_Weapons.Length;
+        Debug.Log($"Find weapons[{len}] in nodes");
+        if (m_Weapons != null)
+        {
+            for (int i = 0; i < m_Weapons.Length; i++)
+            {
+                m_Weapons[i].Init();
+            }
+        }
+
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.RightFootStep, OnRightFootStep);
     }

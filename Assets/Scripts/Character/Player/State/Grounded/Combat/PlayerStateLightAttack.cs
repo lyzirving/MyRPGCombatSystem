@@ -70,7 +70,7 @@ public class PlayerStateLightAttack : PlayerStateCombat
     {
         deltaPosition.x = 0f;
         deltaPosition.y = 0f;
-        m_Player.transform.Translate(deltaPosition, Space.Self);
+        m_Player.transform.Translate(deltaPosition, Space.World);
     }
 
     private void HandleAttackTransit(AnimationEventInfo info)

@@ -19,11 +19,11 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     public Rigidbody rigidBody { get => m_Rigidbody; }
     public CapsuleCollider capsuleCollider { get => m_CapsuleCollider; }
     public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
-    public PlayerAttrs attrs { get => m_Attrs; }    
-
+    public PlayerAttrs attrs { get => m_Attrs; }
+        
     #region State Methods
     private void Awake()
-    {
+    { 
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
         if (m_PlayerModel == null)
             throw new System.Exception("err, PlayerModel hasn't been asigned in children.");
