@@ -13,6 +13,15 @@ public class PlayerModel : MonoBehaviour
 
     private event RootMotionAction m_RootMotionAc;
 
+    private int m_ArmedWeapon = -1;
+
+    public WeaponController[] weapons { get { return m_Weapons; }  }
+    public int armedWeaponIndex
+    {
+        get { return m_ArmedWeapon; }
+        set { m_ArmedWeapon = value; }
+    }
+
     #region State Methods
     private void Awake()
     {
@@ -22,26 +31,21 @@ public class PlayerModel : MonoBehaviour
     }
 
     private void Start()
-    {
-        m_Weapons = GetComponentsInChildren<WeaponController>();
-        int len = m_Weapons == null ? 0 : m_Weapons.Length;
-        Debug.Log($"Find weapons[{len}] in nodes");
-        if (m_Weapons != null)
-        {
-            for (int i = 0; i < m_Weapons.Length; i++)
-            {
-                m_Weapons[i].Init();
-            }
-        }
-
+    {       
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.RightFootStep, OnRightFootStep);
+
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackStart, OnAttackStart);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnDisable()
     {
         AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
         AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.RightFootStep, OnRightFootStep);
+
+        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.AttackStart, OnAttackStart);
+        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnAnimatorMove()
@@ -51,6 +55,21 @@ public class PlayerModel : MonoBehaviour
     #endregion
 
     #region Main Methods
+    public void Init(ISkillOwner skillOwner)
+    {
+        m_Weapons = GetComponentsInChildren<WeaponController>();
+        int len = m_Weapons == null ? 0 : m_Weapons.Length;
+        Debug.Log($"Find weapons[{len}] in nodes");
+        if (m_Weapons != null)
+        {
+            for (int i = 0; i < m_Weapons.Length; i++)
+                m_Weapons[i].Init(skillOwner);
+        }
+
+        if (len != 0)
+            m_ArmedWeapon = 0;
+    }
+
     public void StartAnimation(int hash)
     {
         m_Animator?.SetBool(hash, true);       
@@ -108,6 +127,16 @@ public class PlayerModel : MonoBehaviour
     private void OnRightFootStep(AnimationEventInfo info)
     {
         m_RightFootStepAc?.Invoke();
+    }
+
+    private void OnAttackStart(AnimationEventInfo info)
+    {
+        m_Weapons?[m_ArmedWeapon].StartAttack();
+    }
+
+    private void OnAttackEnd(AnimationEventInfo info)
+    {
+        m_Weapons?[m_ArmedWeapon].StopAttack();
     }
     #endregion
 }

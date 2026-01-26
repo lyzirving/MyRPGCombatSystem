@@ -2,5 +2,5 @@
 
 public enum WeaponType : UInt16
 { 
-    UnArmed = 0,
+    UnArmedBoxing = 0,
 }

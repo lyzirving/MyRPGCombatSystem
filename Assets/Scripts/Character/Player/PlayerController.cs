@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IStateMachineOwner
+public class PlayerController : MonoBehaviour, IStateMachineOwner, ISkillOwner
 {
     public PlayerConfig config = new PlayerConfig();
-    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;    
+    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
 
     private PlayerAttrs m_Attrs = new PlayerAttrs();
     private StateMachine m_StateMachine;
@@ -20,13 +20,14 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
     public CapsuleCollider capsuleCollider { get => m_CapsuleCollider; }
     public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
     public PlayerAttrs attrs { get => m_Attrs; }
-        
+
     #region State Methods
     private void Awake()
-    { 
+    {
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
         if (m_PlayerModel == null)
             throw new System.Exception("err, PlayerModel hasn't been asigned in children.");
+        m_PlayerModel.Init(this);
         m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
         m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);
 
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             throw new System.Exception("err, AudioSource hasn't been asigned.");
 
         m_ResizableCapsuleCollider = gameObject.AddComponent<ResizableCapsuleCollider>();
-        m_StateMachine = new StateMachine();        
+        m_StateMachine = new StateMachine();
         m_AnimationConsts = new PlayerAnimationConsts();
 
         m_StateMachine.Init(this);
@@ -98,7 +99,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
                 m_StateMachine?.ChangeState<PlayerStateRoll>(args);
                 break;
             case EPlayerState.Falling:
-                m_StateMachine?.ChangeState<PlayerStateFalling>(args);                               
+                m_StateMachine?.ChangeState<PlayerStateFalling>(args);
                 break;
             case EPlayerState.Land:
                 m_StateMachine?.ChangeState<PlayerStateLand>(args);
@@ -125,6 +126,11 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner
             return;
 
         m_AudioSource.PlayOneShot(footStepAudioClips[1]);
-    }    
+    }
+
+    public void OnAttack(ISkillTarget target, Vector3 hitPos)
+    {
+        target?.OnDamage(10);
+    }
     #endregion
 }
