@@ -7,6 +7,7 @@ public class PlayerModel : MonoBehaviour
 {
     private Animator m_Animator;
     private WeaponController[] m_Weapons;
+    private IPlayerBehavior m_PlayerBehaviour;
 
     private UnityAction m_LeftFootStepAc;
     private UnityAction m_RightFootStepAc;
@@ -52,18 +53,24 @@ public class PlayerModel : MonoBehaviour
     {
         m_RootMotionAc?.Invoke(m_Animator.deltaPosition, m_Animator.deltaRotation);
     }
+
+    private void OnDestroy()
+    {
+        m_PlayerBehaviour = null;
+    }
     #endregion
 
     #region Main Methods
-    public void Init(ISkillOwner skillOwner)
+    public void Init(IPlayerBehavior playerBehavior)
     {
+        m_PlayerBehaviour = playerBehavior;
         m_Weapons = GetComponentsInChildren<WeaponController>();
         int len = m_Weapons == null ? 0 : m_Weapons.Length;
         Debug.Log($"Find weapons[{len}] in nodes");
         if (m_Weapons != null)
         {
             for (int i = 0; i < m_Weapons.Length; i++)
-                m_Weapons[i].Init(skillOwner);
+                m_Weapons[i].Init(playerBehavior);
         }
 
         if (len != 0)
@@ -116,9 +123,7 @@ public class PlayerModel : MonoBehaviour
         m_LeftFootStepAc = null;
         m_RightFootStepAc = null;
     }
-    #endregion
 
-    #region Behavior Methods
     private void OnLeftFootStep(AnimationEventInfo info)
     {
         m_LeftFootStepAc?.Invoke();
@@ -131,12 +136,14 @@ public class PlayerModel : MonoBehaviour
 
     private void OnAttackStart(AnimationEventInfo info)
     {
-        m_Weapons?[m_ArmedWeapon].StartAttack();
+        m_PlayerBehaviour?.OnStartAttack(m_Weapons[m_ArmedWeapon].skillConfig);
+        m_Weapons?[m_ArmedWeapon].OnStartAttack();
     }
 
     private void OnAttackEnd(AnimationEventInfo info)
     {
-        m_Weapons?[m_ArmedWeapon].StopAttack();
+        m_PlayerBehaviour?.OnStopAttack(m_Weapons[m_ArmedWeapon].skillConfig);
+        m_Weapons?[m_ArmedWeapon].OnStopAttack();
     }
     #endregion
 }

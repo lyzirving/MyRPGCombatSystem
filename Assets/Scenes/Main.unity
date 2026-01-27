@@ -1624,6 +1624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_WeaponType: 0
+  skillConfig: {fileID: 0}
   m_ColliderTags:
   - Enemy
 --- !u!1 &1014110226
@@ -1936,6 +1937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_WeaponType: 0
+  skillConfig: {fileID: 0}
   m_ColliderTags:
   - Enemy
 --- !u!1 &1601179482 stripped

@@ -8,9 +8,10 @@ public class WeaponController : MonoBehaviour
     private Collider m_Collider;
     private HashSet<string> m_TagHashSet = new();
     private Dictionary<int, ISkillTarget> m_HitTargets = new Dictionary<int, ISkillTarget>();
-    private ISkillOwner m_SkillOwner;
+    private IPlayerBehavior m_PlayerBehavior;
 
     public WeaponType type { get { return m_WeaponType; } }
+    public SkillConfig skillConfig;
 
 #if UNITY_EDITOR
     [SerializeField] private List<string> m_ColliderTags = new();
@@ -26,7 +27,7 @@ public class WeaponController : MonoBehaviour
 
     private void OnDestroy()
     {
-        m_SkillOwner = null;
+        m_PlayerBehavior = null;
     }
 
     private void OnTriggerStay(Collider other)
@@ -45,19 +46,19 @@ public class WeaponController : MonoBehaviour
             if (comp != null)
             {
                 m_HitTargets.Add(other.GetInstanceID(), comp);
-                m_SkillOwner?.OnAttack(comp, other.ClosestPoint(transform.position));
+                m_PlayerBehavior?.OnAttackHit(skillConfig, comp, other.ClosestPoint(transform.position));
             }
         }
     }
     #endregion
 
     #region Main Methods
-    public void Init(ISkillOwner skillOwner)
+    public void Init(IPlayerBehavior playerBehavior)
     {
-        m_SkillOwner = skillOwner;
+        m_PlayerBehavior = playerBehavior;
     }
 
-    public void StartAttack()
+    public void OnStartAttack()
     {
         if (m_Collider == null)
             return;
@@ -66,7 +67,7 @@ public class WeaponController : MonoBehaviour
         m_HitTargets.Clear();
     }
 
-    public void StopAttack()
+    public void OnStopAttack()
     {
         if (m_Collider == null)
             return;

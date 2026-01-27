@@ -191,6 +191,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   events:
+  - type: 102
+    launchTime: 0.195
+    triggerOnce: 0
+    loopCnt: 0
+    hasTriggered: 0
+    triggerTime: 0
+  - type: 103
+    launchTime: 0.25
+    triggerOnce: 0
+    loopCnt: 0
+    hasTriggered: 0
+    triggerTime: 0
   - type: 101
     launchTime: 0.6
     triggerOnce: 0
@@ -1086,16 +1098,16 @@ AnimatorStateMachine:
   - {fileID: -1310030908047241703}
   - {fileID: -5129570711619588334}
   m_StateMachineTransitions:
-  - first: {fileID: -3724604736113628395}
-    second:
-    - {fileID: 6104294288256011478}
-    - {fileID: 2192906320355824717}
-    - {fileID: 352610734715175911}
   - first: {fileID: 8645998236745926266}
     second:
     - {fileID: -7148394995260152965}
     - {fileID: 9150511245568831131}
     - {fileID: 4386601655202379707}
+  - first: {fileID: -3724604736113628395}
+    second:
+    - {fileID: 6104294288256011478}
+    - {fileID: 2192906320355824717}
+    - {fileID: 352610734715175911}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 370, y: -60, z: 0}
   m_EntryPosition: {x: 370, y: 90, z: 0}

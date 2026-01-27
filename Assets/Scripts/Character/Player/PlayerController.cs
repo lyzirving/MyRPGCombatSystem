@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IStateMachineOwner, ISkillOwner
+public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavior
 {
     public PlayerConfig config = new PlayerConfig();
     [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
@@ -114,23 +115,35 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, ISkillOwner
 
     private void OnLeftFootDown()
     {
-        if (footStepAudioClips == null || footStepAudioClips.Length == 0)
-            return;
-
-        m_AudioSource.PlayOneShot(footStepAudioClips[1]);
+        OnFootStep();
     }
 
     private void OnRightFootDown()
     {
+        OnFootStep();
+    }
+    #endregion
+
+    #region IPlayerBehaviour
+    public void OnStartAttack(SkillConfig config)
+    {
+    }    
+
+    public void OnAttackHit(SkillConfig config, ISkillTarget target, Vector3 hitPos)
+    {
+        target?.OnDamage(10);
+    }
+
+    public void OnStopAttack(SkillConfig config)
+    {
+    }
+
+    public void OnFootStep()
+    {
         if (footStepAudioClips == null || footStepAudioClips.Length == 0)
             return;
 
         m_AudioSource.PlayOneShot(footStepAudioClips[1]);
-    }
-
-    public void OnAttack(ISkillTarget target, Vector3 hitPos)
-    {
-        target?.OnDamage(10);
     }
     #endregion
 }

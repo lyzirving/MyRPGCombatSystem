@@ -84,6 +84,7 @@ public class PlayerStateJump : PlayerStateAirborne
     private void HandleJumpStart(AnimationEventInfo info)
     {
         m_ShouldStartJump = true;
+        m_Player.OnFootStep();
     }
 
     private void HandleJumpStartTransit(AnimationEventInfo info)
