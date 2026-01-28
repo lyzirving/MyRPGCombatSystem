@@ -81,13 +81,13 @@ public class PlayerStateJump : PlayerStateAirborne
         return !Physics.Raycast(ray, out RaycastHit hit, extents.y * m_Player.config.jumpStartRatio, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore);
     }
 
-    private void HandleJumpStart(AnimationEventInfo info)
+    private void HandleJumpStart(in AnimationEventInfo info)
     {
         m_ShouldStartJump = true;
         m_Player.OnFootStep();
     }
 
-    private void HandleJumpStartTransit(AnimationEventInfo info)
+    private void HandleJumpStartTransit(in AnimationEventInfo info)
     {
         m_ShouldTransit = true;
     }

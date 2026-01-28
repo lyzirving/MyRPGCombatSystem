@@ -40,7 +40,7 @@ public class PlayerStateLand : PlayerStateGrounded
         Float();
     }
 
-    private void HandleLandFinish(AnimationEventInfo info)
+    private void HandleLandFinish(in AnimationEventInfo info)
     {
         m_Player.ChangeState(EPlayerState.Idle);
     }

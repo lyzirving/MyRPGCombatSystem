@@ -124,23 +124,23 @@ public class PlayerModel : MonoBehaviour
         m_RightFootStepAc = null;
     }
 
-    private void OnLeftFootStep(AnimationEventInfo info)
+    private void OnLeftFootStep(in AnimationEventInfo info)
     {
         m_LeftFootStepAc?.Invoke();
     }
 
-    private void OnRightFootStep(AnimationEventInfo info)
+    private void OnRightFootStep(in AnimationEventInfo info)
     {
         m_RightFootStepAc?.Invoke();
     }
 
-    private void OnAttackStart(AnimationEventInfo info)
+    private void OnAttackStart(in AnimationEventInfo info)
     {
         m_PlayerBehaviour?.OnStartAttack(m_Weapons[m_ArmedWeapon].skillConfig);
         m_Weapons?[m_ArmedWeapon].OnStartAttack();
     }
 
-    private void OnAttackEnd(AnimationEventInfo info)
+    private void OnAttackEnd(in AnimationEventInfo info)
     {
         m_PlayerBehaviour?.OnStopAttack(m_Weapons[m_ArmedWeapon].skillConfig);
         m_Weapons?[m_ArmedWeapon].OnStopAttack();

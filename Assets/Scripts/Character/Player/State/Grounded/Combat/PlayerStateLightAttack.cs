@@ -73,7 +73,7 @@ public class PlayerStateLightAttack : PlayerStateCombat
         m_Player.transform.Translate(deltaPosition, Space.World);
     }
 
-    private void HandleAttackTransit(AnimationEventInfo info)
+    private void HandleAttackTransit(in AnimationEventInfo info)
     {
         m_ShouldTransit = true;
     }

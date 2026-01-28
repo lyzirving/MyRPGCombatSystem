@@ -48,7 +48,7 @@ public class PlayerStateRoll : PlayerStateMove
         MoveAt(m_Direction);
     }
 
-    private void HandleRollTransit(AnimationEventInfo info)
+    private void HandleRollTransit(in AnimationEventInfo info)
     {
         m_IsRollTransit = true;
     }

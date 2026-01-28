@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public delegate void AnimationEventHandle(AnimationEventInfo info);
+// Avoid reference change
+public delegate void AnimationEventHandle(in AnimationEventInfo info);
 
 public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
 {
@@ -45,7 +46,7 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
         }
     }
 
-    public void OnAnimationEventTrigger(AnimationEventInfo info)
+    public void OnAnimationEventTrigger(in AnimationEventInfo info)
     {
         if (m_Map.ContainsKey(info.type))
         {            

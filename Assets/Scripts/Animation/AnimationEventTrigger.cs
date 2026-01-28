@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 
 [Serializable]
-public class AnimationEventInfo
+public class AnimationEventInfo : IComparable<AnimationEventInfo>
 {
     public AnimationEventType type = AnimationEventType.None;
     public float launchTime = 0f; // normalized time when the event is triggered
@@ -12,6 +12,17 @@ public class AnimationEventInfo
     public int loopCnt = 0;    
     public bool hasTriggered = false;
     public float triggerTime = 0f;
+
+    public int CompareTo(AnimationEventInfo other)
+    {
+        if (this.launchTime < other.launchTime)
+            return -1;
+
+        if (Mathf.Approximately(this.launchTime, other.launchTime))
+            return 0;
+
+        return 1;
+    }
 }
 
 public class AnimationEventTrigger : StateMachineBehaviour

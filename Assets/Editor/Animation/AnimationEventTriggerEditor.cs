@@ -57,7 +57,7 @@ public class AnimationEventTriggerEditor : Editor
     {
         EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
-        EditorGUI.EndDisabledGroup();
+        EditorGUI.EndDisabledGroup();        
 
         if (GUILayout.Button("Add Event"))
         {
@@ -76,25 +76,27 @@ public class AnimationEventTriggerEditor : Editor
             EditorGUILayout.BeginHorizontal();
 
             string[] eventItems = new string[behaviour.events.Count];
+            float minWidth = 0;
+            GUIStyle labelStyle = GUI.skin.label;
             for (int i = 0; i < eventItems.Count(); ++i)
+            {
                 eventItems[i] = new string($"Event{i}");
+                Vector2 size = labelStyle.CalcSize(new GUIContent(eventItems[i]));
+                if (size.x > minWidth) minWidth = size.x;
+            }
+            // add some padding
+            minWidth += 50;
 
-            if(m_RemoveSelection >= eventItems.Length)
+            if (m_RemoveSelection >= eventItems.Length)
                 m_RemoveSelection = eventItems.Length - 1;
-            m_RemoveSelection = EditorGUILayout.Popup("Remove Selected Event", m_RemoveSelection, eventItems);
-            
+
+            m_RemoveSelection = EditorGUILayout.Popup(m_RemoveSelection, eventItems, GUILayout.Width(minWidth));
             if (GUILayout.Button($"Remove {eventItems[m_RemoveSelection]}", GUILayout.ExpandWidth(true)))
             {
                 behaviour.events.RemoveAt(m_RemoveSelection);
-            }
-
+            }           
             EditorGUILayout.EndHorizontal();
-        }
-
-        if (GUILayout.Button("Clear All Events"))
-        {
-            behaviour.events.Clear();
-        }      
+        }            
 
         if (behaviour.events.Count == 0)
             return;
@@ -108,9 +110,20 @@ public class AnimationEventTriggerEditor : Editor
         for (int i = 0; i < behaviour.events.Count; ++i)
         { 
             var e = behaviour.events[i];            
-            e.type = (AnimationEventType)EditorGUILayout.EnumPopup($"Event{i}", e.type);            
+            e.type = (AnimationEventType)EditorGUILayout.EnumPopup($"Event{i}", e.type);
             e.launchTime = EditorGUILayout.Slider("LaunchTime", e.launchTime, 0f, 1f);
             EditorGUILayout.Space();
+        }
+
+        EditorGUILayout.HelpBox("Please click Sort to make the events ordered by launch time", MessageType.Info);
+        if (GUILayout.Button("Sort") && behaviour.events.Count > 1)
+        {
+            behaviour.events.Sort((a, b) => a.CompareTo(b));
+        }
+
+        if (GUILayout.Button("Clear All Events"))
+        {
+            behaviour.events.Clear();
         }
     }
 
