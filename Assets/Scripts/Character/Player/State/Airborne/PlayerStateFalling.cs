@@ -14,7 +14,7 @@ public class PlayerStateFalling : PlayerStateAirborne
 
         m_Player.resizableCapsule.StoreStepHeightPercent();
         // Don't override WalkableCheck
-        m_Player.resizableCapsule.SetStepHeightPercent(0.08f);
+        m_Player.resizableCapsule.SetStepHeightPercent(0.1f);
         m_PositionOnEnter = m_Player.transform.position;
     }
 

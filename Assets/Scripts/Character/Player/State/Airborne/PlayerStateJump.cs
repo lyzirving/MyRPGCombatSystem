@@ -14,16 +14,16 @@ public class PlayerStateJump : PlayerStateAirborne
         m_FootStep = args.footStep;
         m_AnimHash = m_FootStep == EFootStep.LeftFootStep ? m_Player.animConsts.jumpStartLeftHash : m_Player.animConsts.jumpStartRightHash;
         m_Player.model.StartAnimation(m_AnimHash);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.JumpStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.JumpStartTransit, HandleJumpStartTransit);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationStart, HandleJumpStart);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleJumpStartTransit);
 
         m_IsJumpTrigger = m_ShouldStartJump = m_ShouldTransit = false;        
     }
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.JumpStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.JumpStartTransit, HandleJumpStartTransit);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationStart, HandleJumpStart);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleJumpStartTransit);
         m_Player.resizableCapsule.RestoreStepHeightPercent();
         m_Player.model.StopAnimation(m_AnimHash);
         base.Exit(newState);
@@ -35,8 +35,8 @@ public class PlayerStateJump : PlayerStateAirborne
         {
             if (!m_IsJumpTrigger)
             {
-                if(InputManager.instance.isPlayerMoving)
-                    m_Player.ChangeState(InputManager.instance.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
+                if(m_Player.action.isPlayerMoving)
+                    m_Player.ChangeState(m_Player.action.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
                 else
                     m_Player.ChangeState(EPlayerState.Idle);
             }

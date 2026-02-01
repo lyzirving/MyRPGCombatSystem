@@ -5,7 +5,7 @@ public class PlayerStateLand : PlayerStateGrounded
     {
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.animConsts.landHash);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.LandFinish, HandleLandFinish);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleLandTransition);
 
         m_Player.attrs.speedModify = 0f;
         m_Player.attrs.jumpForce = m_Player.config.stationaryJumpForce;
@@ -15,22 +15,22 @@ public class PlayerStateLand : PlayerStateGrounded
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.LandFinish, HandleLandFinish);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleLandTransition);
         m_Player.model.StopAnimation(m_Player.animConsts.landHash);
         base.Exit(newState);
     }
 
     public override void Update()
     {
-        if (InputManager.instance.isPlayerJumpPerformed)
+        if (m_Player.action.isPlayerJumpPerformed)
         {
             m_Player.ChangeState(EPlayerState.Jump);
             return;
         }
 
-        if (InputManager.instance.isPlayerMoving)
+        if (m_Player.action.isPlayerMoving)
         {
-            m_Player.ChangeState(InputManager.instance.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
             return;
         }
     }
@@ -40,7 +40,7 @@ public class PlayerStateLand : PlayerStateGrounded
         Float();
     }
 
-    private void HandleLandFinish(in AnimationEventInfo info)
+    private void HandleLandTransition(in AnimationEventInfo info)
     {
         m_Player.ChangeState(EPlayerState.Idle);
     }

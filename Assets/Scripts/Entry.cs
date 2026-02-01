@@ -4,10 +4,10 @@ using UnityEngine.SceneManagement;
 [DefaultExecutionOrder(-100)]
 public class Entry : MonoBehaviour
 {
-    void Start()
+    private void Awake()
     {
         Debug.Log("App entry");
-        InputManager.Init();        
+        InputManager.Init();
         AnimationEventReceiver.Init();
     }
 

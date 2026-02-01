@@ -3,22 +3,13 @@
     "name": "IA_Player",
     "maps": [
         {
-            "name": "PlayerAction",
+            "name": "Player",
             "id": "1fd70f9a-5707-45b5-b4ff-5272af19fec0",
             "actions": [
                 {
                     "name": "Move",
                     "type": "Value",
                     "id": "b24e593a-63d1-4d88-9c58-ed20db474bf3",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "CameraMove",
-                    "type": "Value",
-                    "id": "065ee8ad-d4f6-4a74-9aa3-b9324e980cc8",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -59,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CameraMove",
+                    "type": "Value",
+                    "id": "065ee8ad-d4f6-4a74-9aa3-b9324e980cc8",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -165,6 +165,17 @@
                     "name": "",
                     "id": "4ba07f86-05ae-4daa-b25f-5f89646c2e55",
                     "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f65bfc8c-923a-4a61-92da-c188240a3510",
+                    "path": "<Keyboard>/j",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

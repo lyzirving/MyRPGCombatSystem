@@ -1,37 +1,39 @@
-using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavior
 {
     public PlayerConfig config = new PlayerConfig();
     [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
-
-    private PlayerAttrs m_Attrs = new PlayerAttrs();
-    private StateMachine m_StateMachine;
-    private Rigidbody m_Rigidbody;
-    private CapsuleCollider m_CapsuleCollider;
-    private PlayerModel m_PlayerModel;
-    private AudioSource m_AudioSource;
-    private ResizableCapsuleCollider m_ResizableCapsuleCollider;
-
-    public AudioClip[] footStepAudioClips;
+    public AudioClip[] footStepAudioClips;       
+    
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
     public Rigidbody rigidBody { get => m_Rigidbody; }
     public CapsuleCollider capsuleCollider { get => m_CapsuleCollider; }
     public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
     public PlayerAttrs attrs { get => m_Attrs; }
+    public PlayerActionController action { get => m_ActionController; }
+
+    private PlayerAttrs m_Attrs = new PlayerAttrs();
+    private StateMachine m_StateMachine;    
+
+    // -------- Component in current start --------
+    private Rigidbody m_Rigidbody;
+    private CapsuleCollider m_CapsuleCollider;
+    private ResizableCapsuleCollider m_ResizableCapsuleCollider;
+    private PlayerActionController m_ActionController;
+    private AudioSource m_AudioSource;
+    // -------- Component in current end --------
+
+    // -------- Components in children start ------
+    private PlayerModel m_PlayerModel;
+    private PlayerAttackComponent m_AttackComponent;
+    // -------- Components in children end ------
 
     #region State Methods
     private void Awake()
     {
-        m_PlayerModel = GetComponentInChildren<PlayerModel>();
-        if (m_PlayerModel == null)
-            throw new System.Exception("err, PlayerModel hasn't been asigned in children.");
-        m_PlayerModel.Init(this);
-        m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
-        m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);
-
+        m_ActionController = GetComponent<PlayerActionController>();        
         m_Rigidbody = GetComponent<Rigidbody>();
         if (m_Rigidbody == null)
             throw new System.Exception("err, Rigidbody hasn't been asigned.");
@@ -44,12 +46,25 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
         if (m_AudioSource == null)
             throw new System.Exception("err, AudioSource hasn't been asigned.");
 
+        m_AttackComponent = GetComponent<PlayerAttackComponent>();
+        if (m_AttackComponent == null)
+            throw new System.Exception("err, PlayerAttackComponent hasn't been asigned.");
+        m_AttackComponent.Init(this);
+
         m_ResizableCapsuleCollider = gameObject.AddComponent<ResizableCapsuleCollider>();
         m_StateMachine = new StateMachine();
         m_AnimationConsts = new PlayerAnimationConsts();
 
         m_StateMachine.Init(this);
         m_AnimationConsts.Init();
+
+        // Init components in children
+        m_PlayerModel = GetComponentInChildren<PlayerModel>();
+        if (m_PlayerModel == null)
+            throw new System.Exception("err, PlayerModel hasn't been asigned in children.");
+        m_PlayerModel.Init(this);
+        m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
+        m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);        
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -105,8 +120,8 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
             case EPlayerState.Land:
                 m_StateMachine?.ChangeState<PlayerStateLand>(args);
                 break;
-            case EPlayerState.LightAttack:
-                m_StateMachine?.ChangeState<PlayerStateLightAttack>(args);
+            case EPlayerState.StandardAttack:
+                m_StateMachine?.ChangeState<PlayerStateStandardAttack>(args);
                 break;
             default:
                 break;
@@ -125,16 +140,16 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     #endregion
 
     #region IPlayerBehaviour
-    public void OnStartAttack(SkillConfig config)
+    public void OnStartAttack(SkillData config)
     {
     }    
 
-    public void OnAttackHit(SkillConfig config, ISkillTarget target, Vector3 hitPos)
+    public void OnAttackHit(SkillData config, ISkillTarget target, Vector3 hitPos)
     {
         target?.OnDamage(10);
     }
 
-    public void OnStopAttack(SkillConfig config)
+    public void OnStopAttack(SkillData config)
     {
     }
 

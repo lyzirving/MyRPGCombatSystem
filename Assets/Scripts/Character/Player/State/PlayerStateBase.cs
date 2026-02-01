@@ -86,11 +86,11 @@ public class PlayerStateBase : StateBase
 
     protected Vector3 GetTargetDirection()
     {
-        if (!InputManager.instance.isPlayerMoving)
+        if (!m_Player.action.isPlayerMoving)
             return m_Player.transform.forward;
 
         Vector3 move = Vector3.zero;
-        Vector2 input = InputManager.instance.playerMovement;
+        Vector2 input = m_Player.action.playerMovement;
         move.x = input.x;
         move.z = input.y;
         move = Vector3.ClampMagnitude(move, 1f);

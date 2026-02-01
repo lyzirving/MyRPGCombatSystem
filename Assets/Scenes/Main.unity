@@ -926,7 +926,8 @@ GameObject:
   - component: {fileID: 496888502}
   - component: {fileID: 496888503}
   - component: {fileID: 496888501}
-  - component: {fileID: 496888498}
+  - component: {fileID: 496888504}
+  - component: {fileID: 496888505}
   - component: {fileID: 496888499}
   m_Layer: 3
   m_Name: Player
@@ -953,23 +954,6 @@ Transform:
   - {fileID: 1014110227}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &496888498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 496888496}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d5451cc31c6b1f4594e124a7eb4e2ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FollowTarget: {fileID: 91168825}
-  m_HorizontalRotationSpeed: 0.3
-  m_VerticalRotationSpeed: 0.12
-  m_BottomClamp: -20
-  m_TopClamp: 35
 --- !u!114 &496888499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1004,7 +988,7 @@ MonoBehaviour:
     rollParamName: isRolling
     landParamName: isLand
     combatParamName: isCombat
-    lightAttackParamName: isLightAttack
+    standardAttack1ParamName: isStandardAttack1
     airborneParamName: isAirborne
     jumpStartLeftParamName: isJumpStartLeft
     jumpStartRightParamName: isJumpStartRight
@@ -1161,6 +1145,37 @@ CapsuleCollider:
   m_Height: 1.75
   m_Direction: 1
   m_Center: {x: 0, y: 0.85, z: 0}
+--- !u!114 &496888504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 749ec1ad08b324a4e8981c249c85a2fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FollowTarget: {fileID: 91168825}
+  m_HorizontalRotationSpeed: 0.3
+  m_VerticalRotationSpeed: 0.12
+  m_BottomClamp: -20
+  m_TopClamp: 35
+--- !u!114 &496888505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6215e5752b7b58a4fa5fd172d33afb17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comboSequences:
+  - {fileID: 11400000, guid: 2a9f30a8c59e50944bc676992b3b853e, type: 2}
 --- !u!1 &507923619
 GameObject:
   m_ObjectHideFlags: 0
@@ -1569,7 +1584,7 @@ GameObject:
   - component: {fileID: 1002941973}
   - component: {fileID: 1002941974}
   m_Layer: 9
-  m_Name: LeftHandBoxing
+  m_Name: LeftHandAttackHotspot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1620,10 +1635,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1002941971}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eaf042ec8bde20d40ab678c1c5a9847f, type: 3}
+  m_Script: {fileID: 11500000, guid: c04bd9b85cfc5b14f8e4da5193e2faba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_WeaponType: 0
   skillConfig: {fileID: 0}
   m_ColliderTags:
   - Enemy
@@ -1882,7 +1896,7 @@ GameObject:
   - component: {fileID: 1501614629}
   - component: {fileID: 1501614630}
   m_Layer: 9
-  m_Name: RightHandBoxing
+  m_Name: RightHandAttackHotspot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1933,10 +1947,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1501614627}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eaf042ec8bde20d40ab678c1c5a9847f, type: 3}
+  m_Script: {fileID: 11500000, guid: c04bd9b85cfc5b14f8e4da5193e2faba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_WeaponType: 0
   skillConfig: {fileID: 0}
   m_ColliderTags:
   - Enemy
@@ -1979,6 +1992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e2ae0cb7a12a146b65e431eb150436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  comboSequences: []
 --- !u!1 &1801572036
 GameObject:
   m_ObjectHideFlags: 0

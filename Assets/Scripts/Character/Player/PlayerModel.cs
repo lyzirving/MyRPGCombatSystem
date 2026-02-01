@@ -5,23 +5,16 @@ public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRot
 
 public class PlayerModel : MonoBehaviour
 {
+    public ComboSequence[] comboSequences;
+
     private Animator m_Animator;
-    private WeaponController[] m_Weapons;
+    private PlayerAttackComponent m_AttackComponent;
     private IPlayerBehavior m_PlayerBehaviour;
 
     private UnityAction m_LeftFootStepAc;
     private UnityAction m_RightFootStepAc;
 
     private event RootMotionAction m_RootMotionAc;
-
-    private int m_ArmedWeapon = -1;
-
-    public WeaponController[] weapons { get { return m_Weapons; }  }
-    public int armedWeaponIndex
-    {
-        get { return m_ArmedWeapon; }
-        set { m_ArmedWeapon = value; }
-    }
 
     #region State Methods
     private void Awake()
@@ -64,17 +57,7 @@ public class PlayerModel : MonoBehaviour
     public void Init(IPlayerBehavior playerBehavior)
     {
         m_PlayerBehaviour = playerBehavior;
-        m_Weapons = GetComponentsInChildren<WeaponController>();
-        int len = m_Weapons == null ? 0 : m_Weapons.Length;
-        Debug.Log($"Find weapons[{len}] in nodes");
-        if (m_Weapons != null)
-        {
-            for (int i = 0; i < m_Weapons.Length; i++)
-                m_Weapons[i].Init(playerBehavior);
-        }
-
-        if (len != 0)
-            m_ArmedWeapon = 0;
+        m_AttackComponent = GetComponentInParent<PlayerAttackComponent>();
     }
 
     public void StartAnimation(int hash)
@@ -135,15 +118,15 @@ public class PlayerModel : MonoBehaviour
     }
 
     private void OnAttackStart(in AnimationEventInfo info)
-    {
-        m_PlayerBehaviour?.OnStartAttack(m_Weapons[m_ArmedWeapon].skillConfig);
-        m_Weapons?[m_ArmedWeapon].OnStartAttack();
+    {        
+        m_PlayerBehaviour.OnStartAttack(m_AttackComponent.currentHotspot.skillConfig);
+        m_AttackComponent.currentHotspot.OnStartAttack();
     }
 
     private void OnAttackEnd(in AnimationEventInfo info)
     {
-        m_PlayerBehaviour?.OnStopAttack(m_Weapons[m_ArmedWeapon].skillConfig);
-        m_Weapons?[m_ArmedWeapon].OnStopAttack();
+        m_PlayerBehaviour.OnStopAttack(m_AttackComponent.currentHotspot.skillConfig);
+        m_AttackComponent.currentHotspot.OnStopAttack();
     }
     #endregion
 }

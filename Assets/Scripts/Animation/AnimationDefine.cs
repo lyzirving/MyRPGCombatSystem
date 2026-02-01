@@ -7,13 +7,12 @@ public enum AnimationEventType : UInt32
     Locomotion = 1,
     LeftFootStep,
     RightFootStep,
-    JumpStart,
-    JumpStartTransit,
-    LandFinish,
-    RollTransit,
     // Events for combat
     Combat = 100,
-    AttackTransit,
     AttackStart,
     AttackEnd,
+    // Events for common animation
+    Common = 500,
+    AnimationStart,
+    AnimationTransit,
 }

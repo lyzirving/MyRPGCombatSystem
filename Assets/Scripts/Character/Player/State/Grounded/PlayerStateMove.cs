@@ -25,25 +25,25 @@ public class PlayerStateMove : PlayerStateGrounded
 
     public override void Update()
     {
-        if (InputManager.instance.isPlayerAttackPerformed)
+        if (m_Player.action.isPlayerAttackPerformed)
         {
-            m_Player.ChangeState(EPlayerState.LightAttack);
+            m_Player.ChangeState(EPlayerState.StandardAttack);
             return;
         }
 
-        if (!InputManager.instance.isPlayerMoving)
+        if (!m_Player.action.isPlayerMoving)
         {
             m_Player.ChangeState(EPlayerState.Idle);
             return;
         }
 
-        if (InputManager.instance.isPlayerRollPerformed)
+        if (m_Player.action.isPlayerRollPerformed)
         {
             m_Player.ChangeState(EPlayerState.Roll);
             return;
         }
 
-        if (InputManager.instance.isPlayerJumpPerformed)
+        if (m_Player.action.isPlayerJumpPerformed)
         {
             ChangeStateArgs.Builder builder = new ChangeStateArgs.Builder();
             builder.Footstep(m_FootStep);
@@ -61,7 +61,7 @@ public class PlayerStateMove : PlayerStateGrounded
 
     protected void Move()
     {
-        if (!InputManager.instance.isPlayerMoving)
+        if (!m_Player.action.isPlayerMoving)
             return;
 
         Vector3 targetDir = GetTargetDirection();

@@ -13,7 +13,7 @@ public class PlayerAnimationConsts
     [SerializeField] private string landParamName = "isLand";
 
     [SerializeField] private string combatParamName = "isCombat";
-    [SerializeField] private string lightAttackParamName = "isLightAttack";
+    [SerializeField] private string standardAttack1ParamName = "isStandardAttack1";
 
     [SerializeField] private string airborneParamName = "isAirborne";
     [SerializeField] private string jumpStartLeftParamName = "isJumpStartLeft";
@@ -31,7 +31,7 @@ public class PlayerAnimationConsts
     public int landHash { get; private set; }
 
     public int combatHash { get; private set; }
-    public int lightAttackHash { get; private set; }
+    public int standardAttack1Hash { get; private set; }
 
     public int airborneHash { get; private set; }
     public int jumpStartLeftHash { get; private set; }
@@ -51,7 +51,7 @@ public class PlayerAnimationConsts
         landHash = Animator.StringToHash(landParamName);
 
         combatHash = Animator.StringToHash(combatParamName);
-        lightAttackHash = Animator.StringToHash(lightAttackParamName);
+        standardAttack1Hash = Animator.StringToHash(standardAttack1ParamName);
 
         airborneHash = Animator.StringToHash(airborneParamName);
         jumpStartLeftHash = Animator.StringToHash(jumpStartLeftParamName);
