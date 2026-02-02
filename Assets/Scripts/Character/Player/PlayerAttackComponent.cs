@@ -2,18 +2,15 @@
 
 public class PlayerAttackComponent : MonoBehaviour
 {
-    public ComboSequence[] comboSequences;
+    [SerializeField] private ComboSequence[] m_ComboSequences;
 
     private AttackHotspot[] m_Hotspots;
-    private int m_Index = -1;
+    private int m_ComboIndex = 0;
+    private int m_SkillIndex = 0;
 
-    public AttackHotspot[] hotspots { get { return m_Hotspots; } }
-    public int index
-    {
-        get { return m_Index; }
-        set { m_Index = value; }
-    }
-    public AttackHotspot currentHotspot { get => m_Hotspots[m_Index]; }
+    public ComboSequence combo { get => m_ComboSequences[m_ComboIndex]; }
+    public SkillData skill { get => combo.skillConfigs[m_SkillIndex]; }
+    public AttackHotspot hotspot { get => m_Hotspots[skill.hotspotIndex]; }
 
     public void Init(IPlayerBehavior playerBehavior)
     {
@@ -25,9 +22,8 @@ public class PlayerAttackComponent : MonoBehaviour
         for (int i = 0; i < m_Hotspots.Length; ++i)
         {
             m_Hotspots[i].Init(playerBehavior);
-            BindComboSkillData(i, m_Hotspots[i], comboSequences);
+            BindComboSkillData(i, m_Hotspots[i], m_ComboSequences);
         }
-        m_Index = len == 0 ? -1 : 0;
     }
 
     private void BindComboSkillData(int index, AttackHotspot hotspot, ComboSequence[] combos)
@@ -37,11 +33,11 @@ public class PlayerAttackComponent : MonoBehaviour
 
         for (int i = 0; i < combos.Length; ++i)
         {
-            SkillData[] datas = combos[i].skillConfigs;
-            for (int j = 0; j < datas.Length; ++j)
+            SkillData[] skills = combos[i].skillConfigs;
+            for (int j = 0; j < skills.Length; ++j)
             {
-                if (datas[j].attackHotspot == hotspot.name)
-                    datas[j].hotspotIndex = index;
+                if (skills[j].attackHotspot == hotspot.name)
+                    skills[j].hotspotIndex = index;
             }
         }
     }

@@ -988,7 +988,6 @@ MonoBehaviour:
     rollParamName: isRolling
     landParamName: isLand
     combatParamName: isCombat
-    standardAttack1ParamName: isStandardAttack1
     airborneParamName: isAirborne
     jumpStartLeftParamName: isJumpStartLeft
     jumpStartRightParamName: isJumpStartRight
@@ -1174,7 +1173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6215e5752b7b58a4fa5fd172d33afb17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comboSequences:
+  m_ComboSequences:
   - {fileID: 11400000, guid: 2a9f30a8c59e50944bc676992b3b853e, type: 2}
 --- !u!1 &507923619
 GameObject:
@@ -1992,7 +1991,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e2ae0cb7a12a146b65e431eb150436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comboSequences: []
 --- !u!1 &1801572036
 GameObject:
   m_ObjectHideFlags: 0

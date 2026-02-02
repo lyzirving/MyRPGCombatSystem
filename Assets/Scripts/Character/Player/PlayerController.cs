@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
     public PlayerAttrs attrs { get => m_Attrs; }
     public PlayerActionController action { get => m_ActionController; }
+    public PlayerAttackComponent attackComponent { get => m_AttackComponent; }
 
     private PlayerAttrs m_Attrs = new PlayerAttrs();
     private StateMachine m_StateMachine;    

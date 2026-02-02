@@ -6,8 +6,10 @@ public class SkillData : ScriptableObject
 {
     [Tooltip("Name of the animation state")]
     public string animation;
+    public float crossFadeInTime = 0.15f;
     [Tooltip("Name of the attack hotspot, which should be mapped to the one on player")]
     public string attackHotspot;
+
     [Tooltip("Index of the attack hotspot, initialized after SkillData is configured on player")]
     public int hotspotIndex = -1;
 

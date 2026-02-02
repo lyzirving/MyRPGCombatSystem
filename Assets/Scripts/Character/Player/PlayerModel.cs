@@ -5,8 +5,6 @@ public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRot
 
 public class PlayerModel : MonoBehaviour
 {
-    public ComboSequence[] comboSequences;
-
     private Animator m_Animator;
     private PlayerAttackComponent m_AttackComponent;
     private IPlayerBehavior m_PlayerBehaviour;
@@ -65,6 +63,11 @@ public class PlayerModel : MonoBehaviour
         m_Animator?.SetBool(hash, true);       
     }
 
+    public void StartAnimation(string name, float fixedTransitionDuration = 0.25f)
+    {
+        m_Animator?.CrossFadeInFixedTime(name, fixedTransitionDuration);
+    }
+
     public void StopAnimation(int hash)
     {
         m_Animator?.SetBool(hash, false);
@@ -119,14 +122,14 @@ public class PlayerModel : MonoBehaviour
 
     private void OnAttackStart(in AnimationEventInfo info)
     {        
-        m_PlayerBehaviour.OnStartAttack(m_AttackComponent.currentHotspot.skillConfig);
-        m_AttackComponent.currentHotspot.OnStartAttack();
+        m_PlayerBehaviour.OnStartAttack(m_AttackComponent.hotspot.skillConfig);
+        m_AttackComponent.hotspot.OnStartAttack();
     }
 
     private void OnAttackEnd(in AnimationEventInfo info)
     {
-        m_PlayerBehaviour.OnStopAttack(m_AttackComponent.currentHotspot.skillConfig);
-        m_AttackComponent.currentHotspot.OnStopAttack();
+        m_PlayerBehaviour.OnStopAttack(m_AttackComponent.hotspot.skillConfig);
+        m_AttackComponent.hotspot.OnStopAttack();
     }
     #endregion
 }

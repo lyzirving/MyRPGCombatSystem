@@ -7,7 +7,7 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
-        m_Player.model.StartAnimation(m_Player.animConsts.standardAttack1Hash);
+        m_Player.model.StartAnimation(m_Player.attackComponent.skill.animation, m_Player.attackComponent.skill.crossFadeInTime);
         m_Player.model.RegisterRootMotionAction(HandleRootMotion);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
 
@@ -18,7 +18,6 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     {
         AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
         m_Player.model.RemoveRootMotionAction(HandleRootMotion);
-        m_Player.model.StopAnimation(m_Player.animConsts.standardAttack1Hash);
         base.Exit(newState);
     }
 

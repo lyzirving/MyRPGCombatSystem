@@ -11,8 +11,9 @@ public enum AnimationEventType : UInt32
     Combat = 100,
     AttackStart,
     AttackEnd,
+    AttackCombo,
     // Events for common animation
     Common = 500,
     AnimationStart,
-    AnimationTransit,
+    AnimationTransit,    
 }
