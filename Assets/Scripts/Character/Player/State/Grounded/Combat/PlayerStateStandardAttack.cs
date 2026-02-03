@@ -9,7 +9,9 @@ public class PlayerStateStandardAttack : PlayerStateCombat
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animation, m_Player.attackComponent.skill.crossFadeInTime);
         m_Player.model.RegisterRootMotionAction(HandleRootMotion);
+
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
+        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackCombo, HandleAttackCombo);
 
         m_ShouldTransit = false;
     }
@@ -17,12 +19,18 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     public override void Exit(StateBase newState)
     {
         AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
+        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AttackCombo, HandleAttackCombo);
         m_Player.model.RemoveRootMotionAction(HandleRootMotion);
         base.Exit(newState);
     }
 
     public override void Update()
     {
+        if (m_Player.attackComponent.UpdateCombo())
+        {
+            return;
+        }
+
         if (!m_ShouldTransit) 
             return;
 
@@ -75,5 +83,10 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     private void HandleAttackTransit(in AnimationEventInfo info)
     {
         m_ShouldTransit = true;
+    }
+
+    private void HandleAttackCombo(in AnimationEventInfo info)
+    {
+        m_Player.attackComponent.StartCombo();
     }
 }

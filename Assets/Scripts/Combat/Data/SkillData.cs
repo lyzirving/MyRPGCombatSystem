@@ -7,6 +7,7 @@ public class SkillData : ScriptableObject
     [Tooltip("Name of the animation state")]
     public string animation;
     public float crossFadeInTime = 0.15f;
+    public float inputWindowDur = 0.2f;
     [Tooltip("Name of the attack hotspot, which should be mapped to the one on player")]
     public string attackHotspot;
 

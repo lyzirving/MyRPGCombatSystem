@@ -6,7 +6,7 @@ public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRot
 public class PlayerModel : MonoBehaviour
 {
     private Animator m_Animator;
-    private PlayerAttackComponent m_AttackComponent;
+    private AttackComponent m_AttackComponent;
     private IPlayerBehavior m_PlayerBehaviour;
 
     private UnityAction m_LeftFootStepAc;
@@ -55,7 +55,7 @@ public class PlayerModel : MonoBehaviour
     public void Init(IPlayerBehavior playerBehavior)
     {
         m_PlayerBehaviour = playerBehavior;
-        m_AttackComponent = GetComponentInParent<PlayerAttackComponent>();
+        m_AttackComponent = GetComponentInParent<AttackComponent>();
     }
 
     public void StartAnimation(int hash)

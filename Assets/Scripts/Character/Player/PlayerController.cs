@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
     public PlayerAttrs attrs { get => m_Attrs; }
     public PlayerActionController action { get => m_ActionController; }
-    public PlayerAttackComponent attackComponent { get => m_AttackComponent; }
+    public AttackComponent attackComponent { get => m_AttackComponent; }
 
     private PlayerAttrs m_Attrs = new PlayerAttrs();
     private StateMachine m_StateMachine;    
@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
 
     // -------- Components in children start ------
     private PlayerModel m_PlayerModel;
-    private PlayerAttackComponent m_AttackComponent;
+    private AttackComponent m_AttackComponent;
     // -------- Components in children end ------
 
     #region State Methods
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
         if (m_AudioSource == null)
             throw new System.Exception("err, AudioSource hasn't been asigned.");
 
-        m_AttackComponent = GetComponent<PlayerAttackComponent>();
+        m_AttackComponent = GetComponent<AttackComponent>();
         if (m_AttackComponent == null)
             throw new System.Exception("err, PlayerAttackComponent hasn't been asigned.");
         m_AttackComponent.Init(this);

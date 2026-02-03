@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 
-public class PlayerAttackComponent : MonoBehaviour
+public class AttackComponent : MonoBehaviour
 {
     [SerializeField] private ComboSequence[] m_ComboSequences;
-
+    
     private AttackHotspot[] m_Hotspots;
     private int m_ComboIndex = 0;
     private int m_SkillIndex = 0;
+
+    private ComboSystem m_ComboSystem = new();
 
     public ComboSequence combo { get => m_ComboSequences[m_ComboIndex]; }
     public SkillData skill { get => combo.skillConfigs[m_SkillIndex]; }
     public AttackHotspot hotspot { get => m_Hotspots[skill.hotspotIndex]; }
 
+    #region Main Method
     public void Init(IPlayerBehavior playerBehavior)
-    {
+    {        
         m_Hotspots = GetComponentsInChildren<AttackHotspot>();
         int len = m_Hotspots == null ? 0 : m_Hotspots.Length;
         if (len == 0)
@@ -25,6 +28,26 @@ public class PlayerAttackComponent : MonoBehaviour
             BindComboSkillData(i, m_Hotspots[i], m_ComboSequences);
         }
     }
+    #endregion
+
+    #region Main Method
+    public void StartCombo()
+    {
+        m_ComboSystem.BeginCombo(combo, m_SkillIndex);
+    }
+
+    public bool UpdateCombo()
+    {
+        return m_ComboSystem.UpdateCombo();
+    }
+
+    public void ResetCombo()
+    {
+        m_ComboSystem.EndCombo();
+        m_ComboIndex = 0;
+        m_SkillIndex = 0;
+    }
+    #endregion
 
     private void BindComboSkillData(int index, AttackHotspot hotspot, ComboSequence[] combos)
     { 
