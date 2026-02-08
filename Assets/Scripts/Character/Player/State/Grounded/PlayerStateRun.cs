@@ -19,7 +19,7 @@ public class PlayerStateRun : PlayerStateMove
 
     public override void Update()
     {        
-        if (!m_Player.action.shouldPlayerRun)
+        if (!m_Player.action.shouldRun)
         {
             m_Player.ChangeState(EPlayerState.Walk);
             return;

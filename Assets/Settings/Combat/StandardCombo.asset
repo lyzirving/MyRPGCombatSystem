@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillConfigs:
   - {fileID: 11400000, guid: 407a605959e2d464690878d4c91afb86, type: 2}
+  - {fileID: 11400000, guid: 3350268bb5e37ba47b9aae527d44501b, type: 2}
   - {fileID: 11400000, guid: 3e3670ce1fa253f4e9b0383da1c6194e, type: 2}

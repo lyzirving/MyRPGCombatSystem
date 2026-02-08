@@ -86,7 +86,7 @@ public class PlayerStateBase : StateBase
 
     protected Vector3 GetTargetDirection()
     {
-        if (!m_Player.action.isPlayerMoving)
+        if (!m_Player.action.isMoving)
             return m_Player.transform.forward;
 
         Vector3 move = Vector3.zero;

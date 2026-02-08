@@ -10,11 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
-  m_Name: StandardPunch
+  m_Name: LightKickLeft
   m_EditorClassIdentifier: 
-  animation: StandardPunch
-  attackHotspot: LeftHandAttackHotspot
-  hotspotIndex: -1
+  animation: LightKickLeft
+  crossFadeInTime: 0.15
+  inputWindowDuration: 0.2
+  attackBox: LeftFootAttackBox
+  action: 1
+  damage: 10
   releaseData:
     spawnObj:
       prefab: {fileID: 0}
@@ -33,3 +36,5 @@ MonoBehaviour:
       scale: {x: 1, y: 1, z: 1}
       time: 0
     audioClip: {fileID: 0}
+  attackBoxIndex: -1
+  nextSkillIndex: -1

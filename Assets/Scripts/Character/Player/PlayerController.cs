@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
 
     public void OnAttackHit(SkillData config, ISkillTarget target, Vector3 hitPos)
     {
-        target?.OnDamage(10);
+        target?.OnDamage(config.damage);
     }
 
     public void OnStopAttack(SkillData config)
@@ -160,6 +160,11 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
             return;
 
         m_AudioSource.PlayOneShot(footStepAudioClips[1]);
+    }
+
+    public PlayerActionController PlayerAction()
+    {
+        return m_ActionController;
     }
     #endregion
 }

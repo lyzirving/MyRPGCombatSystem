@@ -16,12 +16,18 @@ public struct ChangeStateArgs
     public struct Builder
     {
         private bool m_ReCurrstate;
-        private EFootStep m_FootStep;
+        private EFootStep m_FootStep;        
 
-        public Builder(bool recreate = false)
+        public Builder(bool recreate)
         {
             m_ReCurrstate = recreate;
             m_FootStep = EFootStep.None;
+        }
+
+        public Builder(EFootStep footStep)
+        {
+            m_ReCurrstate = false;
+            m_FootStep = footStep;
         }
 
         public Builder Refresh(bool refresh)

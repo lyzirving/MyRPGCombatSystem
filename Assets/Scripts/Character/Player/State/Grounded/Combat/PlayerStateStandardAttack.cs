@@ -8,7 +8,6 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     {
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animation, m_Player.attackComponent.skill.crossFadeInTime);
-        m_Player.model.RegisterRootMotionAction(HandleRootMotion);
 
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackCombo, HandleAttackCombo);
@@ -17,10 +16,10 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     }
 
     public override void Exit(StateBase newState)
-    {
+    {        
         AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
         AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AttackCombo, HandleAttackCombo);
-        m_Player.model.RemoveRootMotionAction(HandleRootMotion);
+
         base.Exit(newState);
     }
 
@@ -28,42 +27,38 @@ public class PlayerStateStandardAttack : PlayerStateCombat
     {
         if (m_Player.attackComponent.UpdateCombo())
         {
+            m_Player.attackComponent.NextSkill();
+            m_Player.ChangeState(EPlayerState.StandardAttack, new ChangeStateArgs.Builder(true).Build());
             return;
         }
 
         if (!m_ShouldTransit) 
             return;
 
-        if (m_Player.action.isPlayerAttackPerformed)
+        // Change to another state
+        if (m_Player.action.isLightPunch)
         {
-            ChangeStateArgs.Builder builder = new ChangeStateArgs.Builder();
-            builder.Refresh(true);   
-            m_Player.ChangeState(EPlayerState.StandardAttack, builder.Build());
-            return;
+            m_Player.ChangeState(EPlayerState.StandardAttack, new ChangeStateArgs.Builder(true).Build());            
         }
-
-        if (m_Player.action.isPlayerRollPerformed)
+        else if (m_Player.action.isRoll)
         {
             m_Player.ChangeState(EPlayerState.Roll);
-            return;
         }
-
-        if (m_Player.action.isPlayerJumpPerformed)
+        else if (m_Player.action.isJump)
         {
             m_Player.ChangeState(EPlayerState.Jump);
-            return;
         }
-
-        if (m_Player.action.isPlayerMoving)
+        else if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
-            return;
+            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
         }
         else
         {
             m_Player.ChangeState(EPlayerState.Idle);
-            return;
         }
+
+        // After quit the PlayerStateStandardAttack
+        m_Player.attackComponent.EndCombo();
     }
 
     public override void FixedUpdate()
@@ -73,13 +68,6 @@ public class PlayerStateStandardAttack : PlayerStateCombat
         Float();
     }
 
-    private void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
-    {
-        deltaPosition.x = 0f;
-        deltaPosition.y = 0f;
-        m_Player.transform.Translate(deltaPosition, Space.Self);
-    }
-
     private void HandleAttackTransit(in AnimationEventInfo info)
     {
         m_ShouldTransit = true;
@@ -87,6 +75,6 @@ public class PlayerStateStandardAttack : PlayerStateCombat
 
     private void HandleAttackCombo(in AnimationEventInfo info)
     {
-        m_Player.attackComponent.StartCombo();
+        m_Player.attackComponent.BeginCombo();
     }
 }

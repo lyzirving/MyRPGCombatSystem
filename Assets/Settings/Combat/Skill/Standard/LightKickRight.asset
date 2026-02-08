@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
+  m_Name: LightKickRight
+  m_EditorClassIdentifier: 
+  animation: LightKickRight
+  crossFadeInTime: 0.15
+  inputWindowDuration: 0.2
+  attackBox: RightFootAttackBox
+  action: 1
+  damage: 10
+  releaseData:
+    spawnObj:
+      prefab: {fileID: 0}
+      audioClip: {fileID: 0}
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      time: 0
+    audioClip: {fileID: 0}
+  attackData:
+    spawnObj:
+      prefab: {fileID: 0}
+      audioClip: {fileID: 0}
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+      scale: {x: 1, y: 1, z: 1}
+      time: 0
+    audioClip: {fileID: 0}
+  attackBoxIndex: -1
+  nextSkillIndex: -1

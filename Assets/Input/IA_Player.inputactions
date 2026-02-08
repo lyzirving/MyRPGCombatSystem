@@ -43,7 +43,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
+                    "name": "LightPunch",
                     "type": "Button",
                     "id": "f64c4dd8-2ae2-46ed-bf9f-57cecd61e884",
                     "expectedControlType": "",
@@ -168,7 +168,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "LightPunch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -179,7 +179,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "LightPunch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

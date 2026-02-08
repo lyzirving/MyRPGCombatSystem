@@ -28,13 +28,13 @@ public class PlayerStateRoll : PlayerStateMove
         if(!m_ShouldTransit)
             return;
 
-        if (!m_Player.action.isPlayerMoving)
+        if (!m_Player.action.isMoving)
         {
             m_Player.ChangeState(EPlayerState.Idle);
         }
         else
         {
-            m_Player.ChangeState(m_Player.action.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
         }
     }
 

@@ -22,15 +22,15 @@ public class PlayerStateLand : PlayerStateGrounded
 
     public override void Update()
     {
-        if (m_Player.action.isPlayerJumpPerformed)
+        if (m_Player.action.isJump)
         {
             m_Player.ChangeState(EPlayerState.Jump);
             return;
         }
 
-        if (m_Player.action.isPlayerMoving)
+        if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldPlayerRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
             return;
         }
     }

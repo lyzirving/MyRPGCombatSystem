@@ -122,14 +122,14 @@ public class PlayerModel : MonoBehaviour
 
     private void OnAttackStart(in AnimationEventInfo info)
     {        
-        m_PlayerBehaviour.OnStartAttack(m_AttackComponent.hotspot.skillConfig);
-        m_AttackComponent.hotspot.OnStartAttack();
+        m_PlayerBehaviour.OnStartAttack(m_AttackComponent.attackBox.skillConfig);
+        m_AttackComponent.attackBox.OnStartAttack();
     }
 
     private void OnAttackEnd(in AnimationEventInfo info)
     {
-        m_PlayerBehaviour.OnStopAttack(m_AttackComponent.hotspot.skillConfig);
-        m_AttackComponent.hotspot.OnStopAttack();
+        m_PlayerBehaviour.OnStopAttack(m_AttackComponent.attackBox.skillConfig);
+        m_AttackComponent.attackBox.OnStopAttack();
     }
     #endregion
 }

@@ -25,8 +25,6 @@ public class PlayerStateJumpIdle : PlayerStateAirborne
         if (isMovingUp)
             return;
 
-        ChangeStateArgs.Builder b = new ChangeStateArgs.Builder();
-        b.Footstep(m_FootStep);
-        m_Player.ChangeState(EPlayerState.Falling, b.Build());
+        m_Player.ChangeState(EPlayerState.Falling, new ChangeStateArgs.Builder(m_FootStep).Build());
     }
 }

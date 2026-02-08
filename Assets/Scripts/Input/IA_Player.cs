@@ -129,7 +129,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""LightPunch"",
                     ""type"": ""Button"",
                     ""id"": ""f64c4dd8-2ae2-46ed-bf9f-57cecd61e884"",
                     ""expectedControlType"": """",
@@ -254,7 +254,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Attack"",
+                    ""action"": ""LightPunch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -265,7 +265,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Attack"",
+                    ""action"": ""LightPunch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -280,7 +280,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         m_Player_RunToggle = m_Player.FindAction("RunToggle", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
-        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        m_Player_LightPunch = m_Player.FindAction("LightPunch", throwIfNotFound: true);
         m_Player_CameraMove = m_Player.FindAction("CameraMove", throwIfNotFound: true);
     }
 
@@ -366,7 +366,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RunToggle;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Roll;
-    private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_LightPunch;
     private readonly InputAction m_Player_CameraMove;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
@@ -396,9 +396,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Roll => m_Wrapper.m_Player_Roll;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Attack".
+        /// Provides access to the underlying input action "Player/LightPunch".
         /// </summary>
-        public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @LightPunch => m_Wrapper.m_Player_LightPunch;
         /// <summary>
         /// Provides access to the underlying input action "Player/CameraMove".
         /// </summary>
@@ -441,9 +441,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @Roll.started += instance.OnRoll;
             @Roll.performed += instance.OnRoll;
             @Roll.canceled += instance.OnRoll;
-            @Attack.started += instance.OnAttack;
-            @Attack.performed += instance.OnAttack;
-            @Attack.canceled += instance.OnAttack;
+            @LightPunch.started += instance.OnLightPunch;
+            @LightPunch.performed += instance.OnLightPunch;
+            @LightPunch.canceled += instance.OnLightPunch;
             @CameraMove.started += instance.OnCameraMove;
             @CameraMove.performed += instance.OnCameraMove;
             @CameraMove.canceled += instance.OnCameraMove;
@@ -470,9 +470,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @Roll.started -= instance.OnRoll;
             @Roll.performed -= instance.OnRoll;
             @Roll.canceled -= instance.OnRoll;
-            @Attack.started -= instance.OnAttack;
-            @Attack.performed -= instance.OnAttack;
-            @Attack.canceled -= instance.OnAttack;
+            @LightPunch.started -= instance.OnLightPunch;
+            @LightPunch.performed -= instance.OnLightPunch;
+            @LightPunch.canceled -= instance.OnLightPunch;
             @CameraMove.started -= instance.OnCameraMove;
             @CameraMove.performed -= instance.OnCameraMove;
             @CameraMove.canceled -= instance.OnCameraMove;
@@ -545,12 +545,12 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRoll(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Attack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "LightPunch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnAttack(InputAction.CallbackContext context);
+        void OnLightPunch(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "CameraMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class AttackHotspot : MonoBehaviour
+public class AttackBox : MonoBehaviour
 {
     private Collider m_Collider;
     private HashSet<string> m_TagHashSet = new();
