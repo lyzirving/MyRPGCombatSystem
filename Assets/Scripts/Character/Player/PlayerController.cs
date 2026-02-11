@@ -121,8 +121,8 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
             case EPlayerState.Land:
                 m_StateMachine?.ChangeState<PlayerStateLand>(args);
                 break;
-            case EPlayerState.StandardAttack:
-                m_StateMachine?.ChangeState<PlayerStateStandardAttack>(args);
+            case EPlayerState.Attack:
+                m_StateMachine?.ChangeState<PlayerStateAttack>(args);
                 break;
             default:
                 break;

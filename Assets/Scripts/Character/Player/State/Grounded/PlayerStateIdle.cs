@@ -21,7 +21,7 @@ public class PlayerStateIdle : PlayerStateGrounded
     {
         if (m_Player.action.isLightPunch)
         {
-            m_Player.ChangeState(EPlayerState.StandardAttack);
+            m_Player.ChangeState(EPlayerState.Attack);
             return;
         }
 

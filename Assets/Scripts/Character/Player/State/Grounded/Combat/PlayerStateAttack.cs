@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStateStandardAttack : PlayerStateCombat
+public class PlayerStateAttack : PlayerStateCombat
 {
     private bool m_ShouldTransit = false;
 
@@ -28,7 +28,7 @@ public class PlayerStateStandardAttack : PlayerStateCombat
         if (m_Player.attackComponent.UpdateCombo())
         {
             m_Player.attackComponent.NextSkill();
-            m_Player.ChangeState(EPlayerState.StandardAttack, new ChangeStateArgs.Builder(true).Build());
+            m_Player.ChangeState(EPlayerState.Attack, new ChangeStateArgs.Builder(true).Build());
             return;
         }
 
@@ -38,7 +38,7 @@ public class PlayerStateStandardAttack : PlayerStateCombat
         // Change to another state
         if (m_Player.action.isLightPunch)
         {
-            m_Player.ChangeState(EPlayerState.StandardAttack, new ChangeStateArgs.Builder(true).Build());            
+            m_Player.ChangeState(EPlayerState.Attack, new ChangeStateArgs.Builder(true).Build());            
         }
         else if (m_Player.action.isRoll)
         {
@@ -66,6 +66,8 @@ public class PlayerStateStandardAttack : PlayerStateCombat
         ResetVelocity();
 
         Float();
+
+        RotateToTargetDir(GetCameraDirection());
     }
 
     private void HandleAttackTransit(in AnimationEventInfo info)

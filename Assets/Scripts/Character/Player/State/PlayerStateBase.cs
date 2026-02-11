@@ -89,22 +89,36 @@ public class PlayerStateBase : StateBase
         if (!m_Player.action.isMoving)
             return m_Player.transform.forward;
 
-        Vector3 move = Vector3.zero;
-        Vector2 input = m_Player.action.playerMovement;
-        move.x = input.x;
-        move.z = input.y;
-        move = Vector3.ClampMagnitude(move, 1f);
+        return GetCameraRotation() * GetInputDirection();
+    }
 
-        // deal rotation from camera
-        Vector3 euler = new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f);
-        Vector3 targetDir = Quaternion.Euler(euler) * move;
-        return targetDir;
+    protected Vector3 GetCameraDirection()
+    {
+        Vector3 direction = Camera.main.transform.forward;
+        direction.y = 0f;
+        direction.Normalize();
+        return direction;
     }
 
     protected void RotateToTargetDir(Vector3 targetDir)
     {
         m_Player.transform.rotation = Quaternion.Slerp(m_Player.transform.rotation,
             Quaternion.LookRotation(targetDir), Time.deltaTime * m_Player.config.rotateSpeed);
+    }
+
+    protected Vector3 GetInputDirection()
+    {
+        Vector3 move = Vector3.zero;
+        Vector2 input = m_Player.action.playerMovement;
+        move.x = input.x;
+        move.z = input.y;
+        move = Vector3.ClampMagnitude(move, 1f);
+        return move;
+    }
+
+    protected Quaternion GetCameraRotation()
+    {
+        return Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
     }
     #endregion
 }
