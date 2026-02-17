@@ -30,11 +30,11 @@ public class PlayerStateRoll : PlayerStateMove
 
         if (!m_Player.action.isMoving)
         {
-            m_Player.ChangeState(EPlayerState.Idle);
+            m_Player.ChangeState(ECharacterState.Idle);
         }
         else
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
         }
     }
 

@@ -19,27 +19,27 @@ public class PlayerStateIdle : PlayerStateGrounded
 
     public override void Update()
     {
-        if (m_Player.action.isLightPunch)
+        if (m_Player.action.isLightAttack)
         {
-            m_Player.ChangeState(EPlayerState.Attack);
+            m_Player.ChangeState(ECharacterState.Attack);
             return;
         }
 
         if (m_Player.action.isRoll)
         {
-            m_Player.ChangeState(EPlayerState.Roll);
+            m_Player.ChangeState(ECharacterState.Roll);
             return;
         }
 
         if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(EPlayerState.Jump);
+            m_Player.ChangeState(ECharacterState.Jump);
             return;
         }
 
         if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
             return;
         }
     }

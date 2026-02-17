@@ -28,7 +28,7 @@ public class PlayerStateAttack : PlayerStateCombat
         if (m_Player.attackComponent.UpdateCombo())
         {
             m_Player.attackComponent.NextSkill();
-            m_Player.ChangeState(EPlayerState.Attack, new ChangeStateArgs.Builder(true).Build());
+            m_Player.ChangeState(ECharacterState.Attack, new ChangeStateArgs(true));
             return;
         }
 
@@ -36,25 +36,25 @@ public class PlayerStateAttack : PlayerStateCombat
             return;
 
         // Change to another state
-        if (m_Player.action.isLightPunch)
+        if (m_Player.action.isLightAttack)
         {
-            m_Player.ChangeState(EPlayerState.Attack, new ChangeStateArgs.Builder(true).Build());            
+            m_Player.ChangeState(ECharacterState.Attack, new ChangeStateArgs(true));            
         }
         else if (m_Player.action.isRoll)
         {
-            m_Player.ChangeState(EPlayerState.Roll);
+            m_Player.ChangeState(ECharacterState.Roll);
         }
         else if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(EPlayerState.Jump);
+            m_Player.ChangeState(ECharacterState.Jump);
         }
         else if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
         }
         else
         {
-            m_Player.ChangeState(EPlayerState.Idle);
+            m_Player.ChangeState(ECharacterState.Idle);
         }
 
         // After quit the PlayerStateStandardAttack
@@ -66,8 +66,6 @@ public class PlayerStateAttack : PlayerStateCombat
         ResetVelocity();
 
         Float();
-
-        RotateToTargetDir(GetCameraDirection());
     }
 
     private void HandleAttackTransit(in AnimationEventInfo info)

@@ -9,7 +9,7 @@ public class PlayerActionController : MonoBehaviour
     private bool m_ShouldPlayerRun = true;
     private bool m_IsJumpPerformed = false;
     private bool m_IsRollPerformed = false;
-    private bool m_IsLightPunchPerformed = false;    
+    private bool m_IsLightAttackPerformed = false;    
     // ------------------ Action Toggle End ----------------------
 
     // ------------------ Camera Control Start ----------------------
@@ -46,7 +46,7 @@ public class PlayerActionController : MonoBehaviour
     public bool isMoving { get => playerMovement != Vector2.zero; }
     public bool isJump { get => m_IsJumpPerformed; } 
     public bool isRoll { get => m_IsRollPerformed; }
-    public bool isLightPunch { get => m_IsLightPunchPerformed; }
+    public bool isLightAttack { get => m_IsLightAttackPerformed; }
 
     #region State Methods
     private void OnEnable()
@@ -54,7 +54,7 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.RunToggle.performed += OnSwitchRunToggle;
         InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
         InputManager.instance.playerActions.Roll.performed += OnRollPerformed;
-        InputManager.instance.playerActions.LightPunch.performed += OnLightPunchPerformed;
+        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
     }
 
     private void OnDisable()
@@ -62,7 +62,7 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.RunToggle.performed -= OnSwitchRunToggle;
         InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
         InputManager.instance.playerActions.Roll.performed -= OnRollPerformed;
-        InputManager.instance.playerActions.LightPunch.performed -= OnLightPunchPerformed;
+        InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
     }
 
     private void LateUpdate()
@@ -110,9 +110,9 @@ public class PlayerActionController : MonoBehaviour
         MonoManager.Run(OnRollCancel());
     }
 
-    private void OnLightPunchPerformed(InputAction.CallbackContext context)
+    private void OnLightAttackPerformed(InputAction.CallbackContext context)
     {
-        m_IsLightPunchPerformed = true;
+        m_IsLightAttackPerformed = true;
         MonoManager.Run(OnAttackCancel());
     }
 
@@ -131,7 +131,7 @@ public class PlayerActionController : MonoBehaviour
     private IEnumerator OnAttackCancel()
     {
         yield return m_WaitForEndOfFrame;
-        m_IsLightPunchPerformed = false;
+        m_IsLightAttackPerformed = false;
     }
     #endregion
 }

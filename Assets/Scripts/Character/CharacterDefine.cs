@@ -1,7 +1,6 @@
+﻿using System;
 
-using System;
-
-public enum EPlayerState : UInt16
+public enum ECharacterState : UInt16
 {
     Idle = 0,
     Walk,

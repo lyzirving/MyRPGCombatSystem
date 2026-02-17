@@ -25,27 +25,27 @@ public class PlayerStateMove : PlayerStateGrounded
 
     public override void Update()
     {
-        if (m_Player.action.isLightPunch)
+        if (m_Player.action.isLightAttack)
         {
-            m_Player.ChangeState(EPlayerState.Attack);
+            m_Player.ChangeState(ECharacterState.Attack);
             return;
         }
 
         if (!m_Player.action.isMoving)
         {
-            m_Player.ChangeState(EPlayerState.Idle);
+            m_Player.ChangeState(ECharacterState.Idle);
             return;
         }
 
         if (m_Player.action.isRoll)
         {
-            m_Player.ChangeState(EPlayerState.Roll);
+            m_Player.ChangeState(ECharacterState.Roll);
             return;
         }
 
         if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(EPlayerState.Jump, new ChangeStateArgs.Builder(m_FootStep).Build());
+            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(m_FootStep));
             return;
         }
     }

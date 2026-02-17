@@ -152,7 +152,7 @@ public class ResizableCapsuleCollider : MonoBehaviour
     {
         try
         {
-            m_WalkableCheckBox = transform.Find("CollideCheck").Find("WalkableCheck").GetComponent<BoxCollider>();
+            m_WalkableCheckBox = transform.Find("WalkableCheck").GetComponent<BoxCollider>();
         }
         catch (Exception e)
         {

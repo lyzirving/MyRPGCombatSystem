@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavior
+public class PlayerController : CharacterControllerBase
 {
     public PlayerConfig config = new PlayerConfig();
     [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
@@ -8,23 +8,13 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
-    public Rigidbody rigidBody { get => m_Rigidbody; }
-    public CapsuleCollider capsuleCollider { get => m_CapsuleCollider; }
-    public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
-    public PlayerAttrs attrs { get => m_Attrs; }
     public PlayerActionController action { get => m_ActionController; }
-    public AttackComponent attackComponent { get => m_AttackComponent; }
+    public AttackComponent attackComponent { get => m_AttackComponent; } 
 
-    private PlayerAttrs m_Attrs = new PlayerAttrs();
-    private StateMachine m_StateMachine;    
-
-    // -------- Component in current start --------
-    private Rigidbody m_Rigidbody;
-    private CapsuleCollider m_CapsuleCollider;
-    private ResizableCapsuleCollider m_ResizableCapsuleCollider;
+    // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
     private AudioSource m_AudioSource;
-    // -------- Component in current end --------
+    // -------- Component in current node end --------
 
     // -------- Components in children start ------
     private PlayerModel m_PlayerModel;
@@ -34,35 +24,20 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     #region State Methods
     private void Awake()
     {
-        m_ActionController = GetComponent<PlayerActionController>();        
-        m_Rigidbody = GetComponent<Rigidbody>();
-        if (m_Rigidbody == null)
-            throw new System.Exception("err, Rigidbody hasn't been asigned.");
+        base.Init();
 
-        m_CapsuleCollider = GetComponent<CapsuleCollider>();
-        if (m_CapsuleCollider == null)
-            throw new System.Exception("err, CapsuleCollider hasn't been asigned.");
+        m_ActionController = GetComponent<PlayerActionController>();        
 
         m_AudioSource = GetComponent<AudioSource>();
-        if (m_AudioSource == null)
-            throw new System.Exception("err, AudioSource hasn't been asigned.");
 
         m_AttackComponent = GetComponent<AttackComponent>();
-        if (m_AttackComponent == null)
-            throw new System.Exception("err, PlayerAttackComponent hasn't been asigned.");
         m_AttackComponent.Init(this);
 
-        m_ResizableCapsuleCollider = gameObject.AddComponent<ResizableCapsuleCollider>();
-        m_StateMachine = new StateMachine();
         m_AnimationConsts = new PlayerAnimationConsts();
-
-        m_StateMachine.Init(this);
         m_AnimationConsts.Init();
 
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
-        if (m_PlayerModel == null)
-            throw new System.Exception("err, PlayerModel hasn't been asigned in children.");
         m_PlayerModel.Init(this);
         m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
         m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);        
@@ -71,7 +46,7 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        ChangeState(EPlayerState.Idle);
+        ChangeState(ECharacterState.Idle);
     }
 
     private void OnDisable()
@@ -92,43 +67,6 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     #endregion
 
     #region Main Methods
-    public void ChangeState(EPlayerState state, ChangeStateArgs args = default(ChangeStateArgs))
-    {
-        m_Attrs.currentState = state;
-        switch (state)
-        {
-            case EPlayerState.Idle:
-                m_StateMachine?.ChangeState<PlayerStateIdle>(args);
-                break;
-            case EPlayerState.Walk:
-                m_StateMachine?.ChangeState<PlayerStateWalk>(args);
-                break;
-            case EPlayerState.Run:
-                m_StateMachine?.ChangeState<PlayerStateRun>(args);
-                break;
-            case EPlayerState.Jump:
-                m_StateMachine?.ChangeState<PlayerStateJump>(args);
-                break;
-            case EPlayerState.JumpIdle:
-                m_StateMachine?.ChangeState<PlayerStateJumpIdle>(args);
-                break;
-            case EPlayerState.Roll:
-                m_StateMachine?.ChangeState<PlayerStateRoll>(args);
-                break;
-            case EPlayerState.Falling:
-                m_StateMachine?.ChangeState<PlayerStateFalling>(args);
-                break;
-            case EPlayerState.Land:
-                m_StateMachine?.ChangeState<PlayerStateLand>(args);
-                break;
-            case EPlayerState.Attack:
-                m_StateMachine?.ChangeState<PlayerStateAttack>(args);
-                break;
-            default:
-                break;
-        }
-    }
-
     private void OnLeftFootDown()
     {
         OnFootStep();
@@ -140,31 +78,68 @@ public class PlayerController : MonoBehaviour, IStateMachineOwner, IPlayerBehavi
     }
     #endregion
 
-    #region IPlayerBehaviour
-    public void OnStartAttack(SkillData config)
+    #region IStateMachineOwner Methods
+    public override void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs))
     {
-    }    
+        switch (state)
+        {
+            case ECharacterState.Idle:
+                m_StateMachine?.ChangeState<PlayerStateIdle>(args);
+                break;
+            case ECharacterState.Walk:
+                m_StateMachine?.ChangeState<PlayerStateWalk>(args);
+                break;
+            case ECharacterState.Run:
+                m_StateMachine?.ChangeState<PlayerStateRun>(args);
+                break;
+            case ECharacterState.Jump:
+                m_StateMachine?.ChangeState<PlayerStateJump>(args);
+                break;
+            case ECharacterState.JumpIdle:
+                m_StateMachine?.ChangeState<PlayerStateJumpIdle>(args);
+                break;
+            case ECharacterState.Roll:
+                m_StateMachine?.ChangeState<PlayerStateRoll>(args);
+                break;
+            case ECharacterState.Falling:
+                m_StateMachine?.ChangeState<PlayerStateFalling>(args);
+                break;
+            case ECharacterState.Land:
+                m_StateMachine?.ChangeState<PlayerStateLand>(args);
+                break;
+            case ECharacterState.Attack:
+                m_StateMachine?.ChangeState<PlayerStateAttack>(args);
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
 
-    public void OnAttackHit(SkillData config, ISkillTarget target, Vector3 hitPos)
+    #region ICharacterBehavior Methods
+    public override bool isLightAttack { get => m_ActionController.isLightAttack; }
+
+    public override void OnAttackBegin()
+    {
+        m_AttackComponent.attackBox.OnAttackBegin();
+    }
+
+    public override void OnAttackEnd()
+    {
+        m_AttackComponent.attackBox.OnAttackEnd();
+    }
+
+    public override void OnAttackHit(SkillData config, ICharacterBehavior target, Vector3 hitPos)
     {
         target?.OnDamage(config.damage);
     }
 
-    public void OnStopAttack(SkillData config)
-    {
-    }
-
-    public void OnFootStep()
+    public override void OnFootStep()
     {
         if (footStepAudioClips == null || footStepAudioClips.Length == 0)
             return;
 
         m_AudioSource.PlayOneShot(footStepAudioClips[1]);
-    }
-
-    public PlayerActionController PlayerAction()
-    {
-        return m_ActionController;
     }
     #endregion
 }

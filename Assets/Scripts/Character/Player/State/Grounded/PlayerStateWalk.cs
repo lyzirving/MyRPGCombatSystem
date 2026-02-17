@@ -20,7 +20,7 @@ public class PlayerStateWalk : PlayerStateMove
     {
         if (m_Player.action.shouldRun)
         {
-            m_Player.ChangeState(EPlayerState.Run);
+            m_Player.ChangeState(ECharacterState.Run);
             return;
         }
 

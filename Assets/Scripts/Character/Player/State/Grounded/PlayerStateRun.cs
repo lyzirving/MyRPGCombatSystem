@@ -21,7 +21,7 @@ public class PlayerStateRun : PlayerStateMove
     {        
         if (!m_Player.action.shouldRun)
         {
-            m_Player.ChangeState(EPlayerState.Walk);
+            m_Player.ChangeState(ECharacterState.Walk);
             return;
         }
 

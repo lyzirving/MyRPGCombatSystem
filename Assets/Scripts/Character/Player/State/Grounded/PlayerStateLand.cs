@@ -24,13 +24,13 @@ public class PlayerStateLand : PlayerStateGrounded
     {
         if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(EPlayerState.Jump);
+            m_Player.ChangeState(ECharacterState.Jump);
             return;
         }
 
         if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
+            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
             return;
         }
     }
@@ -42,6 +42,6 @@ public class PlayerStateLand : PlayerStateGrounded
 
     private void HandleLandTransition(in AnimationEventInfo info)
     {
-        m_Player.ChangeState(EPlayerState.Idle);
+        m_Player.ChangeState(ECharacterState.Idle);
     }
 }

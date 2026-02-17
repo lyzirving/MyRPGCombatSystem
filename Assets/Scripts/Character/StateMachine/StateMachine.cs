@@ -12,10 +12,6 @@ public class StateMachine
     public bool hasState { get => m_CurrentState != null; }
     public Type currentStateType { get => m_CurrentState.GetType(); }     
 
-
-    /// <summary>
-    /// 初始化
-    /// </summary>
     public void Init(IStateMachineOwner owner)
     {
         m_Owner = owner;
@@ -23,8 +19,7 @@ public class StateMachine
 
     public bool ChangeState<T>(ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
     {
-        // 状态一致，并且不需要刷新状态，则不需要进行切换
-        if (hasState && currentStateType == typeof(T) && !args.reCurrstate) 
+        if (hasState && currentStateType == typeof(T) && !args.reEnterState) 
             return false;
 
         var exitState = m_CurrentState;
@@ -35,9 +30,6 @@ public class StateMachine
         return true;
     }    
 
-    /// <summary>
-    /// 停止工作，释放资源
-    /// </summary>
     public void Stop()
     {
         OnStateExit(m_CurrentState, null);

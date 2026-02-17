@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animation: LightKickLeft
   crossFadeInTime: 0.15
-  inputWindowDuration: 0.2
+  inputWindowDuration: 0.3
   attackBox: LeftFootAttackBox
   action: 1
   damage: 10

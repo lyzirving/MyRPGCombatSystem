@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ComboController
 {
-    private IPlayerBehavior m_PlayerBehavior = null;
+    private ICharacterBehavior m_PlayerBehavior = null;
     private ComboSequence[] m_ComboSequence = null;    
     private float m_StartTime = -1;
 
@@ -16,7 +16,7 @@ public class ComboController
     public SkillData currentSkill { get => m_ComboSequence[comboIndex].skillConfigs[skillIndex]; }
     public SkillData nextSkill { get => m_ComboSequence[comboIndex].skillConfigs[skillIndex + 1]; }
 
-    public void Init(IPlayerBehavior playerBehavior, ComboSequence[] comboSequences)
+    public void Init(ICharacterBehavior playerBehavior, ComboSequence[] comboSequences)
     {
         m_PlayerBehavior = playerBehavior;
         m_ComboSequence = comboSequences;
@@ -48,6 +48,7 @@ public class ComboController
         if (!isComboStart || !hasNextSkill)
             return false;
 
+        // Check whether time exceeds the input floating window
         if(Time.time > (m_StartTime + nextSkill.inputWindowDuration))
             return false;
 
@@ -67,9 +68,8 @@ public class ComboController
     {
         switch (action)
         {
-            case CombatDefine.EAttack.LP:
-                return m_PlayerBehavior.PlayerAction().isLightPunch;
-            case CombatDefine.EAttack.LK:
+            case CombatDefine.EAttack.LA:
+                return m_PlayerBehavior.isLightAttack;
             default:
                 return false;
         }

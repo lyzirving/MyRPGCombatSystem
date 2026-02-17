@@ -17,7 +17,7 @@ public class AttackComponent : MonoBehaviour
     }
 
     #region Main Method
-    public void Init(IPlayerBehavior playerBehavior)
+    public void Init(ICharacterBehavior playerBehavior)
     {
         m_Controller.Init(playerBehavior, m_ComboSequences);
 
@@ -53,7 +53,7 @@ public class AttackComponent : MonoBehaviour
     }
     #endregion
 
-    private void CreateSkillHotspotIndex(IPlayerBehavior playerBehavior)
+    private void CreateSkillHotspotIndex(ICharacterBehavior playerBehavior)
     {
         if (m_ComboSequences == null || m_ComboSequences.Length == 0)
         {

@@ -213,7 +213,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LightPunchLeft
-  m_Speed: 1.3
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2021933881593316196}
@@ -248,27 +248,15 @@ MonoBehaviour:
   events:
   - type: 101
     launchTime: 0.195
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 102
     launchTime: 0.25
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 103
     launchTime: 0.33
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 502
     launchTime: 0.6
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1101 &-5345188726951460509
 AnimatorStateTransition:
@@ -377,15 +365,9 @@ MonoBehaviour:
   events:
   - type: 2
     launchTime: 0.332
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 3
     launchTime: 0.805
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1101 &-4178942507301044198
 AnimatorStateTransition:
@@ -526,7 +508,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LightPunchRight
-  m_Speed: 1.3
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 6912379807557224185}
@@ -653,15 +635,9 @@ MonoBehaviour:
   events:
   - type: 2
     launchTime: 0.312
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 3
     launchTime: 0.829
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1101 &-608982482892726894
 AnimatorStateTransition:
@@ -869,7 +845,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LightKickRight
-  m_Speed: 1.2
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -5345188726951460509}
@@ -1427,27 +1403,15 @@ MonoBehaviour:
   events:
   - type: 101
     launchTime: 0.195
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 102
     launchTime: 0.25
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 103
     launchTime: 0.33
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 502
     launchTime: 0.6
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1102 &5093068144199259173
 AnimatorState:
@@ -1491,15 +1455,9 @@ MonoBehaviour:
   events:
   - type: 501
     launchTime: 0.2
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 502
     launchTime: 0.95
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!114 &6079573591629301077
 MonoBehaviour:
@@ -1516,9 +1474,6 @@ MonoBehaviour:
   events:
   - type: 502
     launchTime: 0.6
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1109 &6104294288256011478
 AnimatorTransition:
@@ -1660,9 +1615,6 @@ MonoBehaviour:
   events:
   - type: 502
     launchTime: 0.9
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1109 &7555056403583578209
 AnimatorTransition:
@@ -1696,27 +1648,15 @@ MonoBehaviour:
   events:
   - type: 101
     launchTime: 0.21
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 102
     launchTime: 0.37
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 103
     launchTime: 0.47
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 502
     launchTime: 0.58
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1102 &7843990225792693248
 AnimatorState:
@@ -1856,15 +1796,9 @@ MonoBehaviour:
   events:
   - type: 501
     launchTime: 0.2
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
   - type: 502
     launchTime: 0.95
-    triggerOnce: 0
-    loopCnt: 0
-    hasTriggered: 0
     triggerTime: 0
 --- !u!1109 &9139472119328330988
 AnimatorTransition:

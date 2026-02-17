@@ -16,14 +16,13 @@ public class AnimationEventTriggerEditor : Editor
     public override void OnInspectorGUI()
     {        
         AnimationEventTrigger behaviour = (AnimationEventTrigger)target;
-        DrawBehaviorAttrs(behaviour);
-
-        if (!Validate(behaviour, out string errorMessage))
+        if (!FindValidClip(behaviour, out string errorMessage))
         {
             EditorGUILayout.HelpBox(errorMessage, MessageType.Info);
             return;
         }
-
+        DrawBehaviorAttrs(behaviour);
+      
         // Make TextField readonly
         GUI.enabled = false;
         EditorGUILayout.TextField("Current Animation", m_PreviewClip != null ? m_PreviewClip.name : "null");
@@ -57,7 +56,9 @@ public class AnimationEventTriggerEditor : Editor
     {
         EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
-        EditorGUI.EndDisabledGroup();        
+        EditorGUI.EndDisabledGroup();
+
+        if (m_PreviewClip == null) return;
 
         if (GUILayout.Button("Add Event"))
         {
@@ -112,6 +113,9 @@ public class AnimationEventTriggerEditor : Editor
             var e = behaviour.events[i];            
             e.type = (AnimationEventType)EditorGUILayout.EnumPopup($"Event{i}", e.type);
             e.launchTime = EditorGUILayout.Slider("LaunchTime", e.launchTime, 0f, 1f);
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.FloatField("GameTime", e.launchTime * m_PreviewClip.length);
+            EditorGUI.EndDisabledGroup();
             EditorGUILayout.Space();
         }
 
@@ -127,7 +131,7 @@ public class AnimationEventTriggerEditor : Editor
         }
     }
 
-    private bool Validate(AnimationEventTrigger behaviour, out string errorMessage)
+    private bool FindValidClip(AnimationEventTrigger behaviour, out string errorMessage)
     {
         AnimatorController controller = GetValidAnimatorController(out errorMessage);
         if (controller == null) return false;

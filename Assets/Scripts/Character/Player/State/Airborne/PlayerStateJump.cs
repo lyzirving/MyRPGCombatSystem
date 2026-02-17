@@ -36,13 +36,13 @@ public class PlayerStateJump : PlayerStateAirborne
             if (!m_IsJumpTrigger)
             {
                 if(m_Player.action.isMoving)
-                    m_Player.ChangeState(m_Player.action.shouldRun ? EPlayerState.Run : EPlayerState.Walk);
+                    m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
                 else
-                    m_Player.ChangeState(EPlayerState.Idle);
+                    m_Player.ChangeState(ECharacterState.Idle);
             }
             else
             { 
-                m_Player.ChangeState(EPlayerState.JumpIdle, new ChangeStateArgs.Builder(m_FootStep).Build());
+                m_Player.ChangeState(ECharacterState.JumpIdle, new ChangeStateArgs(m_FootStep));
             }            
         }
     }

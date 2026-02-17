@@ -5,8 +5,8 @@ public class AttackBox : MonoBehaviour
 {
     private Collider m_Collider;
     private HashSet<string> m_TagHashSet = new();
-    private Dictionary<int, ISkillTarget> m_HitTargets = new Dictionary<int, ISkillTarget>();
-    private IPlayerBehavior m_PlayerBehavior;
+    private Dictionary<int, ICharacterBehavior> m_HitTargets = new Dictionary<int, ICharacterBehavior>();
+    private ICharacterBehavior m_PlayerBehavior;
 
     public SkillData skillConfig;
 
@@ -39,23 +39,23 @@ public class AttackBox : MonoBehaviour
         }
         else 
         {
-            var comp = other.GetComponentInParent<ISkillTarget>();
-            if (comp != null)
+            var target = other.GetComponentInParent<ICharacterBehavior>();
+            if (target != null)
             {
-                m_HitTargets.Add(other.GetInstanceID(), comp);
-                m_PlayerBehavior?.OnAttackHit(skillConfig, comp, other.ClosestPoint(transform.position));
+                m_HitTargets.Add(other.GetInstanceID(), target);
+                m_PlayerBehavior?.OnAttackHit(skillConfig, target, other.ClosestPoint(transform.position));
             }
         }
     }
     #endregion
 
     #region Main Methods
-    public void Init(IPlayerBehavior playerBehavior)
+    public void Init(ICharacterBehavior playerBehavior)
     {
         m_PlayerBehavior = playerBehavior;
     }
 
-    public void OnStartAttack()
+    public void OnAttackBegin()
     {
         if (m_Collider == null)
             return;
@@ -64,7 +64,7 @@ public class AttackBox : MonoBehaviour
         m_HitTargets.Clear();
     }
 
-    public void OnStopAttack()
+    public void OnAttackEnd()
     {
         if (m_Collider == null)
             return;
