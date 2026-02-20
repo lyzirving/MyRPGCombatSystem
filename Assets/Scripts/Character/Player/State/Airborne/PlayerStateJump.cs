@@ -60,13 +60,13 @@ public class PlayerStateJump : PlayerStateAirborne
 
     private void Jump()
     {        
-        Vector3 jumpDirection = GetTargetDirection();
+        Vector3 jumpDirection = m_Player.GetTargetDirection();
         Vector3 jumpForce = m_Player.attrs.jumpForce;
 
         jumpForce.x *= jumpDirection.x;
         jumpForce.z *= jumpDirection.z;
 
-        ResetVelocity();
+        m_Player.ResetVelocity();
 
         m_Player.rigidBody.AddForce(jumpForce, ForceMode.VelocityChange);
     }

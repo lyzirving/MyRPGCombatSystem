@@ -22,7 +22,7 @@ public class PlayerStateJumpIdle : PlayerStateAirborne
 
     public override void Update()
     {
-        if (isMovingUp)
+        if (m_Player.isMovingUp)
             return;
 
         m_Player.ChangeState(ECharacterState.Falling, new ChangeStateArgs(m_FootStep));

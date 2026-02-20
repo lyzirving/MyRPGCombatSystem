@@ -10,7 +10,7 @@ public class PlayerStateFalling : PlayerStateAirborne
         base.Enter(exitState, args);
         m_AniHash = args.footStep == EFootStep.LeftFootStep ? m_Player.animConsts.fallLeftHash : m_Player.animConsts.fallRightHash;
         m_Player.model.StartAnimation(m_AniHash);
-        ResetVerticalVelocity();
+        m_Player.ResetVerticalVelocity();
 
         m_Player.resizableCapsule.StoreStepHeightPercent();
         // Don't override WalkableCheck
@@ -27,7 +27,7 @@ public class PlayerStateFalling : PlayerStateAirborne
 
     public override void FixedUpdate()
     {
-        RotateToTargetDir(GetTargetDirection());
+        m_Player.RotateToTargetDir(m_Player.GetTargetDirection(), m_Player.config.rotateSpeed);
         LimitVerticalVelocity();
     }
 
@@ -39,7 +39,7 @@ public class PlayerStateFalling : PlayerStateAirborne
 
     private void LimitVerticalVelocity()
     {
-        var vel = playerVerticalVelocity;
+        var vel = m_Player.verticalVelocity;
         if (vel.y >= -m_Player.config.fallSpeedLimit)
             return;
 

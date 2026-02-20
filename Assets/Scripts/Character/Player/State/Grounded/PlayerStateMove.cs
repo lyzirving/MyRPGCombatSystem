@@ -52,7 +52,7 @@ public class PlayerStateMove : PlayerStateGrounded
 
     public override void FixedUpdate()
     {
-        Float();
+        m_Player.Floating();
 
         Move();
     }    
@@ -62,16 +62,16 @@ public class PlayerStateMove : PlayerStateGrounded
         if (!m_Player.action.isMoving)
             return;
 
-        Vector3 targetDir = GetTargetDirection();
+        Vector3 targetDir = m_Player.GetTargetDirection();
 
-        RotateToTargetDir(targetDir);
+        m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
 
         MoveAt(targetDir);
     }
 
     protected void MoveAt(in Vector3 targetDir)
     {
-        m_Player.rigidBody.AddForce(targetDir * movementSpeed - playerHorizonVelocity, ForceMode.VelocityChange);
+        m_Player.rigidBody.AddForce(targetDir * m_Player.movementSpeed - m_Player.horizontalVelocity, ForceMode.VelocityChange);
     }
 
     protected void OnLeftFootStep()

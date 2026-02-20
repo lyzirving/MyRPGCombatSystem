@@ -63,9 +63,8 @@ public class PlayerStateAttack : PlayerStateCombat
 
     public override void FixedUpdate()
     {
-        ResetVelocity();
-
-        Float();
+        m_Player.ResetVelocity();
+        m_Player.Floating();
     }
 
     private void HandleAttackTransit(in AnimationEventInfo info)

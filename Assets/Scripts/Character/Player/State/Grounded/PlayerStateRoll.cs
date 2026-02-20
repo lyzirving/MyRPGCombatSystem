@@ -13,7 +13,7 @@ public class PlayerStateRoll : PlayerStateMove
 
         m_ShouldTransit = false;
         m_Player.attrs.speedModify = m_Player.config.rollSpeedModify;
-        m_Direction = GetTargetDirection();
+        m_Direction = m_Player.GetTargetDirection();
     }
 
     public override void Exit(StateBase newState)
@@ -43,7 +43,7 @@ public class PlayerStateRoll : PlayerStateMove
         if (m_ShouldTransit)
             return;
 
-        Float();
+        m_Player.Floating();
 
         MoveAt(m_Direction);
     }

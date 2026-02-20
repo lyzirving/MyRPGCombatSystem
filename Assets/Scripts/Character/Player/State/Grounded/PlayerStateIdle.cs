@@ -1,4 +1,3 @@
-using UnityEngine;
 
 public class PlayerStateIdle : PlayerStateGrounded
 {
@@ -46,8 +45,7 @@ public class PlayerStateIdle : PlayerStateGrounded
 
     public override void FixedUpdate()
     {
-        ResetVelocity();
-
-        Float();        
+        m_Player.ResetVelocity();
+        m_Player.Floating();
     }
 }

@@ -1,11 +1,13 @@
 using UnityEngine;
+using static UnityEngine.Rendering.STP;
 
 public class PlayerController : CharacterControllerBase
 {
     public PlayerConfig config = new PlayerConfig();
     [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
-    public AudioClip[] footStepAudioClips;       
-    
+    public AudioClip[] footStepAudioClips;
+
+    public float movementSpeed => config.baseSpeed * m_Attrs.speedModify;
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
     public PlayerActionController action { get => m_ActionController; }
@@ -14,11 +16,11 @@ public class PlayerController : CharacterControllerBase
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
     private AudioSource m_AudioSource;
+    private AttackComponent m_AttackComponent;
     // -------- Component in current node end --------
 
     // -------- Components in children start ------
-    private PlayerModel m_PlayerModel;
-    private AttackComponent m_AttackComponent;
+    private PlayerModel m_PlayerModel;    
     // -------- Components in children end ------
 
     #region State Methods
@@ -26,8 +28,7 @@ public class PlayerController : CharacterControllerBase
     {
         base.Init();
 
-        m_ActionController = GetComponent<PlayerActionController>();        
-
+        m_ActionController = GetComponent<PlayerActionController>();
         m_AudioSource = GetComponent<AudioSource>();
 
         m_AttackComponent = GetComponent<AttackComponent>();
@@ -67,6 +68,14 @@ public class PlayerController : CharacterControllerBase
     #endregion
 
     #region Main Methods
+    public Vector3 GetTargetDirection()
+    {
+        if (!m_ActionController.isMoving)
+            return this.transform.forward;
+
+        return cameraRotation * m_ActionController.GetInputDirection();
+    }
+
     private void OnLeftFootDown()
     {
         OnFootStep();

@@ -27,20 +27,9 @@ public class PlayerActionController : MonoBehaviour
     private float m_CinemachineTargetYaw = 0f;
     // ------------------ Camera Control End ----------------------
 
-    public Vector2 playerMovement
-    {
-        get => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
-    }
-
-    public Vector2 cameraMovement
-    {
-        get => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
-    }
-
-    public bool isCameraMoving
-    {
-        get => cameraMovement != Vector2.zero;
-    }
+    public Vector2 playerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
+    public Vector2 cameraMovement => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
+    public bool isCameraMoving => cameraMovement != Vector2.zero;
 
     public bool shouldRun { get => m_ShouldPlayerRun; }
     public bool isMoving { get => playerMovement != Vector2.zero; }
@@ -80,6 +69,16 @@ public class PlayerActionController : MonoBehaviour
     #endregion
 
     #region Main Methods
+    public Vector3 GetInputDirection()
+    {
+        Vector3 move = Vector3.zero;
+        Vector2 input = playerMovement;
+        move.x = input.x;
+        move.z = input.y;
+        move = Vector3.ClampMagnitude(move, 1f);
+        return move;
+    }
+
     private float UpdateRotation(float current, float input, float min, float max, bool isXAxis, float speed)
     {
         current += (isXAxis ? -input : input) * speed;
