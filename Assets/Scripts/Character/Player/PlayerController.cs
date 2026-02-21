@@ -1,15 +1,12 @@
 using UnityEngine;
-using static UnityEngine.Rendering.STP;
 
 public class PlayerController : CharacterControllerBase
 {
     public PlayerConfig config = new PlayerConfig();
-    [SerializeField] private PlayerAnimationConsts m_AnimationConsts;
     public AudioClip[] footStepAudioClips;
 
     public float movementSpeed => config.baseSpeed * m_Attrs.speedModify;
     public PlayerModel model { get => m_PlayerModel; }
-    public PlayerAnimationConsts animConsts { get => m_AnimationConsts; }
     public PlayerActionController action { get => m_ActionController; }
     public AttackComponent attackComponent { get => m_AttackComponent; } 
 
@@ -33,9 +30,6 @@ public class PlayerController : CharacterControllerBase
 
         m_AttackComponent = GetComponent<AttackComponent>();
         m_AttackComponent.Init(this);
-
-        m_AnimationConsts = new PlayerAnimationConsts();
-        m_AnimationConsts.Init();
 
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();

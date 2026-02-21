@@ -4,7 +4,7 @@ public class PlayerStateLand : PlayerStateGrounded
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
-        m_Player.model.StartAnimation(m_Player.animConsts.landHash);
+        m_Player.model.StartAnimation(AnimationConsts.land);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleLandTransition);
 
         m_Player.attrs.speedModify = 0f;
@@ -16,7 +16,7 @@ public class PlayerStateLand : PlayerStateGrounded
     public override void Exit(StateBase newState)
     {
         AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleLandTransition);
-        m_Player.model.StopAnimation(m_Player.animConsts.landHash);
+        m_Player.model.StopAnimation(AnimationConsts.land);
         base.Exit(newState);
     }
 

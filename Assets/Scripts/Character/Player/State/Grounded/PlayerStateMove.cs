@@ -9,7 +9,7 @@ public class PlayerStateMove : PlayerStateGrounded
         base.Enter(exitState, args);
         m_Player.model.RegisterLeftFootStepAction(OnLeftFootStep);
         m_Player.model.RegisterRightFootStepAction(OnRightFootStep);
-        m_Player.model.StartAnimation(m_Player.animConsts.moveHash);
+        m_Player.model.StartAnimation(AnimationConsts.move);
     }
 
     public override void Exit(StateBase newState)
@@ -18,7 +18,7 @@ public class PlayerStateMove : PlayerStateGrounded
         m_Player.model.RemoveRightFootStepAction(OnRightFootStep);
         if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateMove)))
         {
-            m_Player.model.StopAnimation(m_Player.animConsts.moveHash);
+            m_Player.model.StopAnimation(AnimationConsts.move);
         }
         base.Exit(newState);
     }

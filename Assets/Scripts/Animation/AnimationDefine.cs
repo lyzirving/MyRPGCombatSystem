@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public enum AnimationEventType : UInt32
 {
@@ -17,3 +18,61 @@ public enum AnimationEventType : UInt32
     AnimationStart,
     AnimationTransit,    
 }
+
+public static class AnimationConsts
+{
+    private const string isGroundName = "isGrounded";
+    private const string isIdleName = "isIdling";
+    private const string isMovingName = "isMoving";
+    private const string isWalkName = "isWalking";
+    private const string isRunName = "isRunning";
+    private const string isRollName = "isRolling";
+    private const string isLandName = "isLand";
+
+    private const string combatName = "isCombat";
+
+    private const string airborneName = "isAirborne";
+    private const string jumpStartLeftName = "isJumpStartLeft";
+    private const string jumpStartRightName = "isJumpStartRight";
+    private const string jumpIdleName = "isJumpIdle";
+    private const string fallLeftName = "isFallingLeft";
+    private const string fallRightName = "isFallingRight";
+
+    public static int ground { get; private set; }
+    public static int idle { get; private set; }
+    public static int move { get; private set; }
+    public static int walk { get; private set; }
+    public static int run { get; private set; }
+    public static int roll { get; private set; }
+    public static int land { get; private set; }
+
+    public static int combat { get; private set; }
+
+    public static int airborne { get; private set; }
+    public static int jumpStartLeft { get; private set; }
+    public static int jumpStartRight { get; private set; }
+    public static int jumpIdle { get; private set; }
+    public static int fallLeft { get; private set; }
+    public static int fallRight { get; private set; }
+
+    public static void Init()
+    {
+        ground = Animator.StringToHash(isGroundName);
+        idle = Animator.StringToHash(isIdleName);
+        move = Animator.StringToHash(isMovingName);
+        walk = Animator.StringToHash(isWalkName);
+        run = Animator.StringToHash(isRunName);
+        roll = Animator.StringToHash(isRollName);
+        land = Animator.StringToHash(isLandName);
+
+        combat = Animator.StringToHash(combatName);
+
+        airborne = Animator.StringToHash(airborneName);
+        jumpStartLeft = Animator.StringToHash(jumpStartLeftName);
+        jumpStartRight = Animator.StringToHash(jumpStartRightName);
+        jumpIdle = Animator.StringToHash(jumpIdleName);
+        fallLeft = Animator.StringToHash(fallLeftName);
+        fallRight = Animator.StringToHash(fallRightName);
+    }
+}
+

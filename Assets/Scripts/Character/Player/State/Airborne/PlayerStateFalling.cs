@@ -8,7 +8,7 @@ public class PlayerStateFalling : PlayerStateAirborne
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     { 
         base.Enter(exitState, args);
-        m_AniHash = args.footStep == EFootStep.LeftFootStep ? m_Player.animConsts.fallLeftHash : m_Player.animConsts.fallRightHash;
+        m_AniHash = args.footStep == EFootStep.LeftFootStep ? AnimationConsts.fallLeft : AnimationConsts.fallRight;
         m_Player.model.StartAnimation(m_AniHash);
         m_Player.ResetVerticalVelocity();
 

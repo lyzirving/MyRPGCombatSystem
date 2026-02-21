@@ -7,7 +7,7 @@ public class PlayerStateJumpIdle : PlayerStateAirborne
     {
         base.Enter(exitState, args);
         m_FootStep = args.footStep;
-        m_Player.model.StartAnimation(m_Player.animConsts.jumpIdleHash);
+        m_Player.model.StartAnimation(AnimationConsts.jumpIdle);
 
         m_Player.resizableCapsule.StoreStepHeightPercent();
         m_Player.resizableCapsule.SetStepHeightPercent(0f);
@@ -16,7 +16,7 @@ public class PlayerStateJumpIdle : PlayerStateAirborne
     public override void Exit(StateBase newState)
     {
         m_Player.resizableCapsule.RestoreStepHeightPercent();
-        m_Player.model.StopAnimation(m_Player.animConsts.jumpIdleHash);
+        m_Player.model.StopAnimation(AnimationConsts.jumpIdle);
         base.Exit(newState);
     }
 

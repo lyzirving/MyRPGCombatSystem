@@ -12,7 +12,7 @@ public class PlayerStateJump : PlayerStateAirborne
     {
         base.Enter(exitState, args);
         m_FootStep = args.footStep;
-        m_AnimHash = m_FootStep == EFootStep.LeftFootStep ? m_Player.animConsts.jumpStartLeftHash : m_Player.animConsts.jumpStartRightHash;
+        m_AnimHash = m_FootStep == EFootStep.LeftFootStep ? AnimationConsts.jumpStartLeft : AnimationConsts.jumpStartRight;
         m_Player.model.StartAnimation(m_AnimHash);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationStart, HandleJumpStart);
         AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleJumpStartTransit);

@@ -8,6 +8,7 @@ public class Entry : MonoBehaviour
     {
         Debug.Log("App entry");
         InputManager.Init();
+        AnimationConsts.Init();
         AnimationEventReceiver.Init();
     }
 
