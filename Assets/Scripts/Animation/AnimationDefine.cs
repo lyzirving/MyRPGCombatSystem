@@ -21,6 +21,8 @@ public enum AnimationEventType : UInt32
 
 public static class AnimationConsts
 {
+    public const string hitLayer = "HitLayer";
+
     private const string isGroundName = "isGrounded";
     private const string isIdleName = "isIdling";
     private const string isMovingName = "isMoving";
@@ -30,6 +32,7 @@ public static class AnimationConsts
     private const string isLandName = "isLand";
 
     private const string combatName = "isCombat";
+    private const string hitName = "isHit";
 
     private const string airborneName = "isAirborne";
     private const string jumpStartLeftName = "isJumpStartLeft";
@@ -47,6 +50,7 @@ public static class AnimationConsts
     public static int land { get; private set; }
 
     public static int combat { get; private set; }
+    public static int hit { get; private set; }
 
     public static int airborne { get; private set; }
     public static int jumpStartLeft { get; private set; }
@@ -66,6 +70,7 @@ public static class AnimationConsts
         land = Animator.StringToHash(isLandName);
 
         combat = Animator.StringToHash(combatName);
+        hit = Animator.StringToHash(hitName);
 
         airborne = Animator.StringToHash(airborneName);
         jumpStartLeft = Animator.StringToHash(jumpStartLeftName);

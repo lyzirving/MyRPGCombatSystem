@@ -16,17 +16,19 @@ public class AnimationEventTriggerEditor : Editor
     public override void OnInspectorGUI()
     {        
         AnimationEventTrigger behaviour = (AnimationEventTrigger)target;
+        DrawBehaviorAttrs(behaviour);
+
+        GUILayout.Space(10);
+        // Make TextField readonly
+        GUI.enabled = false;
+        EditorGUILayout.TextField("Current Animation", m_PreviewClip != null ? m_PreviewClip.name : "null");
+        GUI.enabled = true;
+
         if (!FindValidClip(behaviour, out string errorMessage))
         {
             EditorGUILayout.HelpBox(errorMessage, MessageType.Info);
             return;
         }
-        DrawBehaviorAttrs(behaviour);
-      
-        // Make TextField readonly
-        GUI.enabled = false;
-        EditorGUILayout.TextField("Current Animation", m_PreviewClip != null ? m_PreviewClip.name : "null");
-        GUI.enabled = true;
 
         GUILayout.Space(10);
         bool preview = m_PreviewAnimation;
@@ -57,8 +59,6 @@ public class AnimationEventTriggerEditor : Editor
         EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
         EditorGUI.EndDisabledGroup();
-
-        if (m_PreviewClip == null) return;
 
         if (GUILayout.Button("Add Event"))
         {
@@ -114,7 +114,7 @@ public class AnimationEventTriggerEditor : Editor
             e.type = (AnimationEventType)EditorGUILayout.EnumPopup($"Event{i}", e.type);
             e.launchTime = EditorGUILayout.Slider("LaunchTime", e.launchTime, 0f, 1f);
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.FloatField("GameTime", e.launchTime * m_PreviewClip.length);
+            EditorGUILayout.FloatField("GameTime", m_PreviewClip != null ? (e.launchTime * m_PreviewClip.length) : 0f);
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.Space();
         }

@@ -28,30 +28,7 @@ public class AttackComponent : MonoBehaviour
 
         CreateSkillHotspotIndex(playerBehavior);
         CrateSkillConnection();
-    }    
-    #endregion
-
-    #region Combo Method
-    public void BeginCombo()
-    {
-        m_Controller.BeginCombo();
     }
-
-    public bool UpdateCombo()
-    {
-        return m_Controller.UpdateCombo();
-    }
-
-    public void NextSkill()
-    {
-        m_Controller.NextSkill();
-    }
-
-    public void EndCombo()
-    {
-        m_Controller.EndCombo();
-    }
-    #endregion
 
     private void CreateSkillHotspotIndex(ICharacterBehavior playerBehavior)
     {
@@ -98,7 +75,7 @@ public class AttackComponent : MonoBehaviour
         for (int comboIndex = 0; comboIndex < m_ComboSequences.Length; ++comboIndex)
         {
             var combo = m_ComboSequences[comboIndex];
-            if(combo.skillConfigs == null)
+            if (combo.skillConfigs == null)
                 continue;
 
             for (int skillIndex = 1; skillIndex < combo.skillConfigs.Length; ++skillIndex)
@@ -108,4 +85,27 @@ public class AttackComponent : MonoBehaviour
             combo.lastSkillConfig.nextSkillIndex = -1;
         }
     }
+    #endregion
+
+    #region Combo Method
+    public void BeginCombo()
+    {
+        m_Controller.BeginCombo();
+    }
+
+    public bool UpdateCombo()
+    {
+        return m_Controller.UpdateCombo();
+    }
+
+    public void NextSkill()
+    {
+        m_Controller.NextSkill();
+    }
+
+    public void EndCombo()
+    {
+        m_Controller.EndCombo();
+    }
+    #endregion
 }

@@ -63,6 +63,16 @@ public class CharacterModel : MonoBehaviour
         m_Animator?.CrossFadeInFixedTime(name, fixedTransitionDuration);
     }
 
+    public void SetLayerWeight(int layer, float weight)
+    {
+        m_Animator?.SetLayerWeight(layer, weight);
+    }
+
+    public int GetLayerIndex(string layerName)
+    {
+        return m_Animator?.GetLayerIndex(layerName) ?? -1;
+    }
+
     public void StopAnimation(int hash)
     {
         m_Animator?.SetBool(hash, false);

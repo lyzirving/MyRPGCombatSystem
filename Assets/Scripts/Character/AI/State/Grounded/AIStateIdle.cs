@@ -14,10 +14,4 @@ public class AIStateIdle : AIStateGround
         m_AIController.model.StopAnimation(AnimationConsts.idle);
         base.Exit(newState);
     }
-
-    public override void FixedUpdate()
-    {
-        m_AIController.ResetVelocity();
-        m_AIController.Floating();
-    }
 }
