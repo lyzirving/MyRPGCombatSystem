@@ -11,10 +11,12 @@ public class AttackComponent : MonoBehaviour
     public SkillData skill { get => combo.skillConfigs[m_Controller.skillIndex]; }
     public AttackBox attackBox { get => m_AttackBox[skill.attackBoxIndex]; }
 
+    #region State Methods
     private void OnDestroy()
     {
         m_Controller.DeInit();
     }
+    #endregion
 
     #region Main Method
     public void Init(ICharacterBehavior playerBehavior)

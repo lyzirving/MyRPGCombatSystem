@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29733f686b45e9445a0a1702d7033cf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitLayerIndex: -1
 --- !u!1 &91168824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,21 +1153,6 @@ MonoBehaviour:
     jumpStartRatio: 1.3
     fallSpeedLimit: 15
     minuDistanceToBeConsiderHardFall: 3
-  m_AnimationConsts:
-    groundParamName: isGrounded
-    idleParamName: isIdling
-    movingParamName: isMoving
-    walkParamName: isWalking
-    runParamName: isRunning
-    rollParamName: isRolling
-    landParamName: isLand
-    combatParamName: isCombat
-    airborneParamName: isAirborne
-    jumpStartLeftParamName: isJumpStartLeft
-    jumpStartRightParamName: isJumpStartRight
-    jumpIdleParamName: isJumpIdle
-    fallLeftParamName: isFallingLeft
-    fallRightParamName: isFallingRight
   footStepAudioClips:
   - {fileID: 8300000, guid: f3558fa2213d261489d41540785339f1, type: 3}
   - {fileID: 8300000, guid: 022ac6ca1e548f243b8007b7f905c374, type: 3}
