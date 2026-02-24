@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,8 +10,9 @@ public class PlayerActionController : MonoBehaviour
     private bool m_ShouldPlayerRun = true;
     private bool m_IsJumpPerformed = false;
     private bool m_IsRollPerformed = false;
-    private bool m_IsLightAttackPerformed = false;    
+    private bool m_IsLightAttackPerformed = false;
     // ------------------ Action Toggle End ----------------------
+    private event Action m_LightAttackListeners;
 
     // ------------------ Camera Control Start ----------------------
     [Header("Camera Control")]
@@ -43,7 +45,7 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.RunToggle.performed += OnSwitchRunToggle;
         InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
         InputManager.instance.playerActions.Roll.performed += OnRollPerformed;
-        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
+        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;    
     }
 
     private void OnDisable()
@@ -69,6 +71,16 @@ public class PlayerActionController : MonoBehaviour
     #endregion
 
     #region Main Methods
+    public void RegisterLightAttackListener(Action listener)
+    {
+        m_LightAttackListeners += listener;
+    }
+
+    public void RemoveLightAttackListener(Action listener)
+    {
+        m_LightAttackListeners -= listener;
+    }
+
     public Vector3 GetInputDirection()
     {
         Vector3 move = Vector3.zero;
@@ -111,8 +123,15 @@ public class PlayerActionController : MonoBehaviour
 
     private void OnLightAttackPerformed(InputAction.CallbackContext context)
     {
-        m_IsLightAttackPerformed = true;
+        m_IsLightAttackPerformed = true;        
         MonoManager.Run(OnAttackCancel());
+        PerformNotity(m_LightAttackListeners);
+    }
+
+    private void PerformNotity(Action action)
+    { 
+        if(this.isActiveAndEnabled)
+            action?.Invoke();
     }
 
     private IEnumerator OnJumpCancel()

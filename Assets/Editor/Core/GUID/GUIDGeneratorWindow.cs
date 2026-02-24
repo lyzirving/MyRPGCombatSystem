@@ -20,12 +20,24 @@ public class GUIDGeneratorWindow : EditorWindow
     private string m_SearchFilter = "";
     private string m_SelectedCategory = "All";
 
+    public static GUIDDataBase database 
+    {
+        get
+        {
+            if (m_CurrentDataBase == null)
+            { 
+                LoadUniqueDatabase();
+            }
+            return m_CurrentDataBase;
+        }
+    }
+
     [MenuItem("Tools/Guid Generator", false, 100)]
     public static void ShowWindow()
     {
         var window = GetWindow<GUIDGeneratorWindow>("Guid Generator");
         window.minSize = new Vector2(600, 400);        
-    }    
+    }
 
     private void OnEnable()
     {
@@ -49,26 +61,34 @@ public class GUIDGeneratorWindow : EditorWindow
         DrawBottomButtons();
     }
 
-    static void LoadOrCreateDatabase()
+    static void LoadUniqueDatabase()
     {
-        // search for current database
-        string[] guids = AssetDatabase.FindAssets("t:GUIDDataBase");
-        if (guids.Length > 0)
+        if (m_CurrentDataBase != null)
+            return;
+
+        // search for existing database
+        string[] database = AssetDatabase.FindAssets("t:GUIDDataBase");
+        if (database.Length > 0)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            // Only one database is allowed in the project
+            string path = AssetDatabase.GUIDToAssetPath(database[0]);
             m_CurrentDataBase = AssetDatabase.LoadAssetAtPath<GUIDDataBase>(path);
         }
-        else
-        {
+    }
+
+    static void LoadOrCreateDatabase()
+    {
+        LoadUniqueDatabase();
+
+        if (m_CurrentDataBase == null)
             CreateNewDatabase();
-        }
     }
 
     static void CreateNewDatabase()
     {
         string path = EditorUtility.SaveFilePanelInProject(
             "Create GUID database",
-            "GUIDDataBase",
+            "GUIDDatabase",
             "asset",
             "Select save path"
         );
@@ -312,7 +332,7 @@ public class GUIDGeneratorWindow : EditorWindow
 
     void ShowEditWindow(GUIDEntry entry)
     {
-        GUIDEditWindow.ShowWindow(m_CurrentDataBase, entry);
+        GUIDEditorWindow.ShowWindow(m_CurrentDataBase, entry);
     }    
 
     void GenerateCode()
@@ -331,75 +351,4 @@ public class GUIDGeneratorWindow : EditorWindow
         }
     }
     #endregion
-}
-
-public class GUIDEditWindow : EditorWindow
-{
-    private GUIDDataBase database;
-    private GUIDEntry entry;
-
-    private string editName;
-    private string editCategory;
-    private string editDescription;
-
-    public static void ShowWindow(GUIDDataBase db, GUIDEntry guidEntry)
-    {
-        var window = GetWindow<GUIDEditWindow>("Edit GUID");
-        window.database = db;
-        window.entry = guidEntry;
-        window.editName = guidEntry.name;
-        window.editCategory = guidEntry.category;
-        window.editDescription = guidEntry.description;
-        window.minSize = new Vector2(400, 200);
-    }
-
-    void OnGUI()
-    {
-        if (database == null || entry == null)
-        {
-            EditorGUILayout.HelpBox("invalida date", MessageType.Error);
-            return;
-        }
-
-        EditorGUILayout.LabelField("Edit Guid Information", EditorStyles.boldLabel);
-        EditorGUILayout.Space();
-
-        EditorGUILayout.LabelField("GUID:", EditorStyles.boldLabel);
-        EditorGUILayout.LabelField(entry.guid.ToString(), EditorStyles.boldLabel, GUILayout.Height(20));
-
-        EditorGUILayout.Space();
-
-        editName = EditorGUILayout.TextField("name", editName);
-        editCategory = EditorGUILayout.TextField("category", editCategory);
-        editDescription = EditorGUILayout.TextField("description", editDescription);
-
-        EditorGUILayout.Space();
-
-        EditorGUILayout.BeginHorizontal();
-
-        if (GUILayout.Button("Save"))
-        {
-            SaveGuidChanges();
-            Close();
-        }
-
-        if (GUILayout.Button("Cancel"))
-        {
-            Close();
-        }
-
-        EditorGUILayout.EndHorizontal();
-    }
-
-    void SaveGuidChanges()
-    {
-        database.UpdateEntry(
-            entry.guid,
-            editName,
-            editCategory,
-            editDescription
-        );
-
-        Debug.Log($"GUID is updated: {editName}");
-    }
 }

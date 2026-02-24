@@ -35,7 +35,7 @@ public partial class GUIDDataBase
         sb.AppendLine("using System;");
         sb.AppendLine();
         sb.AppendLine("/// <summary>");
-        sb.AppendLine("/// Global GUID constant");
+        sb.AppendLine("/// Global GUID constants");
         sb.AppendLine("/// </summary>");
         sb.AppendLine("public static class GUIDConsts");
         sb.AppendLine("{");
@@ -50,8 +50,7 @@ public partial class GUIDDataBase
 
         foreach (var category in groupedEntries.Keys)
         {
-            sb.AppendLine($"// ===== {category} =====");
-
+            sb.AppendLine($"    // ===== {category} Category =====");
             foreach (var entry in groupedEntries[category])
             {
                 string fieldName = MakeValidIdentifier(entry.name);

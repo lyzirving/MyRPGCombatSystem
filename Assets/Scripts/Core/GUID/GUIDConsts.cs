@@ -1,21 +1,27 @@
 // ===========================================
 // Auto Generated GUID Constant Class
-// Generated Time: 2026-02-24 17:02:29
+// Generated Time: 2026-02-24 22:39:55
 // Pelease do not manually modify this file.
 // ===========================================
 
 using System;
 
 /// <summary>
-/// Global GUID constant
+/// Global GUID constants
 /// </summary>
 public static class GUIDConsts
 {
-// ===== Animation =====
+    // ===== Animation Category =====
     /// <summary>
-    /// An single instance for player animation event
-    /// Created Time: 2026-02-24 17:02:20
+    /// An instance to receive player's animation event
+    /// Created Time: 2026-02-24 21:56:24
     /// </summary>
     public const int PlayerAnimationListener = 0;
+
+    /// <summary>
+    /// An instance to receive AI's animation event
+    /// Created Time: 2026-02-24 22:39:43
+    /// </summary>
+    public const int AIAnimationListener = 1;
 
 }

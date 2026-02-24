@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 
 [CustomEditor(typeof(AnimationEventTrigger))]
-public class AnimationEventTriggerEditor : Editor
+public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
 {
     private AnimationClip m_PreviewClip;
     private bool m_PreviewAnimation = false;
@@ -60,11 +60,53 @@ public class AnimationEventTriggerEditor : Editor
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
         EditorGUI.EndDisabledGroup();
 
+        AssignListenerGuid(behaviour);
+
         if (GUILayout.Button("Add Event"))
         {
             behaviour.events.Add(new AnimationEventInfo());
         }
 
+        DrawRemoveEventPanel(behaviour);           
+
+        if (behaviour.events.Count == 0)
+            return;
+
+        string[]items = new string[behaviour.events.Count];
+        for (int i = 0; i < items.Count(); ++i)
+            items[i] = new string($"Event{i}");
+        m_PreviewSelection = EditorGUILayout.Popup("Preview Selection", m_PreviewSelection, items);
+
+        EditorGUILayout.Space();
+        DrawEventInformation(behaviour);
+
+        EditorGUILayout.HelpBox("Please click Sort to make the events ordered by launch time", MessageType.Info);
+        if (GUILayout.Button("Sort") && behaviour.events.Count > 1)
+        {
+            behaviour.events.Sort((a, b) => a.CompareTo(b));
+        }
+
+        if (GUILayout.Button("Clear All Events"))
+        {
+            behaviour.events.Clear();
+        }
+    }
+
+    private void AssignListenerGuid(AnimationEventTrigger behaviour)
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.TextField("Listener GUID", $"{behaviour.guid}", EditorStyles.textField);
+        if (GUILayout.Button("Assign Guid", GUILayout.ExpandWidth(true)))
+        {
+            GUIDSelectionWindow.ShowWindow(this, behaviour.guid);
+        }
+        EditorGUILayout.EndHorizontal();
+        if(behaviour.guid < 0)
+            EditorGUILayout.HelpBox("Please assgin a guid for your listener", MessageType.Info);
+    }
+
+    private void DrawRemoveEventPanel(AnimationEventTrigger behaviour)
+    {
         if (behaviour.events.Count <= 1)
         {
             if (GUILayout.Button("Remove Event") && behaviour.events.Count > 0)
@@ -95,39 +137,22 @@ public class AnimationEventTriggerEditor : Editor
             if (GUILayout.Button($"Remove {eventItems[m_RemoveSelection]}", GUILayout.ExpandWidth(true)))
             {
                 behaviour.events.RemoveAt(m_RemoveSelection);
-            }           
+            }
             EditorGUILayout.EndHorizontal();
-        }            
+        }
+    }
 
-        if (behaviour.events.Count == 0)
-            return;
-
-        string[]items = new string[behaviour.events.Count];
-        for (int i = 0; i < items.Count(); ++i)
-            items[i] = new string($"Event{i}");
-        m_PreviewSelection = EditorGUILayout.Popup("Preview Selection", m_PreviewSelection, items);
-
-        EditorGUILayout.Space();
+    private void DrawEventInformation(AnimationEventTrigger behaviour)
+    {
         for (int i = 0; i < behaviour.events.Count; ++i)
-        { 
-            var e = behaviour.events[i];            
+        {
+            var e = behaviour.events[i];
             e.type = (AnimationEventType)EditorGUILayout.EnumPopup($"Event{i}", e.type);
             e.launchTime = EditorGUILayout.Slider("LaunchTime", e.launchTime, 0f, 1f);
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.FloatField("GameTime", m_PreviewClip != null ? (e.launchTime * m_PreviewClip.length) : 0f);
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.Space();
-        }
-
-        EditorGUILayout.HelpBox("Please click Sort to make the events ordered by launch time", MessageType.Info);
-        if (GUILayout.Button("Sort") && behaviour.events.Count > 1)
-        {
-            behaviour.events.Sort((a, b) => a.CompareTo(b));
-        }
-
-        if (GUILayout.Button("Clear All Events"))
-        {
-            behaviour.events.Clear();
         }
     }
 
@@ -247,5 +272,12 @@ public class AnimationEventTriggerEditor : Editor
         AnimationMode.StartAnimationMode();
         AnimationMode.SampleAnimationClip(Selection.activeGameObject, m_PreviewClip, m_PreviewTime * m_PreviewClip.length);
         AnimationMode.StopAnimationMode();
+    }
+
+    public void OnGUIDSelectionChange(GUIDEntry entry)
+    {
+        if (entry == null) return;
+        AnimationEventTrigger behaviour = (AnimationEventTrigger)target;
+        behaviour.guid = entry.guid;
     }
 }

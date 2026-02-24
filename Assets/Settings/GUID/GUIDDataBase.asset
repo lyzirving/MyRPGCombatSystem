@@ -10,13 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25e9231a9eacefe4bb0536565e25b696, type: 3}
-  m_Name: GUIDDataBase
+  m_Name: GUIDDatabase
   m_EditorClassIdentifier: 
   m_GuidEntries:
   - guid: 0
     name: PlayerAnimationListener
     category: Animation
-    description: An single instance for player animation event
-    createdTime: 2026-02-24 17:02:20
-  m_LastUpdateTime: 2026-02-24 17:02:20
-  m_CurrentId: 1
+    description: An instance to receive player's animation event
+    createdTime: 2026-02-24 21:56:24
+  - guid: 1
+    name: AIAnimationListener
+    category: Animation
+    description: An instance to receive AI's animation event
+    createdTime: 2026-02-24 22:39:43
+  m_LastUpdateTime: 2026-02-24 22:39:43
+  m_CurrentId: 2

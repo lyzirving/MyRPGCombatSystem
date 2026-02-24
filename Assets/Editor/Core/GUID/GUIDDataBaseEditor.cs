@@ -21,21 +21,9 @@ public class GUIDDataBaseEditor : Editor
         { 
             var entry = entries[i];
             EditorGUILayout.LabelField($"Entry{i}", EditorStyles.boldLabel);
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"Guid", EditorStyles.boldLabel);
-            EditorGUILayout.TextField($"{entry.guid}", GUILayout.ExpandWidth(true));
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"Name", EditorStyles.boldLabel);
-            EditorGUILayout.TextField(entry.name, GUILayout.ExpandWidth(true));            
-            EditorGUILayout.EndHorizontal();            
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"Last Update Time", EditorStyles.boldLabel);
-            EditorGUILayout.TextField($"{entry.createdTime}", GUILayout.ExpandWidth(true));
-            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.TextField("Guid", $"{entry.guid}", GUILayout.ExpandWidth(true));
+            EditorGUILayout.TextField("Name", entry.name, GUILayout.ExpandWidth(true));                      
+            EditorGUILayout.TextField("Last Update Time", $"{entry.createdTime}", GUILayout.ExpandWidth(true));
 
             if (i < entries.Count - 1)
                 GUILayout.Space(10);

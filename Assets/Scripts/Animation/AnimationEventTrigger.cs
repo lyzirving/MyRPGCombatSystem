@@ -22,7 +22,9 @@ public class AnimationEventInfo : IComparable<AnimationEventInfo>
 }
 
 public class AnimationEventTrigger : StateMachineBehaviour
-{  
+{
+    // guid of event's listener
+    public int guid = -1;
     public List<AnimationEventInfo> events = new List<AnimationEventInfo>();
 
     private int m_Loop = -1;
