@@ -40,6 +40,11 @@ public class AnimationEventTrigger : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (guid < 0)
+        {
+            Debug.LogError($"instance id hasn't been assigned for animator[{animator.name}]");
+            return;
+        }
         float time = stateInfo.normalizedTime % 1f;
         m_Loop = Mathf.FloorToInt(stateInfo.normalizedTime); 
         
@@ -64,7 +69,7 @@ public class AnimationEventTrigger : StateMachineBehaviour
             return;      
 
         curEvent.triggerTime = time;
-        AnimationEventReceiver.instance.OnAnimationEventTrigger(curEvent);
+        AnimationEventReceiver.instance.OnAnimationEventTrigger(guid, curEvent);
 
         ++m_Index;
     }

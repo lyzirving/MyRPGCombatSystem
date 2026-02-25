@@ -11,12 +11,12 @@ public class AIStateHit : AIStateCombat
         m_AIController.model.StartAnimation(AnimationConsts.hit);
         m_AIController.model.SetLayerWeight(m_AIController.hitLayerIndex, 0.5f);
 
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleTransit);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.AIAnimation, AnimationEventType.AnimationTransit, HandleTransit);
     }
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleTransit);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.AIAnimation, AnimationEventType.AnimationTransit, HandleTransit);
         m_AIController.model.SetLayerWeight(m_AIController.hitLayerIndex, 0f);
         m_AIController.model.StopAnimation(AnimationConsts.hit);
         base.Exit(newState);

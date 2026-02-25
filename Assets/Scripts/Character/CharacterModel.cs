@@ -20,20 +20,20 @@ public class CharacterModel : MonoBehaviour
 
     private void Start()
     {
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.RightFootStep, OnRightFootStep);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.LeftFootStep, OnLeftFootStep);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.RightFootStep, OnRightFootStep);
 
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackStart, OnAttackStart);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackEnd, OnAttackEnd);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, OnAttackStart);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnDisable()
     {
-        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.RightFootStep, OnRightFootStep);
+        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.LeftFootStep, OnLeftFootStep);
+        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.RightFootStep, OnRightFootStep);
 
-        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.AttackStart, OnAttackStart);
-        AnimationEventReceiver.instance?.RemoveAction(AnimationEventType.AttackEnd, OnAttackEnd);
+        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, OnAttackStart);
+        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnAnimatorMove()

@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GuidEntries:
   - guid: 0
-    name: PlayerAnimationListener
+    name: PlayerAnimation
     category: Animation
     description: An instance to receive player's animation event
     createdTime: 2026-02-24 21:56:24
   - guid: 1
-    name: AIAnimationListener
+    name: AIAnimation
     category: Animation
     description: An instance to receive AI's animation event
     createdTime: 2026-02-24 22:39:43
-  m_LastUpdateTime: 2026-02-24 22:39:43
+  m_LastUpdateTime: 2026-02-25 20:55:04
   m_CurrentId: 2

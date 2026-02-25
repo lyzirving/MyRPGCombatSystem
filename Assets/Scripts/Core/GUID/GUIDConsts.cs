@@ -1,6 +1,6 @@
 // ===========================================
 // Auto Generated GUID Constant Class
-// Generated Time: 2026-02-24 22:39:55
+// Generated Time: 2026-02-25 20:55:09
 // Pelease do not manually modify this file.
 // ===========================================
 
@@ -16,12 +16,12 @@ public static class GUIDConsts
     /// An instance to receive player's animation event
     /// Created Time: 2026-02-24 21:56:24
     /// </summary>
-    public const int PlayerAnimationListener = 0;
+    public const int PlayerAnimation = 0;
 
     /// <summary>
     /// An instance to receive AI's animation event
     /// Created Time: 2026-02-24 22:39:43
     /// </summary>
-    public const int AIAnimationListener = 1;
+    public const int AIAnimation = 1;
 
 }

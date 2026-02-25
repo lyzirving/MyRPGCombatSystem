@@ -9,16 +9,16 @@ public class PlayerStateAttack : PlayerStateCombat
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animation, m_Player.attackComponent.skill.crossFadeInTime);
 
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AttackCombo, HandleAttackCombo);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleAttackTransit);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
 
         m_ShouldTransit = false;
     }
 
     public override void Exit(StateBase newState)
     {        
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleAttackTransit);
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AttackCombo, HandleAttackCombo);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleAttackTransit);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
 
         base.Exit(newState);
     }

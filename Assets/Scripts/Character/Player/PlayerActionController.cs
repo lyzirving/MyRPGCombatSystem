@@ -11,8 +11,7 @@ public class PlayerActionController : MonoBehaviour
     private bool m_IsJumpPerformed = false;
     private bool m_IsRollPerformed = false;
     private bool m_IsLightAttackPerformed = false;
-    // ------------------ Action Toggle End ----------------------
-    private event Action m_LightAttackListeners;
+    // ------------------ Action Toggle End ------------------------
 
     // ------------------ Camera Control Start ----------------------
     [Header("Camera Control")]
@@ -71,16 +70,6 @@ public class PlayerActionController : MonoBehaviour
     #endregion
 
     #region Main Methods
-    public void RegisterLightAttackListener(Action listener)
-    {
-        m_LightAttackListeners += listener;
-    }
-
-    public void RemoveLightAttackListener(Action listener)
-    {
-        m_LightAttackListeners -= listener;
-    }
-
     public Vector3 GetInputDirection()
     {
         Vector3 move = Vector3.zero;
@@ -124,14 +113,7 @@ public class PlayerActionController : MonoBehaviour
     private void OnLightAttackPerformed(InputAction.CallbackContext context)
     {
         m_IsLightAttackPerformed = true;        
-        MonoManager.Run(OnAttackCancel());
-        PerformNotity(m_LightAttackListeners);
-    }
-
-    private void PerformNotity(Action action)
-    { 
-        if(this.isActiveAndEnabled)
-            action?.Invoke();
+        MonoManager.Run(OnAttackCancel());     
     }
 
     private IEnumerator OnJumpCancel()

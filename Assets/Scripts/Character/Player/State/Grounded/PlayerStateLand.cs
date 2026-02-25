@@ -5,7 +5,7 @@ public class PlayerStateLand : PlayerStateGrounded
     {
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(AnimationConsts.land);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleLandTransition);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleLandTransition);
 
         m_Player.attrs.speedModify = 0f;
         m_Player.attrs.jumpForce = m_Player.config.stationaryJumpForce;
@@ -15,7 +15,7 @@ public class PlayerStateLand : PlayerStateGrounded
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleLandTransition);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleLandTransition);
         m_Player.model.StopAnimation(AnimationConsts.land);
         base.Exit(newState);
     }

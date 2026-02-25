@@ -14,16 +14,16 @@ public class PlayerStateJump : PlayerStateAirborne
         m_FootStep = args.footStep;
         m_AnimHash = m_FootStep == EFootStep.LeftFootStep ? AnimationConsts.jumpStartLeft : AnimationConsts.jumpStartRight;
         m_Player.model.StartAnimation(m_AnimHash);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RegisterAction(AnimationEventType.AnimationTransit, HandleJumpStartTransit);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationStart, HandleJumpStart);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleJumpStartTransit);
 
         m_IsJumpTrigger = m_ShouldStartJump = m_ShouldTransit = false;        
     }
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RemoveAction(AnimationEventType.AnimationTransit, HandleJumpStartTransit);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationStart, HandleJumpStart);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleJumpStartTransit);
         m_Player.resizableCapsule.RestoreStepHeightPercent();
         m_Player.model.StopAnimation(m_AnimHash);
         base.Exit(newState);
