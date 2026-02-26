@@ -6,7 +6,6 @@ public enum ECharacterState : UInt16
     Walk,
     Run,
     Jump,
-    JumpIdle,
     Roll,
     Falling,
     Land,

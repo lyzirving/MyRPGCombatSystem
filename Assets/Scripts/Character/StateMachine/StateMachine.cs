@@ -27,7 +27,7 @@ public class StateMachine
         OnStateExit(exitState, newState);
         OnStateEnter(exitState, newState, args);
         m_CurrentState = newState;     
-        return true;
+        return true;     
     }    
 
     public void Stop()
@@ -64,6 +64,7 @@ public class StateMachine
             MonoManager.instance.RemoveUpdateListener(exitState.Update);
             MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
             MonoManager.instance.RemoveFixedUpdateListener(exitState.FixedUpdate);
+            MonoManager.instance.RemoveColliderCheckListener(exitState.HandleColliderCheck);
         }
     }
 
@@ -76,6 +77,7 @@ public class StateMachine
             MonoManager.instance.AddUpdateListener(newState.Update);
             MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);
             MonoManager.instance.AddFixedUpdateListener(newState.FixedUpdate);
+            MonoManager.instance.AddColliderCheckListener(newState.HandleColliderCheck);
         }
     }  
 }

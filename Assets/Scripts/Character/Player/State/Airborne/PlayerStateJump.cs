@@ -2,91 +2,88 @@ using UnityEngine;
 
 public class PlayerStateJump : PlayerStateAirborne
 {
-    private int m_AnimHash;
-    private bool m_ShouldTransit;
-    private bool m_ShouldStartJump;
-    private bool m_IsJumpTrigger;
-    private EFootStep m_FootStep;
+    private const float k_JumpUpRatio = 2.1f;
+    private const float k_JumpTopRatio = 0f;
+    private const float k_FallDownRatio = -2.1f;
+
+    private bool m_IsJumpPerform;
+    private bool m_FirstUpdate;
+    private float m_JumpStartVelocity;
 
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
-        m_FootStep = args.footStep;
-        m_AnimHash = m_FootStep == EFootStep.LeftFootStep ? AnimationConsts.jumpStartLeft : AnimationConsts.jumpStartRight;
-        m_Player.model.StartAnimation(m_AnimHash);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleJumpStartTransit);
-
-        m_IsJumpTrigger = m_ShouldStartJump = m_ShouldTransit = false;        
+        
+        m_IsJumpPerform = false;
+        m_FirstUpdate = true;
+        m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, k_JumpUpRatio);
     }
 
     public override void Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationStart, HandleJumpStart);
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleJumpStartTransit);
-        m_Player.resizableCapsule.RestoreStepHeightPercent();
-        m_Player.model.StopAnimation(m_AnimHash);
         base.Exit(newState);
     }
 
     public override void Update()
     {
-        if (m_ShouldTransit || ShouldTransitToJumpIdle())
+        if(!m_IsJumpPerform)
+            return;
+
+        float currentVelocity = m_Player.verticalVelocity.y;
+        if (m_FirstUpdate)
         {
-            if (!m_IsJumpTrigger)
-            {
-                if(m_Player.action.isMoving)
-                    m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
-                else
-                    m_Player.ChangeState(ECharacterState.Idle);
-            }
-            else
-            { 
-                m_Player.ChangeState(ECharacterState.JumpIdle, new ChangeStateArgs(m_FootStep));
-            }            
+            m_FirstUpdate = false;
+            m_JumpStartVelocity = currentVelocity;
         }
+        float ratio = CalcJumpRatio(currentVelocity, m_JumpStartVelocity);
+        m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, ratio, 0.1f, Time.deltaTime);
+        //Debug.Log($"current velocity[{currentVelocity}], jumpStartVelocity[{m_JumpStartVelocity}], ratio[{ratio}]");
     }
 
     public override void FixedUpdate()
     {
-        if (!m_IsJumpTrigger && m_ShouldStartJump)
+        if (!m_IsJumpPerform)
         {
-            m_IsJumpTrigger = true;
-            m_Player.resizableCapsule.StoreStepHeightPercent();
-            m_Player.resizableCapsule.SetStepHeightPercent(0f);
+            m_IsJumpPerform = true;
             Jump();
+            return;
+        }
+
+        float currentVelocity = m_Player.verticalVelocity.y;
+        if (currentVelocity < 0f)
+        {
+            m_Player.rigidBody.AddForce(Physics.gravity * GameSettings.characterConfig.FallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
         }
     }
 
-    private void Jump()
-    {        
-        Vector3 jumpDirection = m_Player.GetTargetDirection();
-        Vector3 jumpForce = m_Player.attrs.jumpForce;
+    protected override void OnContactGround(Collider collider)
+    {
+        m_Player.ChangeState(ECharacterState.Land);
+    }
 
-        jumpForce.x *= jumpDirection.x;
-        jumpForce.z *= jumpDirection.z;
+    private void Jump()
+    {
+        Vector3 jumpDirection = m_Player.transform.up;
+        float jumpHeight = 1.8f;
+        float force = PhysicsUtils.CalcVelocity(0f, Physics.gravity.y, jumpHeight);
 
         m_Player.ResetVelocity();
-
-        m_Player.rigidBody.AddForce(jumpForce, ForceMode.VelocityChange);
+        m_Player.rigidBody.AddForce(force * jumpDirection, ForceMode.VelocityChange);
     }
 
-    private bool ShouldTransitToJumpIdle()
-    {
-        var center = m_Player.resizableCapsule.checkBoxCenter;
-        var extents = m_Player.resizableCapsule.checkBoxExtents;
-        var ray = new Ray(center, Vector3.down);
-        return !Physics.Raycast(ray, out RaycastHit hit, extents.y * m_Player.config.jumpStartRatio, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore);
-    }
-
-    private void HandleJumpStart(in AnimationEventInfo info)
-    {
-        m_ShouldStartJump = true;
-        m_Player.OnFootStep();
-    }
-
-    private void HandleJumpStartTransit(in AnimationEventInfo info)
-    {
-        m_ShouldTransit = true;
+    /// <summary>
+    /// when current velocity > 0, character is jumpping up.
+    /// when current velocity == 0, character is jumpping at the top
+    /// when current velocity < 0, character is falling
+    /// </summary>
+    /// <param name="currentV"></param>
+    /// <param name="jumpStartV"></param>
+    /// <returns>jump ratio for animation</returns>
+    private float CalcJumpRatio(float currentV, float jumpStartV)
+    {        
+        if (currentV > 0)
+            return k_JumpUpRatio - (jumpStartV - currentV) / (k_JumpUpRatio - k_JumpTopRatio);
+        else
+            return k_JumpTopRatio + (currentV) / (k_JumpTopRatio - k_FallDownRatio);
     }
 }

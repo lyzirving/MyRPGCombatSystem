@@ -1,7 +1,8 @@
 using UnityEngine;
 
 public class GameConsts
-{
+{ 
+    public static readonly LayerMask AllLayer = int.MaxValue;
     // Get in runtime
     public static readonly LayerMask WalkableLayer = LayerMask.GetMask("Walkable");
 }

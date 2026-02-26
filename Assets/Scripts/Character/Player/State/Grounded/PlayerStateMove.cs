@@ -45,15 +45,13 @@ public class PlayerStateMove : PlayerStateGrounded
 
         if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(m_FootStep));
+            m_Player.ChangeState(ECharacterState.Jump);
             return;
         }
     }
 
     public override void FixedUpdate()
     {
-        m_Player.Floating();
-
         Move();
     }    
 

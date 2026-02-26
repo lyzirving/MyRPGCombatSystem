@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -5,13 +6,14 @@ using UnityEngine;
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
-    protected Rigidbody m_Rigidbody;
-    protected ResizableCapsuleCollider m_ResizableCapsuleCollider;
     protected StateMachine m_StateMachine;
+
+    protected Rigidbody m_Rigidbody;    
+    protected CharacterSensor m_Sensor;
 
     public CharacterAttrs attrs { get => m_Attrs; }
     public Rigidbody rigidBody { get => m_Rigidbody; }
-    public ResizableCapsuleCollider resizableCapsule { get => m_ResizableCapsuleCollider; }
+    public CharacterSensor sensor { get => m_Sensor; }
 
     public Vector3 verticalVelocity => new Vector3(0f, m_Rigidbody.linearVelocity.y, 0f);
     public Vector3 horizontalVelocity => new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);
@@ -37,29 +39,10 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_Rigidbody.linearVelocity = horizontalVelocity;
     }
 
-    public void Floating()
-    {
-        Vector3 centerInWorldSpace = m_ResizableCapsuleCollider.center;
-        var ray = new Ray(centerInWorldSpace, -this.transform.up);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, m_ResizableCapsuleCollider.slopeData.floatRayDistance, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore))
-        {
-            float groundAngle = Vector3.Angle(hit.normal, -ray.direction);
-
-            float distanceToFloatingPoint = m_ResizableCapsuleCollider.colliderData.centerInLocalSpace.y * this.transform.localScale.y - hit.distance;
-            if (Mathf.Approximately(distanceToFloatingPoint, 0f))
-                return;
-
-            float amountToLift = distanceToFloatingPoint * m_ResizableCapsuleCollider.slopeData.stepReachForce - verticalVelocity.y;
-            Vector3 liftForce = new Vector3(0f, amountToLift, 0f);
-            m_Rigidbody.AddForce(liftForce, ForceMode.VelocityChange);
-        }
-    }
-
     protected void Init()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_ResizableCapsuleCollider = gameObject.AddComponent<ResizableCapsuleCollider>();
+        m_Sensor = this.transform.AddComponent<CharacterSensor>();
 
         m_StateMachine = new StateMachine();
         m_StateMachine.Init(this);
@@ -75,24 +58,33 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #region ICharacterBehavior Methods
     public virtual bool isLightAttack => false;
 
-    public virtual void OnAttackBegin()
-    {        
-    }
+    public virtual void OnAttackBegin() { }
 
-    public virtual void OnAttackEnd()
-    {
-    }
+    public virtual void OnAttackEnd() { }
 
-    public virtual void OnAttackHit(SkillData config, ICharacterBehavior target, Vector3 hitPos)
-    {
-    }
+    public virtual void OnAttackHit(SkillData config, ICharacterBehavior target, Vector3 hitPos) { }
 
-    public virtual void OnDamage(float damage)
-    {
-    }
+    public virtual void OnDamage(float damage) { }
 
-    public virtual void OnFootStep()
-    {
-    }    
+    public virtual void OnFootStep() { }
     #endregion
+
+    //public void Floating()
+    //{
+    //    Vector3 centerInWorldSpace = m_ResizableCapsuleCollider.center;
+    //    var ray = new Ray(centerInWorldSpace, -this.transform.up);
+    //
+    //    if (Physics.Raycast(ray, out RaycastHit hit, m_ResizableCapsuleCollider.slopeData.floatRayDistance, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore))
+    //    {
+    //        float groundAngle = Vector3.Angle(hit.normal, -ray.direction);
+    //
+    //        float distanceToFloatingPoint = m_ResizableCapsuleCollider.colliderData.centerInLocalSpace.y * this.transform.localScale.y - hit.distance;
+    //        if (Mathf.Approximately(distanceToFloatingPoint, 0f))
+    //            return;
+    //
+    //        float amountToLift = distanceToFloatingPoint * m_ResizableCapsuleCollider.slopeData.stepReachForce - verticalVelocity.y;
+    //        Vector3 liftForce = new Vector3(0f, amountToLift, 0f);
+    //        m_Rigidbody.AddForce(liftForce, ForceMode.VelocityChange);
+    //    }
+    //}
 }

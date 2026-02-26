@@ -35,11 +35,6 @@ public class PlayerStateLand : PlayerStateGrounded
         }
     }
 
-    public override void FixedUpdate()
-    {
-        m_Player.Floating();
-    }
-
     private void HandleLandTransition(in AnimationEventInfo info)
     {
         m_Player.ChangeState(ECharacterState.Idle);

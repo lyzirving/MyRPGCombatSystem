@@ -22,23 +22,5 @@ public abstract class StateBase
 
     public virtual void FixedUpdate() { }
 
-    public virtual void HandleTriggerEnter(Collider other) 
-    {
-        if (GameUtility.IsWalkableLayer(other.gameObject.layer))
-        {
-            OnContactGround(other);
-        }
-    }    
-
-    public virtual void HandleTriggerExit(Collider other) 
-    {
-        if (GameUtility.IsWalkableLayer(other.gameObject.layer))
-        {
-            OnExitGround(other);
-        }
-    }
-
-    protected virtual void OnContactGround(Collider collider) { }
-
-    protected virtual void OnExitGround(Collider collider) { }
+    public virtual void HandleColliderCheck() { }    
 }

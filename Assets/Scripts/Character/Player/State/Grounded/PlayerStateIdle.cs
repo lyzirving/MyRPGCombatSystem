@@ -46,6 +46,5 @@ public class PlayerStateIdle : PlayerStateGrounded
     public override void FixedUpdate()
     {
         m_Player.ResetVelocity();
-        m_Player.Floating();
     }
 }

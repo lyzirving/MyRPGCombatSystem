@@ -49,16 +49,6 @@ public class PlayerController : CharacterControllerBase
         m_PlayerModel.RemoveLeftFootStepAction(OnLeftFootDown);
         m_PlayerModel.RemoveRightFootStepAction(OnRightFootDown);
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        m_StateMachine.currentState?.HandleTriggerEnter(other);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        m_StateMachine.currentState?.HandleTriggerExit(other);
-    }
     #endregion
 
     #region Main Methods
@@ -97,9 +87,6 @@ public class PlayerController : CharacterControllerBase
                 break;
             case ECharacterState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
-                break;
-            case ECharacterState.JumpIdle:
-                m_StateMachine?.ChangeState<PlayerStateJumpIdle>(args);
                 break;
             case ECharacterState.Roll:
                 m_StateMachine?.ChangeState<PlayerStateRoll>(args);

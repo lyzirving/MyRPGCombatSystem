@@ -7,6 +7,7 @@ public class Entry : MonoBehaviour
     private void Awake()
     {
         Debug.Log("App entry");
+        GameSettings.Init();
         InputManager.Init();
         AnimationConsts.Init();
         AnimationEventReceiver.Init();

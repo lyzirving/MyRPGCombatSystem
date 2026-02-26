@@ -36,13 +36,9 @@ public abstract class SingletonMono<T> : MonoBehaviour, ISingleton where T : Sin
         }
     }
 
-    public virtual void OnInit()
-    {        
-    }
+    public virtual void OnInit() { }
 
-    public virtual void OnDeInit()
-    {
-    }
+    public virtual void OnDeInit() { }
 
     private void OnApplicationQuit()
     {

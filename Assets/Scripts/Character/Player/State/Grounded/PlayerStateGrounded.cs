@@ -15,7 +15,7 @@ public class PlayerStateGrounded : PlayerStateBase
         }
     }
 
-    protected override void OnExitGround(Collider collider)
+    protected override void OnExitGround()
     {
         m_Player.ChangeState(ECharacterState.Falling);
     }

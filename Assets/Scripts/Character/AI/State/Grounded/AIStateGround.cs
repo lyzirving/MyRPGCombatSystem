@@ -18,10 +18,9 @@ public class AIStateGround : AIStateBase
     public override void FixedUpdate()
     {
         m_AIController.ResetVelocity();
-        m_AIController.Floating();
     }
 
-    protected override void OnExitGround(Collider collider)
+    protected override void OnExitGround()
     {
         m_AIController.ChangeState(ECharacterState.Falling);
     }

@@ -43,8 +43,6 @@ public class PlayerStateRoll : PlayerStateMove
         if (m_ShouldTransit)
             return;
 
-        m_Player.Floating();
-
         MoveAt(m_Direction);
     }
 
