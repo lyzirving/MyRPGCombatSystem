@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5fe6934b4726db4f8a07069eee63a67, type: 3}
   m_Name: CharacterConfig
   m_EditorClassIdentifier: 
-  FallGravityRatio: 1.2
+  fallGravityRatio: 1.2
+  idleJumpHeight: 1.5
+  runJumpHeight: 2
