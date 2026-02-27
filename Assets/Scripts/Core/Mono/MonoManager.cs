@@ -7,7 +7,6 @@ public class MonoManager : SingletonMono<MonoManager>
     private Action m_UpdateAction;
     private Action m_LateUpdateAction;
     private Action m_FixedUpdateAction;
-    private Action m_ColliderCheckAction;
 
     public static Coroutine Run(IEnumerator routine)
     {
@@ -44,16 +43,6 @@ public class MonoManager : SingletonMono<MonoManager>
         m_FixedUpdateAction -= action;
     }
 
-    public void AddColliderCheckListener(Action action)
-    {
-        m_ColliderCheckAction += action;
-    }
-
-    public void RemoveColliderCheckListener(Action action)
-    {
-        m_ColliderCheckAction -= action;
-    }
-
     private void Update()
     {
         m_UpdateAction?.Invoke();
@@ -66,7 +55,6 @@ public class MonoManager : SingletonMono<MonoManager>
 
     private void FixedUpdate()
     {
-        m_ColliderCheckAction?.Invoke();
         m_FixedUpdateAction?.Invoke();        
     }
 }

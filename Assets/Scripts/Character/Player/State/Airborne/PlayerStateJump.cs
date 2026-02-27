@@ -7,15 +7,16 @@ public class PlayerStateJump : PlayerStateAirborne
     private const float k_FallDownRatio = -2.1f;
 
     private bool m_IsJumpPerform;
-    private bool m_FirstUpdate;
+    private bool m_FirstEnter;
     private float m_JumpStartVelocity;
 
+    #region State Methods
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
         
         m_IsJumpPerform = false;
-        m_FirstUpdate = true;
+        m_FirstEnter = true;
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, k_JumpUpRatio);
     }
 
@@ -30,14 +31,13 @@ public class PlayerStateJump : PlayerStateAirborne
             return;
 
         float currentVelocity = m_Player.verticalVelocity.y;
-        if (m_FirstUpdate)
+        if (m_FirstEnter)
         {
-            m_FirstUpdate = false;
+            m_FirstEnter = false;
             m_JumpStartVelocity = currentVelocity;
         }
         float ratio = CalcJumpRatio(currentVelocity, m_JumpStartVelocity);
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, ratio, 0.1f, Time.deltaTime);
-        //Debug.Log($"current velocity[{currentVelocity}], jumpStartVelocity[{m_JumpStartVelocity}], ratio[{ratio}]");
     }
 
     public override void FixedUpdate()
@@ -51,21 +51,20 @@ public class PlayerStateJump : PlayerStateAirborne
 
         float currentVelocity = m_Player.verticalVelocity.y;
         if (currentVelocity < 0f)
-        {
-            m_Player.rigidBody.AddForce(Physics.gravity * GameSettings.characterConfig.FallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
-        }
+            m_Player.rigidBody.AddForce(Physics.gravity * GameSettings.characterConfig.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
     }
 
-    protected override void OnContactGround(Collider collider)
+    public override void OnContactGround(Collider collider)
     {
         m_Player.ChangeState(ECharacterState.Land);
     }
+    #endregion
 
+    #region Main Methods
     private void Jump()
     {
         Vector3 jumpDirection = m_Player.transform.up;
-        float jumpHeight = 1.8f;
-        float force = PhysicsUtils.CalcVelocity(0f, Physics.gravity.y, jumpHeight);
+        float force = PhysicsUtils.CalcVelocity(0f, Physics.gravity.y, GameSettings.characterConfig.idleJumpHeight);
 
         m_Player.ResetVelocity();
         m_Player.rigidBody.AddForce(force * jumpDirection, ForceMode.VelocityChange);
@@ -86,4 +85,5 @@ public class PlayerStateJump : PlayerStateAirborne
         else
             return k_JumpTopRatio + (currentV) / (k_JumpTopRatio - k_FallDownRatio);
     }
+    #endregion
 }

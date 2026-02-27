@@ -43,6 +43,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Sensor = this.transform.AddComponent<CharacterSensor>();
+        m_Sensor.Init(this);
 
         m_StateMachine = new StateMachine();
         m_StateMachine.Init(this);
@@ -67,6 +68,18 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public virtual void OnDamage(float damage) { }
 
     public virtual void OnFootStep() { }
+
+    public virtual void OnContactGround(Collider collider) 
+    {
+        var state = m_StateMachine.currentState as CharacterStateBase;
+        state?.OnContactGround(collider);
+    }
+
+    public virtual void OnExitGround() 
+    {
+        var state = m_StateMachine.currentState as CharacterStateBase;
+        state?.OnExitGround();
+    }
     #endregion
 
     //public void Floating()

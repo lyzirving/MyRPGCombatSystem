@@ -20,7 +20,7 @@ public class AIStateGround : AIStateBase
         m_AIController.ResetVelocity();
     }
 
-    protected override void OnExitGround()
+    public override void OnExitGround()
     {
         m_AIController.ChangeState(ECharacterState.Falling);
     }

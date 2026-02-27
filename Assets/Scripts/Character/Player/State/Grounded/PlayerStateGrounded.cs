@@ -15,7 +15,7 @@ public class PlayerStateGrounded : PlayerStateBase
         }
     }
 
-    protected override void OnExitGround()
+    public override void OnExitGround()
     {
         m_Player.ChangeState(ECharacterState.Falling);
     }

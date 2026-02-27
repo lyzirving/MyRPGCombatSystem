@@ -27,7 +27,7 @@ public class PlayerStateFalling : PlayerStateAirborne
         LimitVerticalVelocity();
     }
 
-    protected override void OnContactGround(Collider collider)
+    public override void OnContactGround(Collider collider)
     {        
         float fallDistance = m_PositionOnEnter.y - m_Player.transform.position.y;
         m_Player.ChangeState(ECharacterState.Land);

@@ -20,7 +20,5 @@ public abstract class StateBase
 
     public virtual void LateUpdate() { }
 
-    public virtual void FixedUpdate() { }
-
-    public virtual void HandleColliderCheck() { }    
+    public virtual void FixedUpdate() { }  
 }

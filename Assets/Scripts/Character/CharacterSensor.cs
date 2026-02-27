@@ -1,16 +1,76 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class CharacterSensor : MonoBehaviour 
 {
-    public bool isGrounded = false;
+    private const int SPEED_CACHE_NUM = 3;
 
+    private Vector3[] m_VelocityCache;
+    private Vector3 m_VelocitySum = Vector3.zero;
+    private int m_CacheIndex = 0;
+    private ICharacterBehavior m_CharacterBehavior;
     private CapsuleCollider m_CapsuleCollider;
+    private Rigidbody m_Rigidbody;    
 
+    private bool m_IsGrounded = false;
+    private bool m_FirstEnter = true;
+
+    public bool isGrounded => m_IsGrounded;
+    public Vector3 averageVelocity => m_VelocitySum / SPEED_CACHE_NUM;
+
+    #region State Methods
     private void Awake()
     {
-        m_CapsuleCollider = GetComponent<CapsuleCollider>();        
+        m_VelocitySum = Vector3.zero;
+        m_VelocityCache = new Vector3[SPEED_CACHE_NUM];
+        for (int i = 0; i < SPEED_CACHE_NUM; ++i)
+            m_VelocityCache[i] = Vector3.zero;
+
+        m_CacheIndex = 0;
+        m_FirstEnter = true;                
+    }
+
+    private void Start()
+    {
+        m_CapsuleCollider = GetComponent<CapsuleCollider>();
+        m_Rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void FixedUpdate()
+    {
+        CheckTouchGround();
+        CacheVelocity();
     }    
+    #endregion
+
+    #region Main Methods
+    public void Init(ICharacterBehavior behavior)
+    {
+        m_CharacterBehavior = behavior;
+    }
+
+    private void CheckTouchGround()
+    {
+        bool touchGround = SphereCheckGround(GameConsts.WalkableLayer, out RaycastHit hit);
+        if (m_IsGrounded != touchGround || m_FirstEnter)
+        {
+            m_FirstEnter = false;
+            m_IsGrounded = touchGround;
+            if (m_IsGrounded)
+                m_CharacterBehavior?.OnContactGround(hit.collider);
+            else
+                m_CharacterBehavior?.OnExitGround();
+        }
+    }
+
+    private void CacheVelocity()
+    {
+        m_VelocitySum -= m_VelocityCache[m_CacheIndex];
+        m_VelocityCache[m_CacheIndex] = m_Rigidbody.linearVelocity;
+        m_VelocitySum += m_VelocityCache[m_CacheIndex];
+        m_CacheIndex = (m_CacheIndex + 1) % SPEED_CACHE_NUM;
+    }
 
     /// <summary>
     /// Check whether the character touches the ground
@@ -41,4 +101,5 @@ public class CharacterSensor : MonoBehaviour
     {
         return SphereCheckGround(this.transform, m_CapsuleCollider.radius, layerMask, out raycastHit, skinWidth, groundCheckOffset);
     }
+    #endregion
 }
