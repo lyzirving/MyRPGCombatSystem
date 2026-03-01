@@ -43,7 +43,7 @@ public class PlayerStateRoll : PlayerStateMove
         if (m_ShouldTransit)
             return;
 
-        MoveAt(m_Direction);
+        Move(m_Direction * m_Player.movementSpeed);
     }
 
     private void HandleRollTransition(in AnimationEventInfo info)

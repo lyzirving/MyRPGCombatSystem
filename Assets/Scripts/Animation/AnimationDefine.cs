@@ -35,13 +35,11 @@ public static class AnimationConsts
     private const string hitName = "isHit";
 
     private const string airborneName = "isAirborne";
-    private const string jumpStartLeftName = "isJumpStartLeft";
-    private const string jumpStartRightName = "isJumpStartRight";
-    private const string jumpIdleName = "isJumpIdle";
     private const string fallLeftName = "isFallingLeft";
     private const string fallRightName = "isFallingRight";
 
     private const string jumpRatioName = "jumpRatio";
+    private const string feetTweenName = "feetTween";
 
     public static int ground { get; private set; }
     public static int idle { get; private set; }
@@ -55,13 +53,11 @@ public static class AnimationConsts
     public static int hit { get; private set; }
 
     public static int airborne { get; private set; }
-    public static int jumpStartLeft { get; private set; }
-    public static int jumpStartRight { get; private set; }
-    public static int jumpIdle { get; private set; }
     public static int fallLeft { get; private set; }
     public static int fallRight { get; private set; }
 
     public static int jumpRatio { get; private set; }
+    public static int feetTween { get; private set; }
 
     public static void Init()
     {
@@ -77,13 +73,11 @@ public static class AnimationConsts
         hit = Animator.StringToHash(hitName);
 
         airborne = Animator.StringToHash(airborneName);
-        jumpStartLeft = Animator.StringToHash(jumpStartLeftName);
-        jumpStartRight = Animator.StringToHash(jumpStartRightName);
-        jumpIdle = Animator.StringToHash(jumpIdleName);
         fallLeft = Animator.StringToHash(fallLeftName);
         fallRight = Animator.StringToHash(fallRightName);
 
         jumpRatio = Animator.StringToHash(jumpRatioName);
+        feetTween = Animator.StringToHash(feetTweenName);
     }
 }
 

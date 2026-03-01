@@ -81,23 +81,4 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         state?.OnExitGround();
     }
     #endregion
-
-    //public void Floating()
-    //{
-    //    Vector3 centerInWorldSpace = m_ResizableCapsuleCollider.center;
-    //    var ray = new Ray(centerInWorldSpace, -this.transform.up);
-    //
-    //    if (Physics.Raycast(ray, out RaycastHit hit, m_ResizableCapsuleCollider.slopeData.floatRayDistance, GameConsts.WalkableLayer, QueryTriggerInteraction.Ignore))
-    //    {
-    //        float groundAngle = Vector3.Angle(hit.normal, -ray.direction);
-    //
-    //        float distanceToFloatingPoint = m_ResizableCapsuleCollider.colliderData.centerInLocalSpace.y * this.transform.localScale.y - hit.distance;
-    //        if (Mathf.Approximately(distanceToFloatingPoint, 0f))
-    //            return;
-    //
-    //        float amountToLift = distanceToFloatingPoint * m_ResizableCapsuleCollider.slopeData.stepReachForce - verticalVelocity.y;
-    //        Vector3 liftForce = new Vector3(0f, amountToLift, 0f);
-    //        m_Rigidbody.AddForce(liftForce, ForceMode.VelocityChange);
-    //    }
-    //}
 }

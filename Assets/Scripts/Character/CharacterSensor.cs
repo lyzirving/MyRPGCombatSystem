@@ -16,7 +16,13 @@ public class CharacterSensor : MonoBehaviour
     private bool m_IsGrounded = false;
     private bool m_FirstEnter = true;
 
+    /// <summary>
+    /// Whether character is on walkable ground
+    /// </summary>
     public bool isGrounded => m_IsGrounded;
+    /// <summary>
+    /// Character's average speed on ground
+    /// </summary>
     public Vector3 averageVelocity => m_VelocitySum / SPEED_CACHE_NUM;
 
     #region State Methods
@@ -39,8 +45,8 @@ public class CharacterSensor : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CheckTouchGround();
-        CacheVelocity();
+        if(CheckTouchGround())
+            CacheVelocity();
     }    
     #endregion
 
@@ -50,9 +56,9 @@ public class CharacterSensor : MonoBehaviour
         m_CharacterBehavior = behavior;
     }
 
-    private void CheckTouchGround()
+    private bool CheckTouchGround()
     {
-        bool touchGround = SphereCheckGround(GameConsts.WalkableLayer, out RaycastHit hit);
+        bool touchGround = SphereCheckGround(GameConsts.Layer.Walkable, out RaycastHit hit);
         if (m_IsGrounded != touchGround || m_FirstEnter)
         {
             m_FirstEnter = false;
@@ -62,6 +68,7 @@ public class CharacterSensor : MonoBehaviour
             else
                 m_CharacterBehavior?.OnExitGround();
         }
+        return touchGround;
     }
 
     private void CacheVelocity()
@@ -82,11 +89,15 @@ public class CharacterSensor : MonoBehaviour
     /// <param name="skinWidth"></param>
     /// <param name="groundCheckOffset"></param>
     /// <returns></returns>
-    public bool SphereCheckGround(Transform characterTransform, float radius, LayerMask layerMask, out RaycastHit raycastHit, float skinWidth = 0f, float groundCheckOffset = 0f)
+    public bool SphereCheckGround(Transform characterTransform, float radius, LayerMask layerMask, out RaycastHit hit, float skinWidth = 0f, float groundCheckOffset = 0f)
     {
-        return Physics.SphereCast(characterTransform.position + Vector3.up * groundCheckOffset,
-            radius, Vector3.down, out raycastHit, 
-            Mathf.Abs(groundCheckOffset - radius) + 2f * skinWidth, layerMask);
+        if (Physics.SphereCast(characterTransform.position + Vector3.up * groundCheckOffset, radius, Vector3.down, out hit,
+            Mathf.Abs(groundCheckOffset - radius) + 2f * skinWidth, layerMask))
+        {
+            float angle = Vector3.Angle(characterTransform.up, hit.normal);
+            return angle < 45f;
+        }
+        return false;
     }
 
     /// <summary>

@@ -578,7 +578,7 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: -4293279183858361460, guid: 4f1868b2c52e28043ade0c0eed3f329f, type: 3}
     m_Threshold: -2
-    m_Position: {x: 0, y: 0}
+    m_Position: {x: -1, y: -2}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: JumpRatio
@@ -586,7 +586,7 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: -6328646398539626645, guid: 4f1868b2c52e28043ade0c0eed3f329f, type: 3}
     m_Threshold: 0
-    m_Position: {x: 0, y: 0}
+    m_Position: {x: -1, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: JumpRatio
@@ -594,18 +594,42 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: 9014631974734313362, guid: 4f1868b2c52e28043ade0c0eed3f329f, type: 3}
     m_Threshold: 2
-    m_Position: {x: 0, y: 0}
+    m_Position: {x: -1, y: 2}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: JumpRatio
     m_Mirror: 0
-  m_BlendParameter: jumpRatio
-  m_BlendParameterY: JumpRatio
+  - serializedVersion: 2
+    m_Motion: {fileID: -4293279183858361460, guid: 4f1868b2c52e28043ade0c0eed3f329f, type: 3}
+    m_Threshold: 4
+    m_Position: {x: 1, y: -2}
+    m_TimeScale: 1
+    m_CycleOffset: 0.5
+    m_DirectBlendParameter: jumpRatio
+    m_Mirror: 1
+  - serializedVersion: 2
+    m_Motion: {fileID: -6328646398539626645, guid: 4f1868b2c52e28043ade0c0eed3f329f, type: 3}
+    m_Threshold: 6
+    m_Position: {x: 1, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0.5
+    m_DirectBlendParameter: jumpRatio
+    m_Mirror: 1
+  - serializedVersion: 2
+    m_Motion: {fileID: 9014631974734313362, guid: 4f1868b2c52e28043ade0c0eed3f329f, type: 3}
+    m_Threshold: 8
+    m_Position: {x: 1, y: 2}
+    m_TimeScale: 1
+    m_CycleOffset: 0.5
+    m_DirectBlendParameter: jumpRatio
+    m_Mirror: 1
+  m_BlendParameter: feetTween
+  m_BlendParameterY: jumpRatio
   m_MinThreshold: -2
-  m_MaxThreshold: 2
+  m_MaxThreshold: 8
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
-  m_BlendType: 0
+  m_BlendType: 3
 --- !u!206 &-63106500224199504
 BlendTree:
   m_ObjectHideFlags: 1
@@ -678,24 +702,6 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: isJumpStartLeft
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: isJumpStartRight
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: isJumpIdle
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   - m_Name: isFallingLeft
     m_Type: 4
     m_DefaultFloat: 0
@@ -723,6 +729,12 @@ AnimatorController:
   - m_Name: jumpRatio
     m_Type: 1
     m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: feetTween
+    m_Type: 1
+    m_DefaultFloat: -1
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}

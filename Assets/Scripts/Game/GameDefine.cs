@@ -1,13 +1,16 @@
 using UnityEngine;
 
-public class GameConsts
-{ 
-    public static readonly LayerMask AllLayer = int.MaxValue;
-    // Get in runtime
-    public static readonly LayerMask WalkableLayer = LayerMask.GetMask("Walkable");
+namespace GameConsts
+{
+    public static class Layer
+    {
+        public static readonly LayerMask All = int.MaxValue;
+        // Get in runtime
+        public static readonly LayerMask Walkable = LayerMask.GetMask("Walkable");
+    }      
 }
 
-public class GameUtility
+public static class GameUtility
 {
     public static bool ContainsLayer(LayerMask? mask, int layer)
     {
@@ -16,6 +19,6 @@ public class GameUtility
 
     public static bool IsWalkableLayer(int layer)
     {
-        return ContainsLayer(GameConsts.WalkableLayer, layer);
+        return ContainsLayer(GameConsts.Layer.Walkable, layer);
     }
 }

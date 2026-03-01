@@ -5,6 +5,7 @@ public class CharacterConfig : ScriptableObject
 {
     public float fallGravityRatio = 1.2f;
 
-    public float idleJumpHeight = 1.5f;
-    public float runJumpHeight = 2f;
+    public float jumpHeightLow = 1.5f;
+    public float jumpHeightMid = 2f;
+    public float jumpHeightMax = 2.5f;
 }
