@@ -12,6 +12,8 @@ public class CharacterModel : MonoBehaviour
     protected event UnityAction m_RightFootStepAc;
     protected event RootMotionAction m_RootMotionAc;
 
+    public Animator animator => m_Animator;
+
     #region State Methods
     private void Awake()
     {
@@ -45,14 +47,14 @@ public class CharacterModel : MonoBehaviour
     {
         m_CharacterBehaviour = null;
     }
-    #endregion
 
-    #region Main Methods
     public void Init(ICharacterBehavior characterBehavior)
     {
         m_CharacterBehaviour = characterBehavior;
     }
+    #endregion
 
+    #region Animation Methods    
     public void StartAnimation(int hash)
     {
         m_Animator?.SetBool(hash, true);
@@ -92,7 +94,9 @@ public class CharacterModel : MonoBehaviour
     {
         m_Animator?.SetBool(hash, false);
     }
+    #endregion
 
+    #region Listener Methods
     public void RegisterRootMotionAction(RootMotionAction action)
     {
         m_RootMotionAc += action;
@@ -121,7 +125,7 @@ public class CharacterModel : MonoBehaviour
     public void RemoveRightFootStepAction(UnityAction action)
     {
         m_RightFootStepAc -= action;
-    }
+    }    
 
     public void ClearAllAction()
     {

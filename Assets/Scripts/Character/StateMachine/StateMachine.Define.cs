@@ -5,27 +5,10 @@ public struct ChangeStateArgs
     /// Whether we should refresh state if current state doesn't change.
     /// </summary>
     public bool reEnterState;
-    /// <summary>
-    /// Mode of foot step
-    /// </summary>
-    public EFootStep footStep;
 
     public ChangeStateArgs(bool reEnterState)
     { 
         this.reEnterState = reEnterState;
-        this.footStep = EFootStep.None;
-    }
-
-    public ChangeStateArgs(EFootStep footStep)
-    {
-        this.reEnterState = false;
-        this.footStep = footStep;
-    }
-
-    public ChangeStateArgs(bool reEnterState, EFootStep footStep)
-    {
-        this.reEnterState = reEnterState;
-        this.footStep = footStep;
     }
 }
 

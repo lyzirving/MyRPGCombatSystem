@@ -62,12 +62,12 @@ public class PlayerController : CharacterControllerBase
 
     private void OnLeftFootDown()
     {
-        OnFootStep();
+        OnFootStep(EFootStep.LeftFootStep);
     }
 
     private void OnRightFootDown()
     {
-        OnFootStep();
+        OnFootStep(EFootStep.RightFootStep);
     }
     #endregion
 
@@ -115,7 +115,7 @@ public class PlayerController : CharacterControllerBase
         target?.OnDamage(config.damage);
     }
 
-    public override void OnFootStep()
+    public override void OnFootStep(EFootStep footStep)
     {
         if (footStepAudioClips == null || footStepAudioClips.Length == 0)
             return;

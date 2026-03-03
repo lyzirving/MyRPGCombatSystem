@@ -67,7 +67,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
     public virtual void OnDamage(float damage) { }
 
-    public virtual void OnFootStep() { }
+    public virtual void OnFootStep(EFootStep footStep) { }
 
     public virtual void OnContactGround(Collider collider) 
     {

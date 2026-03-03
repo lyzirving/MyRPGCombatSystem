@@ -7,7 +7,7 @@ public interface ICharacterBehavior
     public void OnAttackEnd();
     public void OnAttackHit(SkillData config, ICharacterBehavior target, Vector3 hitPos);
     public void OnDamage(float damage);
-    public void OnFootStep();
+    public void OnFootStep(EFootStep footStep);
     public void OnContactGround(Collider collider);
     public void OnExitGround();
 }
