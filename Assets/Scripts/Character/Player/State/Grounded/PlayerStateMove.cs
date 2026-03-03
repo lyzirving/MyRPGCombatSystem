@@ -1,33 +1,18 @@
 using UnityEngine;
 
-public class PlayerStateMove : PlayerStateGrounded
+public class PlayerStateMove : PlayerStateLocomotion
 {
-    protected EFootStep m_FootStep = EFootStep.LeftFootStep;
-
-    public override void Enter(StateBase exitState, ChangeStateArgs args)
-    {
-        base.Enter(exitState, args);
-        m_Player.model.RegisterLeftFootStepAction(OnLeftFootStep);
-        m_Player.model.RegisterRightFootStepAction(OnRightFootStep);
-        m_Player.model.StartAnimation(AnimationConsts.move);
-    }
-
-    public override void Exit(StateBase newState)
-    {
-        m_Player.model.RemoveLeftFootStepAction(OnLeftFootStep);
-        m_Player.model.RemoveRightFootStepAction(OnRightFootStep);
-        if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateMove)))
-        {
-            m_Player.model.StopAnimation(AnimationConsts.move);
-        }
-        base.Exit(newState);
-    }
-
     public override void Update()
     {
         if (m_Player.action.isLightAttack)
         {
             m_Player.ChangeState(ECharacterState.Attack);
+            return;
+        }        
+
+        if (m_Player.action.isJump)
+        {
+            m_Player.ChangeState(ECharacterState.Jump);
             return;
         }
 
@@ -37,17 +22,20 @@ public class PlayerStateMove : PlayerStateGrounded
             return;
         }
 
-        if (m_Player.action.isRoll)
-        {
-            m_Player.ChangeState(ECharacterState.Roll);
-            return;
-        }
+        float speed = m_Player.action.shouldRun ? 2f : 1f;
+        m_Player.model.SetAnimationFloat(AnimationConsts.speed, speed, 0.1f, Time.deltaTime);
 
-        if (m_Player.action.isJump)
-        {
-            m_Player.ChangeState(ECharacterState.Jump);
-            return;
-        }
+        Vector3 forward = m_Player.transform.forward;
+        Vector3 targetDir = m_Player.GetTargetDirection();        
+        float angle = Mathf.Rad2Deg * Mathf.Acos(Mathf.Clamp(Vector3.Dot(forward, targetDir), -1f, 1f));        
+        float angular = Mathf.Clamp(angle / 60f, 0f, 1f);
+        float sign = Mathf.Sign(Vector3.Cross(forward, targetDir).y);
+        m_Player.model.SetAnimationFloat(AnimationConsts.angular, angular * sign, 0.1f, Time.deltaTime);
+        Debug.Log($"angle[{angle}], sign[{sign}], angular[{angular}]");        
+        //float value = m_Player.model.GetAnimationFloat(AnimationConsts.angular);
+        //value += sign * radians;
+        //value = Mathf.Clamp(value, -1f, 1f);        
+        //Debug.Log($"radians[{radians}], sign[{sign}], value[{value}]");
     }
 
     public override void FixedUpdate()
@@ -55,20 +43,9 @@ public class PlayerStateMove : PlayerStateGrounded
         if (!m_Player.action.isMoving)
             return;
 
+        m_Player.attrs.speedModify = m_Player.action.shouldRun ? m_Player.config.runSpeedModify : m_Player.config.walkSpeedModify;
         Vector3 targetDir = m_Player.GetTargetDirection();
-
         m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
-
         Move(targetDir * m_Player.movementSpeed);
     }    
-
-    protected void OnLeftFootStep()
-    {
-        m_FootStep = EFootStep.LeftFootStep;
-    }
-
-    protected void OnRightFootStep()
-    {
-        m_FootStep = EFootStep.RightFootStep;
-    }
 }

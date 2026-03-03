@@ -73,6 +73,11 @@ public class CharacterModel : MonoBehaviour
         m_Animator?.SetFloat(nameHash, value, dampTime, deltaTime);
     }
 
+    public float GetAnimationFloat(int nameHash)
+    {
+        return m_Animator.GetFloat(nameHash);
+    }
+
     public void SetLayerWeight(int layer, float weight)
     {
         m_Animator?.SetLayerWeight(layer, weight);

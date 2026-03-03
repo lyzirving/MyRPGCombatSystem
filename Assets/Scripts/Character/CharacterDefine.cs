@@ -3,14 +3,12 @@
 public enum ECharacterState : UInt16
 {
     Idle = 0,
-    Walk,
-    Run,
+    Move,
     Jump,
     Roll,
     Falling,
     Land,
-    Attack,
-    Hit
+    Attack
 }
 
 public enum EFootStep : UInt16

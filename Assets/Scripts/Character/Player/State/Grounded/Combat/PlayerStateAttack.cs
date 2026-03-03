@@ -40,17 +40,13 @@ public class PlayerStateAttack : PlayerStateCombat
         {
             m_Player.ChangeState(ECharacterState.Attack, new ChangeStateArgs(true));            
         }
-        else if (m_Player.action.isRoll)
-        {
-            m_Player.ChangeState(ECharacterState.Roll);
-        }
         else if (m_Player.action.isJump)
         {
             m_Player.ChangeState(ECharacterState.Jump);
         }
         else if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
+            m_Player.ChangeState(ECharacterState.Move);
         }
         else
         {

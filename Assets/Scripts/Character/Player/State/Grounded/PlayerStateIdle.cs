@@ -1,19 +1,16 @@
 
-public class PlayerStateIdle : PlayerStateGrounded
+using UnityEngine;
+
+public class PlayerStateIdle : PlayerStateLocomotion
 {
     public override void Enter(StateBase exitState, ChangeStateArgs args)
-    {        
-        base.Enter(exitState, args);
-        m_Player.model.StartAnimation(AnimationConsts.idle);
-
+    {               
+        if(exitState != null && exitState.GetType() != typeof(PlayerStateMove))
+        {
+            m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f);
+            m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f);
+        }
         m_Player.attrs.speedModify = 0f;
-        m_Player.attrs.jumpForce = m_Player.config.stationaryJumpForce;
-    }
-
-    public override void Exit(StateBase newState)
-    {
-        m_Player.model.StopAnimation(AnimationConsts.idle);
-        base.Exit(newState);
     }
 
     public override void Update()
@@ -21,12 +18,6 @@ public class PlayerStateIdle : PlayerStateGrounded
         if (m_Player.action.isLightAttack)
         {
             m_Player.ChangeState(ECharacterState.Attack);
-            return;
-        }
-
-        if (m_Player.action.isRoll)
-        {
-            m_Player.ChangeState(ECharacterState.Roll);
             return;
         }
 
@@ -38,9 +29,12 @@ public class PlayerStateIdle : PlayerStateGrounded
 
         if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
+            m_Player.ChangeState(ECharacterState.Move);
             return;
         }
+
+        m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f, 0.1f, Time.deltaTime);
+        m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f, 0.1f, Time.deltaTime);
     }
 
     public override void FixedUpdate()

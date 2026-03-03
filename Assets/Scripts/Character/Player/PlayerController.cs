@@ -79,20 +79,11 @@ public class PlayerController : CharacterControllerBase
             case ECharacterState.Idle:
                 m_StateMachine?.ChangeState<PlayerStateIdle>(args);
                 break;
-            case ECharacterState.Walk:
-                m_StateMachine?.ChangeState<PlayerStateWalk>(args);
-                break;
-            case ECharacterState.Run:
-                m_StateMachine?.ChangeState<PlayerStateRun>(args);
+            case ECharacterState.Move:
+                m_StateMachine?.ChangeState<PlayerStateMove>(args);
                 break;
             case ECharacterState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
-                break;
-            case ECharacterState.Roll:
-                m_StateMachine?.ChangeState<PlayerStateRoll>(args);
-                break;
-            case ECharacterState.Falling:
-                m_StateMachine?.ChangeState<PlayerStateFalling>(args);
                 break;
             case ECharacterState.Land:
                 m_StateMachine?.ChangeState<PlayerStateLand>(args);

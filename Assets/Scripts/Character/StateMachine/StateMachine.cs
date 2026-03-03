@@ -59,7 +59,7 @@ public class StateMachine
     {
         if (exitState != null)
         {
-            Debug.Log($"[{exitState.GetType()}] exit");
+            //Debug.Log($"[{exitState.GetType()}] exit");
             exitState.Exit(newState);
             MonoManager.instance.RemoveUpdateListener(exitState.Update);
             MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
@@ -71,7 +71,7 @@ public class StateMachine
     {
         if (newState != null)
         {
-            Debug.Log($"[{newState.GetType()}] enter");
+            //Debug.Log($"[{newState.GetType()}] enter");
             newState.Enter(exitState, args);
             MonoManager.instance.AddUpdateListener(newState.Update);
             MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);

@@ -30,7 +30,7 @@ public class PlayerStateLand : PlayerStateGrounded
 
         if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.action.shouldRun ? ECharacterState.Run : ECharacterState.Walk);
+            m_Player.ChangeState(ECharacterState.Move);
             return;
         }
     }
