@@ -10,7 +10,6 @@ public class PlayerStateLand : PlayerStateGrounded
         m_Player.attrs.speedModify = 0f;
         m_Player.attrs.jumpForce = m_Player.config.stationaryJumpForce;
         m_Player.ResetVelocity();
-        m_Player.OnFootStep(EFootStep.None);
     }
 
     public override void Exit(StateBase newState)

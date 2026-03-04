@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerStateMove : PlayerStateLocomotion
@@ -14,6 +13,10 @@ public class PlayerStateMove : PlayerStateLocomotion
 
     public override void Update()
     {
+        var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(0);
+        int currentLoop = Mathf.FloorToInt(state.normalizedTime);
+        float currentTime = state.normalizedTime % 1f;
+
         if (m_Player.action.isLightAttack)
         {
             m_Player.ChangeState(ECharacterState.Attack);
@@ -22,7 +25,7 @@ public class PlayerStateMove : PlayerStateLocomotion
 
         if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(ECharacterState.Jump);
+            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(currentTime < 0.5f ? EFootStep.LeftFootStep : EFootStep.RightFootStep));
             return;
         }
 
@@ -31,16 +34,12 @@ public class PlayerStateMove : PlayerStateLocomotion
             m_Player.ChangeState(ECharacterState.Idle);
             return;
         }
-
-        var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(0);
-        int loop = Mathf.FloorToInt(state.normalizedTime);
-        float time = state.normalizedTime % 1f;
-
+        
         UpdateAnimationValue();
-        UpdateFootStep(loop, time, m_AnimLoopCnt, m_AnimTime);
+        UpdateFootStep(currentLoop, currentTime, m_AnimLoopCnt, m_AnimTime);
 
-        m_AnimTime = time;
-        m_AnimLoopCnt = loop;
+        m_AnimTime = currentTime;
+        m_AnimLoopCnt = currentLoop;
     }    
 
     public override void FixedUpdate()
@@ -72,12 +71,12 @@ public class PlayerStateMove : PlayerStateLocomotion
     {
         if (currentLoop != lastLoop)
         {
-            m_Player.OnFootStep(EFootStep.LeftFootStep);
+            m_Player.OnFootStep(EFootStep.RightFootStep);
         }
 
         if (lastTime < 0.5f && currtentTime >= 0.5f)
         {
-            m_Player.OnFootStep(EFootStep.RightFootStep);
+            m_Player.OnFootStep(EFootStep.LeftFootStep);
         }
     }
 }

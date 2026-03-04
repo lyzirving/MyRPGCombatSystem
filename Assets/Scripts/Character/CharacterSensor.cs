@@ -26,7 +26,7 @@ public class CharacterSensor : MonoBehaviour
     public Vector3 averageVelocity => m_VelocitySum / SPEED_CACHE_NUM;
 
     #region State Methods
-    private void Awake()
+    private void OnEnable()
     {
         m_VelocitySum = Vector3.zero;
         m_VelocityCache = new Vector3[SPEED_CACHE_NUM];
@@ -34,7 +34,7 @@ public class CharacterSensor : MonoBehaviour
             m_VelocityCache[i] = Vector3.zero;
 
         m_CacheIndex = 0;
-        m_FirstEnter = true;                
+        m_FirstEnter = true;
     }
 
     private void Start()
@@ -43,11 +43,16 @@ public class CharacterSensor : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+        CheckTouchGround();
+    }
+
     private void FixedUpdate()
     {
-        if(CheckTouchGround())
+        if (m_IsGrounded)
             CacheVelocity();
-    }    
+    }
     #endregion
 
     #region Main Methods
