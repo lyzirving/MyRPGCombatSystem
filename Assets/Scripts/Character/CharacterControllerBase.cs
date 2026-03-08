@@ -69,9 +69,9 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
     public virtual void OnAttackEnd() { }
 
-    public virtual void OnAttackHit(SkillData config, ICharacterBehavior target, Vector3 hitPos) { }
+    public virtual void OnAttackHit(ICharacterBehavior target, Vector3 hitPos) { }
 
-    public virtual void OnDamage(float damage) { }
+    public virtual void OnHit(float damage) { }
 
     public virtual void OnFootStep(EFootstep footStep) { }
 

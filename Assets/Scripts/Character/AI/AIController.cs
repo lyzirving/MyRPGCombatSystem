@@ -39,9 +39,9 @@ public class AIController : CharacterControllerBase
     #endregion
 
     #region ICharacterBehavior Methods
-    public override void OnDamage(float damage)
+    public override void OnHit(float damage)
     {
-        Debug.Log($"OnDamage: {damage}");
+        Debug.Log($"OnHit: {damage}");
     }
     #endregion
 }

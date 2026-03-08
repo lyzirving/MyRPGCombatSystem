@@ -59,7 +59,7 @@ public class PlayerStateAttack : PlayerStateCombat
 
     public override void FixedUpdate()
     {
-        m_Player.ResetVelocity();
+        m_Player.ResetHorizontalVelocity();
     }
 
     private void HandleAttackTransit(in AnimationEventInfo info)

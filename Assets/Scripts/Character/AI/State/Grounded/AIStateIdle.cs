@@ -5,4 +5,9 @@ public class AIStateIdle : AIStateLocomotion
     {
         m_AIController.attrs.speedModify = 0f;
     }
+
+    public override void FixedUpdate()
+    {
+        m_AIController.ResetHorizontalVelocity();
+    }
 }

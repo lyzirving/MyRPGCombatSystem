@@ -92,9 +92,9 @@ public class PlayerController : CharacterControllerBase
         m_AttackComponent.attackBox.OnAttackEnd();
     }
 
-    public override void OnAttackHit(SkillData config, ICharacterBehavior target, Vector3 hitPos)
+    public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)
     {
-        target?.OnDamage(config.damage);
+        target?.OnHit(m_AttackComponent.attackBox.skillConfig.damage);
     }
 
     public override void OnFootStep(EFootstep footStep)

@@ -18,7 +18,7 @@ MonoBehaviour:
   attackBox: LeftHandAttackBox
   action: 1
   damage: 5
-  releaseData:
+  skillReleaseData:
     spawnObj:
       prefab: {fileID: 0}
       audioClip: {fileID: 0}
@@ -27,9 +27,9 @@ MonoBehaviour:
       scale: {x: 1, y: 1, z: 1}
       time: 0
     audioClip: {fileID: 0}
-  attackData:
+  skillHitData:
     spawnObj:
-      prefab: {fileID: 0}
+      prefab: {fileID: 824404068831305595, guid: e8ae6236a07007a49b77218e3e2451f9, type: 3}
       audioClip: {fileID: 0}
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class AttackBox : MonoBehaviour
 {
     private Collider m_Collider;
+    private Collider[] m_ChildColliders;
     private HashSet<string> m_TagHashSet = new();
     private Dictionary<int, ICharacterBehavior> m_HitTargets = new Dictionary<int, ICharacterBehavior>();
     private ICharacterBehavior m_PlayerBehavior;
@@ -20,11 +21,13 @@ public class AttackBox : MonoBehaviour
         m_Collider = GetComponent<Collider>();
         if (m_Collider == null)
             throw new System.Exception("Fail to find Collider on GameObject");
+        m_ChildColliders = GetComponentsInChildren<Collider>();
     }
 
     private void OnDestroy()
     {
         m_PlayerBehavior = null;
+        m_ChildColliders = null;
     }
 
     private void OnTriggerStay(Collider other)
@@ -43,7 +46,7 @@ public class AttackBox : MonoBehaviour
             if (target != null)
             {
                 m_HitTargets.Add(other.GetInstanceID(), target);
-                m_PlayerBehavior?.OnAttackHit(skillConfig, target, other.ClosestPoint(transform.position));
+                m_PlayerBehavior?.OnAttackHit(target, other.ClosestPoint(transform.position));
             }
         }
     }
@@ -61,6 +64,7 @@ public class AttackBox : MonoBehaviour
             return;
 
         m_Collider.enabled = true;
+        EnableChildColliders(true);
         m_HitTargets.Clear();
     }
 
@@ -69,7 +73,15 @@ public class AttackBox : MonoBehaviour
         if (m_Collider == null)
             return;
 
+        EnableChildColliders(false);
         m_Collider.enabled = false;
+    }
+
+    public void EnableChildColliders(bool enable)
+    {
+        if(m_ChildColliders == null || m_ChildColliders.Length == 0) return;
+        for(int i = 0; i < m_ChildColliders.Length; i++)
+            m_ChildColliders[i].enabled = enable;
     }
     #endregion
 

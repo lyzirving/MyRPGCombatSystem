@@ -17,9 +17,9 @@ public class SkillData : ScriptableObject
     public int damage = 5;
 
     [Tooltip("Data to be spawned when the skill is released")]
-    public SkillReleaseData releaseData;
+    public SkillReleaseData skillReleaseData;
     [Tooltip("Data to be spawned when the skill hits the target")]
-    public SkillAttackData attackData;
+    public SkillHitData skillHitData;
 
     [Header("Runtime Attributes")]
     [Tooltip("Index of the attack box, initialized after SkillData is configured on player")]
@@ -42,7 +42,7 @@ public class SkillReleaseData
 /// Effect spawned when the skill hits target
 /// </summary>
 [Serializable]
-public class SkillAttackData
+public class SkillHitData
 {
     public SkillSpawnObj spawnObj;
     public AudioClip audioClip;
