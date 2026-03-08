@@ -8,8 +8,6 @@ public class CharacterModel : MonoBehaviour
     protected Animator m_Animator;
     protected ICharacterBehavior m_CharacterBehaviour;
 
-    protected event UnityAction m_LeftFootStepAc;
-    protected event UnityAction m_RightFootStepAc;
     protected event RootMotionAction m_RootMotionAc;
 
     public Animator animator => m_Animator;
@@ -22,18 +20,12 @@ public class CharacterModel : MonoBehaviour
 
     private void Start()
     {
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.RightFootStep, OnRightFootStep);
-
         AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, OnAttackStart);
         AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnDisable()
     {
-        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.LeftFootStep, OnLeftFootStep);
-        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.RightFootStep, OnRightFootStep);
-
         AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, OnAttackStart);
         AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, OnAttackEnd);
     }
@@ -105,47 +97,15 @@ public class CharacterModel : MonoBehaviour
     public void RemoveRootMotionAction(RootMotionAction action)
     {
         m_RootMotionAc -= action;
-    }
-
-    public void RegisterLeftFootStepAction(UnityAction action)
-    {
-        m_LeftFootStepAc += action;
-    }
-
-    public void RemoveLeftFootStepAction(UnityAction action)
-    {
-        m_LeftFootStepAc -= action;
-    }
-
-    public void RegisterRightFootStepAction(UnityAction action)
-    {
-        m_RightFootStepAc += action;
-    }
-
-    public void RemoveRightFootStepAction(UnityAction action)
-    {
-        m_RightFootStepAc -= action;
-    }    
+    }  
 
     public void ClearAllAction()
     {
         m_RootMotionAc = null;
-        m_LeftFootStepAc = null;
-        m_RightFootStepAc = null;
     }
     #endregion
 
     #region AnimationEvent Handler
-    private void OnLeftFootStep(in AnimationEventInfo info)
-    {
-        m_LeftFootStepAc?.Invoke();
-    }
-
-    private void OnRightFootStep(in AnimationEventInfo info)
-    {
-        m_RightFootStepAc?.Invoke();
-    }
-
     private void OnAttackStart(in AnimationEventInfo info)
     {
         m_CharacterBehaviour?.OnAttackBegin();

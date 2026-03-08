@@ -14,4 +14,10 @@ public class PlayerStateAirborne : PlayerStateBase
             m_Player.model.StopAnimation(AnimationConsts.airborne);
         }
     }
+
+    public override void OnContactGround(Collider collider)
+    {
+        m_Player.OnFootStep(EFootstep.None);
+        m_Player.ChangeState(ECharacterState.Idle);
+    }
 }

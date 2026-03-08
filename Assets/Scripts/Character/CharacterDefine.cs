@@ -11,9 +11,9 @@ public enum ECharacterState : UInt16
     Attack
 }
 
-public enum EFootStep : UInt16
+public enum EFootstep : UInt16
 {
     None = 0,
-    LeftFootStep,
-    RightFootStep,
+    LeftFootstep,
+    RightFootstep,
 }

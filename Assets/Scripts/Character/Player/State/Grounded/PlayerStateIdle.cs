@@ -38,6 +38,6 @@ public class PlayerStateIdle : PlayerStateLocomotion
 
     public override void FixedUpdate()
     {
-        m_Player.ResetVelocity();
+        m_Player.ResetHorizontalVelocity();
     }
 }

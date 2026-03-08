@@ -8,15 +8,15 @@ public struct ChangeStateArgs
     /// <summary>
     /// Current footStep of animation
     /// </summary>
-    public EFootStep footStep;
+    public EFootstep footStep;
 
     public ChangeStateArgs(bool reEnterState)
     { 
         this.reEnterState = reEnterState;
-        this.footStep = EFootStep.None;
+        this.footStep = EFootstep.None;
     }
 
-    public ChangeStateArgs(EFootStep footStep)
+    public ChangeStateArgs(EFootstep footStep)
     {
         this.reEnterState = false;
         this.footStep = footStep;

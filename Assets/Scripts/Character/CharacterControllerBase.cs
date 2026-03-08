@@ -34,6 +34,12 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_Rigidbody.linearVelocity = Vector3.zero;
     }
 
+    public void ResetHorizontalVelocity()
+    {
+        var y = m_Rigidbody.linearVelocity.y;
+        m_Rigidbody.linearVelocity = new Vector3(0f, y, 0f);
+    }
+
     public void ResetVerticalVelocity()
     {
         m_Rigidbody.linearVelocity = horizontalVelocity;
@@ -67,7 +73,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
     public virtual void OnDamage(float damage) { }
 
-    public virtual void OnFootStep(EFootStep footStep) { }
+    public virtual void OnFootStep(EFootstep footStep) { }
 
     public virtual void OnContactGround(Collider collider) 
     {

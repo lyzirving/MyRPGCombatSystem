@@ -12,7 +12,7 @@ public class PlayerController : CharacterControllerBase
 
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
-    private AudioSource m_AudioSource;
+    private AudioPool m_AudioPool;
     private AttackComponent m_AttackComponent;
     // -------- Component in current node end --------
 
@@ -26,28 +26,20 @@ public class PlayerController : CharacterControllerBase
         base.Init();
 
         m_ActionController = GetComponent<PlayerActionController>();
-        m_AudioSource = GetComponent<AudioSource>();
+        m_AudioPool = GetComponent<AudioPool>();
 
         m_AttackComponent = GetComponent<AttackComponent>();
         m_AttackComponent.Init(this);
 
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
-        m_PlayerModel.Init(this);
-        m_PlayerModel.RegisterLeftFootStepAction(OnLeftFootDown);
-        m_PlayerModel.RegisterRightFootStepAction(OnRightFootDown);        
+        m_PlayerModel.Init(this);        
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         ChangeState(ECharacterState.Idle);
-    }
-
-    private void OnDisable()
-    {
-        m_PlayerModel.RemoveLeftFootStepAction(OnLeftFootDown);
-        m_PlayerModel.RemoveRightFootStepAction(OnRightFootDown);
     }
     #endregion
 
@@ -58,16 +50,6 @@ public class PlayerController : CharacterControllerBase
             return this.transform.forward;
 
         return cameraRotation * m_ActionController.GetInputDirection();
-    }
-
-    private void OnLeftFootDown()
-    {
-        OnFootStep(EFootStep.LeftFootStep);
-    }
-
-    private void OnRightFootDown()
-    {
-        OnFootStep(EFootStep.RightFootStep);
     }
     #endregion
 
@@ -85,8 +67,8 @@ public class PlayerController : CharacterControllerBase
             case ECharacterState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
                 break;
-            case ECharacterState.Land:
-                m_StateMachine?.ChangeState<PlayerStateLand>(args);
+            case ECharacterState.Falling:
+                m_StateMachine?.ChangeState<PlayerStateFall>(args);
                 break;
             case ECharacterState.Attack:
                 m_StateMachine?.ChangeState<PlayerStateAttack>(args);
@@ -115,12 +97,12 @@ public class PlayerController : CharacterControllerBase
         target?.OnDamage(config.damage);
     }
 
-    public override void OnFootStep(EFootStep footStep)
+    public override void OnFootStep(EFootstep footStep)
     {
         if (footStepAudioClips == null || footStepAudioClips.Length == 0)
             return;
 
-        m_AudioSource.PlayOneShot(footStepAudioClips[1]);
+        m_AudioPool?.PlayOneShot(footStepAudioClips[1]);
     }
     #endregion
 }

@@ -30,13 +30,14 @@ public class PlayerStateJump : PlayerStateAirborne
         float feetTween;
         if (m_JumpFromMove)
         {
-            feetTween = args.footStep == EFootStep.LeftFootStep ? 1f : -1f;
+            feetTween = args.footStep == EFootstep.LeftFootstep ? 1f : -1f;
             feetTween *= m_Player.action.shouldRun ? 3f : 1f;
         }
         else
         {
             feetTween = ((float)m_SysRandom.NextDouble() * 2f - 1f);
         }
+
         m_JumpStartRatio = (m_JumpFromMove && m_Player.action.shouldRun) ? POWER_JUMP_UP_RATIO : NORMAL_JUMP_UP_RATIO;        
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, m_JumpStartRatio);
         m_Player.model.SetAnimationFloat(AnimationConsts.feetTween, feetTween);
@@ -74,12 +75,7 @@ public class PlayerStateJump : PlayerStateAirborne
             m_Player.rigidBody.AddForce(Physics.gravity * GameSettings.characterConfig.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
 
         UpdateAirborneMovement();
-    }
-
-    public override void OnContactGround(Collider collider)
-    {
-        m_Player.ChangeState(ECharacterState.Land);
-    }
+    }    
     #endregion
 
     #region Main Methods

@@ -5,6 +5,16 @@ public class PlayerStateMove : PlayerStateLocomotion
     private int m_AnimLoopCnt;
     private float m_AnimTime;
 
+    public EFootstep currentFoopStep
+    {
+        get 
+        {
+            if(m_Player.model.animator.IsInTransition(0)) return EFootstep.None;
+            float time = m_Player.model.animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1f;
+            return time < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep;
+        }
+    }
+
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         m_AnimLoopCnt = 0;
@@ -13,9 +23,19 @@ public class PlayerStateMove : PlayerStateLocomotion
 
     public override void Update()
     {
-        var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(0);
-        int currentLoop = Mathf.FloorToInt(state.normalizedTime);
-        float currentTime = state.normalizedTime % 1f;
+        int currentLoop = 0;
+        float currentTime = 0f;
+        if (m_Player.model.animator.IsInTransition(0))
+        {
+            currentLoop = m_AnimLoopCnt;
+            currentTime = m_AnimTime;
+        }
+        else
+        {
+            var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(0);
+            currentLoop = Mathf.FloorToInt(state.normalizedTime);
+            currentTime = state.normalizedTime % 1f;
+        }
 
         if (m_Player.action.isLightAttack)
         {
@@ -25,7 +45,7 @@ public class PlayerStateMove : PlayerStateLocomotion
 
         if (m_Player.action.isJump)
         {
-            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(currentTime < 0.5f ? EFootStep.LeftFootStep : EFootStep.RightFootStep));
+            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(currentTime < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep));
             return;
         }
 
@@ -69,14 +89,15 @@ public class PlayerStateMove : PlayerStateLocomotion
 
     private void UpdateFootStep(int currentLoop, float currtentTime, int lastLoop, float lastTime)
     {
-        if (currentLoop != lastLoop)
+        float time = Time.time;
+        if (currentLoop != lastLoop && Mathf.Abs(currentLoop - lastLoop) == 1)
         {
-            m_Player.OnFootStep(EFootStep.RightFootStep);
+            m_Player.OnFootStep(EFootstep.RightFootstep);
         }
 
-        if (lastTime < 0.5f && currtentTime >= 0.5f)
+        if (lastTime < 0.5f && currtentTime >= 0.5f && !Mathf.Approximately(lastTime, 0f))
         {
-            m_Player.OnFootStep(EFootStep.LeftFootStep);
+            m_Player.OnFootStep(EFootstep.LeftFootstep);
         }
     }
 }
