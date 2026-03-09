@@ -20,7 +20,7 @@ MonoBehaviour:
   damage: 5
   skillReleaseData:
     spawnObj:
-      prefab: {fileID: 0}
+      prefabPath: 
       audioClip: {fileID: 0}
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
@@ -29,7 +29,7 @@ MonoBehaviour:
     audioClip: {fileID: 0}
   skillHitData:
     spawnObj:
-      prefab: {fileID: 824404068831305595, guid: e8ae6236a07007a49b77218e3e2451f9, type: 3}
+      prefabPath: VFX/Classic/18
       audioClip: {fileID: 0}
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}

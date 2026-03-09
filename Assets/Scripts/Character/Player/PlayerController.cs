@@ -94,7 +94,8 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)
     {
-        target?.OnHit(m_AttackComponent.attackBox.skillConfig.damage);
+        target?.OnHit(m_AttackComponent.skill.damage);
+        VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnObj.prefabPath, hitPos, Quaternion.identity);
     }
 
     public override void OnFootStep(EFootstep footStep)

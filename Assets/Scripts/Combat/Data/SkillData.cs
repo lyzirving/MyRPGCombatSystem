@@ -51,7 +51,7 @@ public class SkillHitData
 [Serializable]
 public class SkillSpawnObj
 {
-    public GameObject prefab;
+    public string prefabPath;
     public AudioClip audioClip;
     public Vector3 position = Vector3.zero;
     public Vector3 rotation = Vector3.zero;
