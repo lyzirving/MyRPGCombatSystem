@@ -12,6 +12,11 @@ public abstract class StateBase
     public virtual void Enter(StateBase exitState, ChangeStateArgs args) { }
 
     /// <summary>
+    /// Called when entering current state again
+    /// </summary>
+    public virtual void ReEnter(ChangeStateArgs args) { }
+
+    /// <summary>
     /// Called once every time when a state exits
     /// </summary>
     public virtual void Exit(StateBase newState) { }

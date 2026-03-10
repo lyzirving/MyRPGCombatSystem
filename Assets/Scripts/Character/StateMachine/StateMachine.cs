@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class StateMachine
 {
@@ -22,13 +22,26 @@ public class StateMachine
         if (hasState && currentStateType == typeof(T) && !args.reEnterState) 
             return false;
 
-        var exitState = m_CurrentState;
         var newState = GetState<T>();
+        if (args.reEnterState && newState == m_CurrentState && m_CurrentState != null)
+        {
+            m_CurrentState.ReEnter(args);
+            return true;
+        }
+        var exitState = m_CurrentState;        
         OnStateExit(exitState, newState);
         OnStateEnter(exitState, newState, args);
         m_CurrentState = newState;     
         return true;     
-    }    
+    }
+
+    public void ExitCurrentState()
+    {
+        if(!hasState) return;
+
+        OnStateExit(m_CurrentState, null);
+        m_CurrentState = null;
+    }
 
     public void Stop()
     {

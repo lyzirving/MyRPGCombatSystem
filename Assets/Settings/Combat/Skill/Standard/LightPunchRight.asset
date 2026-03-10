@@ -19,22 +19,10 @@ MonoBehaviour:
   action: 1
   damage: 5
   skillReleaseData:
-    spawnObj:
-      prefabPath: 
-      audioClip: {fileID: 0}
-      position: {x: 0, y: 0, z: 0}
-      rotation: {x: 0, y: 0, z: 0}
-      scale: {x: 1, y: 1, z: 1}
-      time: 0
+    spawnPrefab: 
     audioClip: {fileID: 0}
   skillHitData:
-    spawnObj:
-      prefabPath: VFX/Classic/18
-      audioClip: {fileID: 0}
-      position: {x: 0, y: 0, z: 0}
-      rotation: {x: 0, y: 0, z: 0}
-      scale: {x: 1, y: 1, z: 1}
-      time: 0
+    spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
   attackBoxIndex: 3
   nextSkillIndex: 2

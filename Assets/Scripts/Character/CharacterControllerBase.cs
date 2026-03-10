@@ -60,6 +60,11 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public virtual void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs))
     {        
     }
+
+    public void ExitCurrentState()
+    {
+        m_StateMachine?.ExitCurrentState();
+    }
     #endregion
 
     #region ICharacterBehavior Methods
@@ -85,6 +90,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     {
         var state = m_StateMachine.currentState as CharacterStateBase;
         state?.OnExitGround();
-    }
+    }    
     #endregion
 }

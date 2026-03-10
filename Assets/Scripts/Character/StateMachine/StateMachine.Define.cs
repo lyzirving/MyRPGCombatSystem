@@ -26,4 +26,5 @@ public struct ChangeStateArgs
 public interface IStateMachineOwner 
 {
     public void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs));
+    public void ExitCurrentState();
 }

@@ -56,6 +56,11 @@ public class CharacterModel : MonoBehaviour
         m_Animator?.CrossFadeInFixedTime(name, fixedTransitionDuration);
     }
 
+    public void StartAnimation(int hashName, float fixedTransitionDuration, int layer)
+    {
+        m_Animator?.CrossFadeInFixedTime(hashName, fixedTransitionDuration, layer);
+    }
+
     public void SetAnimationFloat(int nameHash, float value)
     {
         m_Animator?.SetFloat(nameHash, value);

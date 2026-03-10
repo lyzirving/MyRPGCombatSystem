@@ -8,7 +8,8 @@ public enum ECharacterState : UInt16
     Roll,
     Falling,
     Land,
-    Attack
+    Attack,
+    Hurt
 }
 
 public enum EFootstep : UInt16

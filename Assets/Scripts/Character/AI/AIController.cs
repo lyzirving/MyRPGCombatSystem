@@ -32,6 +32,9 @@ public class AIController : CharacterControllerBase
             case ECharacterState.Idle:
                 m_StateMachine?.ChangeState<AIStateIdle>(args);                
                 break;
+            case ECharacterState.Hurt:
+                m_StateMachine?.ChangeState<AIStateHurt>(args);
+                break;
             default:
                 break;
         }
@@ -42,6 +45,7 @@ public class AIController : CharacterControllerBase
     public override void OnHit(float damage)
     {
         Debug.Log($"OnHit: {damage}");
+        ChangeState(ECharacterState.Hurt, new ChangeStateArgs(true));
     }
     #endregion
 }

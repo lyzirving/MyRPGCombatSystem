@@ -34,7 +34,7 @@ public class SkillData : ScriptableObject
 [Serializable]
 public class SkillReleaseData
 {
-    public SkillSpawnObj spawnObj;
+    public string spawnPrefab;
     public AudioClip audioClip;
 }
 
@@ -44,7 +44,7 @@ public class SkillReleaseData
 [Serializable]
 public class SkillHitData
 {
-    public SkillSpawnObj spawnObj;
+    public string spawnPrefab;
     public AudioClip audioClip;
 }
 

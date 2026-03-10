@@ -15,6 +15,12 @@ public class PlayerStateAttack : PlayerStateCombat
         m_ShouldTransit = false;
     }
 
+    public override void ReEnter(ChangeStateArgs args)
+    {
+        m_Player.model.StartAnimation(m_Player.attackComponent.skill.animation, m_Player.attackComponent.skill.crossFadeInTime);
+        m_ShouldTransit = false;
+    }
+
     public override void Exit(StateBase newState)
     {        
         AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, HandleAttackTransit);
