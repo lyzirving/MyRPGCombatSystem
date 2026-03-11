@@ -10,10 +10,12 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
     protected Rigidbody m_Rigidbody;    
     protected CharacterSensor m_Sensor;
+    protected CapsuleCollider m_CapsuleCollider;
 
     public CharacterAttrs attrs { get => m_Attrs; }
     public Rigidbody rigidBody { get => m_Rigidbody; }
     public CharacterSensor sensor { get => m_Sensor; }
+    public CapsuleCollider capsule => m_CapsuleCollider;
 
     public Vector3 verticalVelocity => new Vector3(0f, m_Rigidbody.linearVelocity.y, 0f);
     public Vector3 horizontalVelocity => new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);
@@ -48,6 +50,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected void Init()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        m_CapsuleCollider = GetComponent<CapsuleCollider>();
         m_Sensor = this.transform.AddComponent<CharacterSensor>();
         m_Sensor.Init(this);
 
@@ -76,7 +79,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
     public virtual void OnAttackHit(ICharacterBehavior target, Vector3 hitPos) { }
 
-    public virtual void OnHit(float damage) { }
+    public virtual void OnHit(Vector3 hitPos, float damage) { }
 
     public virtual void OnFootStep(EFootstep footStep) { }
 

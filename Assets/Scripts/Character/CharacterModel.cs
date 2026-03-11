@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRotation);
 
 public class CharacterModel : MonoBehaviour
 {
+    protected readonly WaitForSecondsRealtime HIT_STOP_WAIT_TIME = new WaitForSecondsRealtime(0.1f);
+
     protected Animator m_Animator;
     protected ICharacterBehavior m_CharacterBehaviour;
 
@@ -46,6 +49,11 @@ public class CharacterModel : MonoBehaviour
     #endregion
 
     #region Animation Methods    
+    public void HitStop(float slowMotionScale = 0.9f)
+    {
+        MonoManager.Run(HitStopCoroutine(slowMotionScale));
+    }
+
     public void StartAnimation(int hash)
     {
         m_Animator?.SetBool(hash, true);
@@ -89,6 +97,17 @@ public class CharacterModel : MonoBehaviour
     public void StopAnimation(int hash)
     {
         m_Animator?.SetBool(hash, false);
+    }
+
+    private IEnumerator HitStopCoroutine(float slowMotionScale)
+    { 
+        float originalSpeed = m_Animator.speed;
+
+        m_Animator.speed = slowMotionScale;
+
+        yield return HIT_STOP_WAIT_TIME;
+
+        m_Animator.speed = originalSpeed;
     }
     #endregion
 

@@ -46,15 +46,5 @@ public class SkillHitData
 {
     public string spawnPrefab;
     public AudioClip audioClip;
-}
-
-[Serializable]
-public class SkillSpawnObj
-{
-    public string prefabPath;
-    public AudioClip audioClip;
-    public Vector3 position = Vector3.zero;
-    public Vector3 rotation = Vector3.zero;
-    public Vector3 scale = Vector3.one;
-    public float time;
+    public float hitStopTimeScale;
 }

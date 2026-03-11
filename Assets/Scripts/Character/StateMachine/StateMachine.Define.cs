@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public struct ChangeStateArgs
 {
     /// <summary>
@@ -9,17 +11,27 @@ public struct ChangeStateArgs
     /// Current footStep of animation
     /// </summary>
     public EFootstep footStep;
+    public Vector3 hitPos;
 
     public ChangeStateArgs(bool reEnterState)
     { 
         this.reEnterState = reEnterState;
         this.footStep = EFootstep.None;
+        this.hitPos = Vector3.zero;
     }
 
     public ChangeStateArgs(EFootstep footStep)
     {
         this.reEnterState = false;
         this.footStep = footStep;
+        this.hitPos = Vector3.zero;
+    }
+
+    public ChangeStateArgs(bool reEnterState, Vector3 hitPos)
+    {
+        this.reEnterState = reEnterState;
+        this.footStep = EFootstep.None;
+        this.hitPos = hitPos;
     }
 }
 

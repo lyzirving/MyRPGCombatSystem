@@ -42,10 +42,10 @@ public class AIController : CharacterControllerBase
     #endregion
 
     #region ICharacterBehavior Methods
-    public override void OnHit(float damage)
+    public override void OnHit(Vector3 hitPos, float damage)
     {
         Debug.Log($"OnHit: {damage}");
-        ChangeState(ECharacterState.Hurt, new ChangeStateArgs(true));
+        ChangeState(ECharacterState.Hurt, new ChangeStateArgs(true, hitPos));
     }
     #endregion
 }

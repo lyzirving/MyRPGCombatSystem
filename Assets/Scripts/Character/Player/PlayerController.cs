@@ -84,6 +84,7 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackBegin()
     {
+        m_AudioPool?.PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);
         m_AttackComponent.attackBox.OnAttackBegin();
     }
 
@@ -94,7 +95,8 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)
     {
-        target?.OnHit(m_AttackComponent.skill.damage);
+        m_PlayerModel.HitStop(m_AttackComponent.skill.skillHitData.hitStopTimeScale);
+        target?.OnHit(hitPos, m_AttackComponent.skill.damage);
         VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnPrefab, hitPos, Quaternion.identity);
     }
 

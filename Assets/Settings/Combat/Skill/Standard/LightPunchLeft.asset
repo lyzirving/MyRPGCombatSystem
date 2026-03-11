@@ -20,9 +20,10 @@ MonoBehaviour:
   damage: 5
   skillReleaseData:
     spawnPrefab: 
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 9fdbda0350403f841a355a606f656358, type: 3}
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
+    hitStopTimeScale: 0.18
   attackBoxIndex: 2
   nextSkillIndex: 1

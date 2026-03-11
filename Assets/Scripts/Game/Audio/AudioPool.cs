@@ -30,6 +30,8 @@ public class AudioPool : MonoBehaviour
 
     public void PlayOneShot(AudioClip clip)
     {
+        if (clip == null) return;
+
         if (m_AvailableIndex < m_AudioPool.Count)
         {
             AudioSource source = m_AudioPool[m_AvailableIndex];
