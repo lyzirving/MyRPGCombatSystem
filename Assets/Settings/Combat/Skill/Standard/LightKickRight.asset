@@ -18,6 +18,8 @@ MonoBehaviour:
   attackBox: RightLegAttackBox
   action: 1
   damage: 10
+  hitStunTime: 0.3
+  knockbackDistance: 0.3
   skillReleaseData:
     spawnPrefab: 
     audioClip: {fileID: 8300000, guid: 48710c9d66597b4408f79bd450d96c22, type: 3}

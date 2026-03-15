@@ -73,13 +73,15 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #region ICharacterBehavior Methods
     public virtual bool isLightAttack => false;
 
+    public virtual Transform modelTransform => null;
+
     public virtual void OnAttackBegin() { }
 
     public virtual void OnAttackEnd() { }
 
     public virtual void OnAttackHit(ICharacterBehavior target, Vector3 hitPos) { }
 
-    public virtual void OnHit(Vector3 hitPos, float damage) { }
+    public virtual void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData) { }
 
     public virtual void OnFootStep(EFootstep footStep) { }
 

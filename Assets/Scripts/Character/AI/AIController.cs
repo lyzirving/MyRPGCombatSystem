@@ -42,10 +42,11 @@ public class AIController : CharacterControllerBase
     #endregion
 
     #region ICharacterBehavior Methods
-    public override void OnHit(Vector3 hitPos, float damage)
+    public override Transform modelTransform { get => m_AIModel.transform; }
+
+    public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
-        Debug.Log($"OnHit: {damage}");
-        ChangeState(ECharacterState.Hurt, new ChangeStateArgs(true, hitPos));
+        ChangeState(ECharacterState.Hurt, new ChangeStateArgs(true, source, skillData, hitPos));
     }
     #endregion
 }

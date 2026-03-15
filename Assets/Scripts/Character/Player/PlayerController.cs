@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerController : CharacterControllerBase
 {
@@ -82,6 +83,8 @@ public class PlayerController : CharacterControllerBase
     #region ICharacterBehavior Methods
     public override bool isLightAttack { get => m_ActionController.isLightAttack; }
 
+    public override Transform modelTransform { get => m_PlayerModel.transform; }
+
     public override void OnAttackBegin()
     {
         m_AudioPool?.PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);
@@ -96,7 +99,7 @@ public class PlayerController : CharacterControllerBase
     public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)
     {
         m_PlayerModel.HitStop(m_AttackComponent.skill.skillHitData.hitStopTimeScale);
-        target?.OnHit(hitPos, m_AttackComponent.skill.damage);
+        target?.OnHit(hitPos, this, m_AttackComponent.skill);
         VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnPrefab, hitPos, Quaternion.identity);
     }
 

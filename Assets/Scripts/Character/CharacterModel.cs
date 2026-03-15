@@ -9,7 +9,8 @@ public class CharacterModel : MonoBehaviour
 
     protected Animator m_Animator;
     protected ICharacterBehavior m_CharacterBehaviour;
-
+    protected bool m_HitStopRunning = false;
+    protected Coroutine m_HitStopCoroutine;
     protected event RootMotionAction m_RootMotionAc;
 
     public Animator animator => m_Animator;
@@ -51,7 +52,13 @@ public class CharacterModel : MonoBehaviour
     #region Animation Methods    
     public void HitStop(float slowMotionScale = 0.9f)
     {
-        MonoManager.Run(HitStopCoroutine(slowMotionScale));
+        if (m_HitStopRunning && m_HitStopCoroutine != null)
+        {
+            MonoManager.Stop(m_HitStopCoroutine);
+            m_HitStopRunning = false;
+            m_Animator.speed = 1f;
+        }
+        m_HitStopCoroutine = MonoManager.Run(HitStopCoroutine(slowMotionScale));
     }
 
     public void StartAnimation(int hash)
@@ -100,7 +107,8 @@ public class CharacterModel : MonoBehaviour
     }
 
     private IEnumerator HitStopCoroutine(float slowMotionScale)
-    { 
+    {
+        m_HitStopRunning = true;
         float originalSpeed = m_Animator.speed;
 
         m_Animator.speed = slowMotionScale;
@@ -108,6 +116,7 @@ public class CharacterModel : MonoBehaviour
         yield return HIT_STOP_WAIT_TIME;
 
         m_Animator.speed = originalSpeed;
+        m_HitStopRunning = false;
     }
     #endregion
 

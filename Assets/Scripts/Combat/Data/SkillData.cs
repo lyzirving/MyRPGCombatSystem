@@ -4,18 +4,24 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SkillData", menuName = "Config/SkillData")]
 public class SkillData : ScriptableObject
 {
-    [Header("Static Attributes")]
+    [Header("Animation Attributes")]
     [Tooltip("Name of the animation state")]
     public string animation;
     public float crossFadeInTime = 0.15f;
     [Tooltip("Input floating window duration in seconds")]
     public float inputWindowDuration = 0.2f;
+
+    [Header("Trigger Attributes")]
     [Tooltip("Name of the attack box, which should be mapped to the one on player")]
     public string attackBox;
     public CombatDefine.EAttack action = CombatDefine.EAttack.None;
 
+    [Header("Static Attributes")]
     public int damage = 5;
+    public float hitStunTime = 0f;
+    public float knockbackDistance = 0f;
 
+    [Header("Spawner Data")]
     [Tooltip("Data to be spawned when the skill is released")]
     public SkillReleaseData skillReleaseData;
     [Tooltip("Data to be spawned when the skill hits the target")]

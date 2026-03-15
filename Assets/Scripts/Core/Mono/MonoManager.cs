@@ -13,6 +13,11 @@ public class MonoManager : SingletonMono<MonoManager>
         return instance.StartCoroutine(routine);
     }
 
+    public static void Stop(Coroutine routine)
+    {
+        instance.StopCoroutine(routine);
+    }
+
     public void AddUpdateListener(Action action)
     {
         m_UpdateAction += action;
