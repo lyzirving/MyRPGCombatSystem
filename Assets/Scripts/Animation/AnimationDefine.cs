@@ -27,6 +27,8 @@ public static class AnimationConsts
     public static int land { get; private set; }
     public static int airborne { get; private set; }
     public static int hit { get; private set; }
+    public static int defence { get; private set; }
+    public static int defenceRelease { get; private set; }
 
     [Header("Ratio parameters in Animator")]
     public static int angular { get; private set; }
@@ -46,6 +48,8 @@ public static class AnimationConsts
         land = Animator.StringToHash("isLanding");
         airborne = Animator.StringToHash("isAirborne");
         hit = Animator.StringToHash("isHit");
+        defence = Animator.StringToHash("isDefence");
+        defenceRelease = Animator.StringToHash("defenceRelease");
 
         // Ratio parameters in Animator
         angular = Animator.StringToHash("angular");

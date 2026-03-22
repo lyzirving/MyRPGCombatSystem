@@ -74,6 +74,9 @@ public class PlayerController : CharacterControllerBase
             case ECharacterState.Attack:
                 m_StateMachine?.ChangeState<PlayerStateAttack>(args);
                 break;
+            case ECharacterState.Defence:
+                m_StateMachine?.ChangeState<PlayerStateDefence>(args);
+                break;
             default:
                 break;
         }

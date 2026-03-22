@@ -59,6 +59,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "HoldDefence",
+                    "type": "Button",
+                    "id": "d5fcde31-f990-438d-ac82-bb4057a736fb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -180,6 +189,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LightAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2453a2b9-22a4-4684-9c05-52619775289a",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "Hold(duration=0.15)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HoldDefence",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

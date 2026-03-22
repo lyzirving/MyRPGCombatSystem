@@ -11,6 +11,7 @@ public class PlayerActionController : MonoBehaviour
     private bool m_IsJumpPerformed = false;
     private bool m_IsRollPerformed = false;
     private bool m_IsLightAttackPerformed = false;
+    private bool m_IsDefenceHold = false;
     // ------------------ Action Toggle End ------------------------
 
     // ------------------ Camera Control Start ----------------------
@@ -37,6 +38,7 @@ public class PlayerActionController : MonoBehaviour
     public bool isJump { get => m_IsJumpPerformed; } 
     public bool isRoll { get => m_IsRollPerformed; }
     public bool isLightAttack { get => m_IsLightAttackPerformed; }
+    public bool holdDefence => m_IsDefenceHold;
 
     #region State Methods
     private void OnEnable()
@@ -44,7 +46,9 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.RunToggle.performed += OnSwitchRunToggle;
         InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
         InputManager.instance.playerActions.Roll.performed += OnRollPerformed;
-        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;    
+        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
+        InputManager.instance.playerActions.HoldDefence.performed += OnDefenceHold;
+        InputManager.instance.playerActions.HoldDefence.canceled += OnDefenceCancel;
     }
 
     private void OnDisable()
@@ -53,6 +57,8 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
         InputManager.instance.playerActions.Roll.performed -= OnRollPerformed;
         InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
+        InputManager.instance.playerActions.HoldDefence.performed -= OnDefenceHold;
+        InputManager.instance.playerActions.HoldDefence.canceled -= OnDefenceCancel;
     }
 
     private void LateUpdate()
@@ -114,6 +120,16 @@ public class PlayerActionController : MonoBehaviour
     {
         m_IsLightAttackPerformed = true;        
         MonoManager.Run(OnAttackCancel());     
+    }
+
+    private void OnDefenceHold(InputAction.CallbackContext context)
+    {
+        m_IsDefenceHold = true;
+    }
+
+    private void OnDefenceCancel(InputAction.CallbackContext context)
+    {
+        m_IsDefenceHold = false;
     }
 
     private IEnumerator OnJumpCancel()

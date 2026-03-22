@@ -26,6 +26,12 @@ public class PlayerStateIdle : PlayerStateLocomotion
             return;
         }
 
+        if (m_Player.action.holdDefence)
+        {
+            m_Player.ChangeState(ECharacterState.Defence);
+            return;
+        }
+
         if (m_Player.action.isMoving)
         {
             m_Player.ChangeState(ECharacterState.Move);
