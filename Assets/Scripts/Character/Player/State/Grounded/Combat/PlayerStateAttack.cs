@@ -31,6 +31,14 @@ public class PlayerStateAttack : PlayerStateCombat
 
     public override void Update()
     {
+        // Break attack and turn into defence
+        if (m_Player.action.holdDefence)
+        {
+            m_Player.attackComponent.EndCombo();
+            m_Player.ChangeState(ECharacterState.Defence, new ChangeStateArgs(ChangeStateArgs.EAnimationPlayMode.Manual));
+            return;
+        }
+
         if (m_Player.attackComponent.UpdateCombo())
         {
             m_Player.attackComponent.NextSkill();

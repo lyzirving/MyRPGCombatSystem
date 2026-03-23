@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.InputSystem.LowLevel;
 
 public class StateMachine
 {
@@ -8,9 +7,7 @@ public class StateMachine
     private Dictionary<Type, StateBase> m_StateDic = new Dictionary<Type, StateBase>();
     private StateBase m_CurrentState;
 
-    public StateBase currentState { get => m_CurrentState; }
-    public bool hasState { get => m_CurrentState != null; }
-    public Type currentStateType { get => m_CurrentState.GetType(); }     
+    public StateBase currentState { get => m_CurrentState; }    
 
     public void Init(IStateMachineOwner owner)
     {
@@ -19,7 +16,7 @@ public class StateMachine
 
     public bool ChangeState<T>(ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
     {
-        if (hasState && currentStateType == typeof(T) && !args.reEnterState) 
+        if (m_CurrentState != null && m_CurrentState.GetType() == typeof(T) && !args.reEnterState) 
             return false;
 
         var newState = GetState<T>();
@@ -37,7 +34,7 @@ public class StateMachine
 
     public void ExitCurrentState()
     {
-        if(!hasState) return;
+        if(m_CurrentState == null) return;
 
         OnStateExit(m_CurrentState, null);
         m_CurrentState = null;

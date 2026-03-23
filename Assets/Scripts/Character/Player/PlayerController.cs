@@ -113,5 +113,15 @@ public class PlayerController : CharacterControllerBase
 
         m_AudioPool?.PlayOneShot(footStepAudioClips[1]);
     }
+
+    public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
+    {
+        if (m_StateMachine.currentState is PlayerStateDefence)
+        {
+            var defenceState = m_StateMachine.currentState as PlayerStateDefence;
+            //TODO: add config for counter attack window
+            defenceState.OnHit(0.2f);
+        }
+    }
     #endregion
 }

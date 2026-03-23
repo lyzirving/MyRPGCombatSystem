@@ -15,7 +15,8 @@ public class MonoManager : SingletonMono<MonoManager>
 
     public static void Stop(Coroutine routine)
     {
-        instance.StopCoroutine(routine);
+        if (routine != null)
+            instance.StopCoroutine(routine);
     }
 
     public void AddUpdateListener(Action action)

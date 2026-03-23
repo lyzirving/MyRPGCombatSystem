@@ -40,6 +40,7 @@ public static class AnimationConsts
 
     [Header("Animation state in Animator")]
     public static int hurtState { get; private set; }
+    public static int defenceState { get; private set; }
 
     public static void Init()
     {        
@@ -60,7 +61,8 @@ public static class AnimationConsts
         hitStunning = Animator.StringToHash("hitStunning");
 
         // Animation state in Animator
-        hurtState = Animator.StringToHash("Hurt");   
+        hurtState = Animator.StringToHash("Hurt");
+        defenceState = Animator.StringToHash("DefenceStart");
     }
 }
 
