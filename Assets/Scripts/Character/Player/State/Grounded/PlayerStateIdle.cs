@@ -14,6 +14,7 @@ public class PlayerStateIdle : PlayerStateLocomotion
 
     public override void Update()
     {
+        bool isComingIn = m_Player.model.animator.IsTransitToState("Locomotion", AnimationConsts.BASE_LAYER);        
         if (m_Player.action.isLightAttack)
         {
             m_Player.ChangeState(ECharacterState.Attack);

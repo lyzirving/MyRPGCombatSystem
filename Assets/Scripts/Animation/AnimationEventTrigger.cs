@@ -8,6 +8,7 @@ public class AnimationEventInfo : IComparable<AnimationEventInfo>
     public AnimationEventType type = AnimationEventType.None;
     public float launchTime = 0f; // normalized time when the event is triggered
     public float triggerTime = 0f;
+    public string animatorState;
 
     public int CompareTo(AnimationEventInfo other)
     {
@@ -26,6 +27,7 @@ public class AnimationEventTrigger : StateMachineBehaviour
     // guid of event's listener
     public int guid = -1;
     public List<AnimationEventInfo> events = new List<AnimationEventInfo>();
+    public string animatorState;
 
     private int m_Loop = -1;
     private int m_LastLoop = -1;
@@ -42,9 +44,16 @@ public class AnimationEventTrigger : StateMachineBehaviour
     {
         if (guid < 0)
         {
-            Debug.LogError($"instance id hasn't been assigned for animator[{animator.name}]");
+            Debug.LogError($"AnimationEventTrigger: instance id hasn't been assigned for animator[{animator.name}]");
             return;
         }
+
+        if (string.IsNullOrEmpty(animatorState))
+        {
+            Debug.LogError($"AnimationEventTrigger: animator state name hasn't been assgined for animator[{animator.name}]");
+            return;
+        }
+
         float time = stateInfo.normalizedTime % 1f;
         m_Loop = Mathf.FloorToInt(stateInfo.normalizedTime); 
         
@@ -57,19 +66,20 @@ public class AnimationEventTrigger : StateMachineBehaviour
         if (m_Index >= events.Count)
             return;
 
-        var curEvent = events[m_Index];
+        var currentEvent = events[m_Index];
 
-        if (curEvent.type == AnimationEventType.None)
+        if (currentEvent.type == AnimationEventType.None)
         {
             ++m_Index;
             return;
         }
 
-        if (time < curEvent.launchTime)
+        if (time < currentEvent.launchTime)
             return;      
 
-        curEvent.triggerTime = time;
-        AnimationEventReceiver.instance.OnAnimationEventTrigger(guid, curEvent);
+        currentEvent.triggerTime = time;
+        if(string.IsNullOrEmpty(currentEvent.animatorState)) currentEvent.animatorState = animatorState;
+        AnimationEventReceiver.instance.OnAnimationEventTrigger(guid, currentEvent);
 
         ++m_Index;
     }

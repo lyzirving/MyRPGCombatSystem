@@ -17,15 +17,20 @@ MonoBehaviour:
   - type: 101
     launchTime: 0.195
     triggerTime: 0
+    animatorState: LightPunchLeft
   - type: 102
     launchTime: 0.25
     triggerTime: 0
+    animatorState: LightPunchLeft
   - type: 103
     launchTime: 0.33
     triggerTime: 0
+    animatorState: LightPunchLeft
   - type: 502
     launchTime: 0.6
     triggerTime: 0
+    animatorState: LightPunchLeft
+  animatorState: LightPunchLeft
 --- !u!1107 &-8351681345609171028
 AnimatorStateMachine:
   serializedVersion: 6
@@ -462,10 +467,10 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 60, y: 0, z: 0}
+  m_AnyStatePosition: {x: 60, y: 70, z: 0}
   m_EntryPosition: {x: 60, y: 130, z: 0}
   m_ExitPosition: {x: 60, y: 360, z: 0}
-  m_ParentStateMachinePosition: {x: 40, y: 50, z: 0}
+  m_ParentStateMachinePosition: {x: 40, y: 430, z: 0}
   m_DefaultState: {fileID: -3117218209307122012}
 --- !u!1102 &-2170631115146044955
 AnimatorState:
@@ -1012,15 +1017,20 @@ MonoBehaviour:
   - type: 101
     launchTime: 0.195
     triggerTime: 0
+    animatorState: LightPunchRight
   - type: 102
     launchTime: 0.25
     triggerTime: 0
+    animatorState: LightPunchRight
   - type: 103
     launchTime: 0.33
     triggerTime: 0
+    animatorState: LightPunchRight
   - type: 502
     launchTime: 0.6
     triggerTime: 0
+    animatorState: LightPunchRight
+  animatorState: LightPunchRight
 --- !u!114 &7884295624835533399
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1038,15 +1048,20 @@ MonoBehaviour:
   - type: 101
     launchTime: 0.21
     triggerTime: 0
+    animatorState: LightKickRight
   - type: 102
     launchTime: 0.37
     triggerTime: 0
+    animatorState: LightKickRight
   - type: 103
     launchTime: 0.47
     triggerTime: 0
+    animatorState: LightKickRight
   - type: 502
     launchTime: 0.58
     triggerTime: 0
+    animatorState: LightKickRight
+  animatorState: LightKickRight
 --- !u!114 &8205689911312591822
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1064,6 +1079,8 @@ MonoBehaviour:
   - type: 502
     launchTime: 0.4
     triggerTime: 0
+    animatorState: DefenceEnd
+  animatorState: DefenceEnd
 --- !u!1107 &8919230940468061372
 AnimatorStateMachine:
   serializedVersion: 6

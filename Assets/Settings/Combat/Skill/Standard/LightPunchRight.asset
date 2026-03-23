@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
   m_Name: LightPunchRight
   m_EditorClassIdentifier: 
-  animation: LightPunchRight
+  animatorState: LightPunchRight
   crossFadeInTime: 0.15
   inputWindowDuration: 0.3
+  transitionNormalizedTime: 0.6
   attackBox: RightHandAttackBox
   action: 1
   damage: 5
+  hitStunTime: 0
+  knockbackDistance: 0
   skillReleaseData:
     spawnPrefab: 
     audioClip: {fileID: 8300000, guid: 4a1a6ca56ccc75042b1a9624b4567c0c, type: 3}

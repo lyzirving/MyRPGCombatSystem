@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
   m_Name: LightKickLeft
   m_EditorClassIdentifier: 
-  animation: LightKickLeft
+  animatorState: LightKickLeft
   crossFadeInTime: 0.15
   inputWindowDuration: 0.3
+  transitionNormalizedTime: 0.58
   attackBox: LeftFootAttackBox
   action: 1
   damage: 10

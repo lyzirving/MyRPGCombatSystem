@@ -5,11 +5,12 @@ using UnityEngine;
 public class SkillData : ScriptableObject
 {
     [Header("Animation Attributes")]
-    [Tooltip("Name of the animation state")]
-    public string animation;
+    [Tooltip("Name of the animator state")]
+    public string animatorState;
     public float crossFadeInTime = 0.15f;
     [Tooltip("Input floating window duration in seconds")]
     public float inputWindowDuration = 0.2f;
+    public float transitionNormalizedTime = 1f;
 
     [Header("Trigger Attributes")]
     [Tooltip("Name of the attack box, which should be mapped to the one on player")]

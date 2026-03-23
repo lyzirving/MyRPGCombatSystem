@@ -28,7 +28,7 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
         {
             EditorGUILayout.HelpBox(errorMessage, MessageType.Info);
             return;
-        }
+        }        
 
         GUILayout.Space(10);
         bool preview = m_PreviewAnimation;
@@ -149,9 +149,13 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
             var e = behaviour.events[i];
             e.type = (AnimationEventType)EditorGUILayout.EnumPopup($"Event{i}", e.type);
             e.launchTime = EditorGUILayout.Slider("LaunchTime", e.launchTime, 0f, 1f);
+            e.animatorState = behaviour.animatorState;
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.FloatField("GameTime", m_PreviewClip != null ? (e.launchTime * m_PreviewClip.length) : 0f);
             EditorGUI.EndDisabledGroup();
+            GUI.enabled = false;
+            EditorGUILayout.TextField("MatchtingAnimatorState", e.animatorState);
+            GUI.enabled = true;
             EditorGUILayout.Space();
         }
     }
@@ -169,6 +173,7 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
                 if (state.state.behaviours.Contains(behaviour))
                 {
                     matchingState = state;
+                    behaviour.animatorState = state.state.name;
                     break;
                 }
             }
@@ -227,6 +232,7 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
                 if (state.state.behaviours.Contains(behaviour))
                 {
                     matchingTarget = state;
+                    behaviour.animatorState = state.state.name;
                     return true;
                 }
             }
