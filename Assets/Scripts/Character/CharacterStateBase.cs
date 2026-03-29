@@ -16,9 +16,14 @@ public class CharacterStateBase : StateBase
     #endregion
 
     #region Main Methods
-    public void Move(in Vector3 velocity, ForceMode mode = ForceMode.VelocityChange)
+    public void Move(in Vector3 force)
     {
-        m_ControllerBase.rigidBody.AddForce(velocity - m_ControllerBase.horizontalVelocity, mode);
+        m_ControllerBase.Move(force - m_ControllerBase.horizontalVelocity);
+    }
+
+    public void MoveImmediately(in Vector3 force)
+    {
+        m_ControllerBase.MoveImmediately(force - m_ControllerBase.horizontalVelocity);
     }
 
     public void Jump(float targetHeight)

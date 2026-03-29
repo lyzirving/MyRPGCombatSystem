@@ -25,14 +25,14 @@ public class PlayerStateMove : PlayerStateLocomotion
     {
         int currentLoop = 0;
         float currentTime = 0f;
-        if (m_Player.model.animator.IsInTransition(0))
+        if (m_Player.model.animator.IsInTransition(AnimationConsts.BASE_LAYER))
         {
             currentLoop = m_AnimLoopCnt;
             currentTime = m_AnimTime;
         }
         else
         {
-            var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(0);
+            var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(AnimationConsts.BASE_LAYER);
             currentLoop = Mathf.FloorToInt(state.normalizedTime);
             currentTime = state.normalizedTime % 1f;
         }
@@ -71,7 +71,7 @@ public class PlayerStateMove : PlayerStateLocomotion
         Vector3 targetDir = m_Player.GetTargetDirection();
 
         m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
-        Move(targetDir * m_Player.movementSpeed);
+        MoveImmediately(targetDir * m_Player.movementSpeed);
     }
 
     private void UpdateAnimationValue()

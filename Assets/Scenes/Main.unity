@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 44516789}
   - component: {fileID: 44516790}
   - component: {fileID: 44516791}
+  - component: {fileID: 44516792}
   m_Layer: 10
   m_Name: AI
   m_TagString: Enemy
@@ -231,6 +232,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29733f686b45e9445a0a1702d7033cf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &44516792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44516787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startWhenEnabled: 1
+  asynchronousLoad: 0
+  pauseWhenDisabled: 0
+  restartWhenComplete: 0
+  logTaskChanges: 0
+  group: 0
+  resetValuesOnRestart: 0
+  externalBehavior: {fileID: 0}
+  mBehaviorSource:
+    behaviorName: AIBehavior
+    behaviorDescription: 
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(510.141,30)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Repeater","NodeData":{"Offset":"(-4.601486,142.437836)"},"ID":1,"Name":"Repeater","Instant":true,"SharedIntcount":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolrepeatForever":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBoolendOnFailure":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(3.33345032,135.757492)"},"ID":2,"Name":"Selector","Instant":true,"AbortTypeabortType":"Self","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-124.385544,134.524658)"},"ID":3,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CanSeeObject","NodeData":{"Offset":"(-161.876648,169.622559)"},"ID":4,"Name":"Can
+        See Object","Instant":true,"SinglefieldOfView":80,"SingleeyeHeightOffset":1,"SinglesightDistance":7,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"IsGlobal":true,"TransformmValue":0}},{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-1.314086,174.615463)"},"ID":5,"Name":"Inverter","Instant":true,"Children":[{"Type":"WithinDistance","NodeData":{"Offset":"(-2.5,134.166748)"},"ID":6,"Name":"Within
+        Distance","Instant":true,"SingledistanceThreshold":1.2,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"IsGlobal":true,"TransformmValue":1}}]},{"Type":"AIChase","NodeData":{"Offset":"(160.769241,174.615463)"},"ID":7,"Name":"AI
+        Chase","Instant":true,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"IsGlobal":true,"TransformmValue":2}}]},{"Type":"AIIdle","NodeData":{"Offset":"(144.0486,139.935577)"},"ID":8,"Name":"AI
+        Idle","Instant":true}]}]}}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects:
+        - {fileID: 496888497}
+        - {fileID: 496888497}
+        - {fileID: 496888497}
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.13
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!4 &62995458 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1812909498023395591, guid: b11f706943f2bd544ad7005f6acc5c52, type: 3}
@@ -766,7 +814,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 1.5, z: -3.2}
+  m_LocalPosition: {x: 0.8, y: 1.5, z: -8.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1043,7 +1091,7 @@ Transform:
   m_GameObject: {fileID: 496888496}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2782,7 +2830,7 @@ Transform:
   m_GameObject: {fileID: 1801572036}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 1.5, z: -3.2}
+  m_LocalPosition: {x: 0.8, y: 1.5, z: -8.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

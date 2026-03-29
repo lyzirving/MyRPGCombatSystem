@@ -32,6 +32,9 @@ public class AIController : CharacterControllerBase
             case ECharacterState.Idle:
                 m_StateMachine?.ChangeState<AIStateIdle>(args);                
                 break;
+            case ECharacterState.Move:
+                m_StateMachine?.ChangeState<AIStateMove>(args);
+                break;
             case ECharacterState.Hurt:
                 m_StateMachine?.ChangeState<AIStateHurt>(args);
                 break;

@@ -95,7 +95,7 @@ public class PlayerStateJump : PlayerStateAirborne
         m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
 
         float v = m_Player.sensor.averageVelocity.magnitude;
-        Move(targetDir * v, ForceMode.Acceleration);
+        Move(targetDir * v);
     }
     /// <summary>
     /// when current velocity > 0, character is jumpping up.

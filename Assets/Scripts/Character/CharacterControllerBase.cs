@@ -25,6 +25,41 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public Quaternion cameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
 
     #region Main Methods
+    /// <summary>
+    /// v += f * dt
+    /// </summary>
+    /// <param name="force"></param>
+    public void Move(in Vector3 force)
+    {
+        MoveByForceMode(force, ForceMode.Acceleration);
+    }
+
+    /// <summary>
+    /// v += f
+    /// </summary>
+    /// <param name="force"></param>
+    public void MoveImmediately(in Vector3 force)
+    {
+        MoveByForceMode(force, ForceMode.VelocityChange);
+    }
+
+    public void MoveToImmediately(Transform target, float speed = 1f, float rotationSpeed = 1f)
+    {
+        if (target == null) return;
+        if (target.position == transform.position) return;
+
+        Vector3 targetDir = target.position - transform.position;
+        targetDir.Normalize();
+
+        RotateToTargetDir(targetDir, rotationSpeed);
+        MoveImmediately(targetDir * speed - horizontalVelocity);
+    }
+
+    public void MoveByForceMode(in Vector3 force, ForceMode forceMode)
+    {
+        m_Rigidbody.AddForce(force, forceMode);
+    }    
+
     public void RotateToTargetDir(Vector3 targetDir, float rotateSpeed = 1f)
     {
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation,
