@@ -47,4 +47,9 @@ public class PlayerStateIdle : PlayerStateLocomotion
     {
         m_Player.ResetHorizontalVelocity();
     }
+
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Idle;
+    }
 }

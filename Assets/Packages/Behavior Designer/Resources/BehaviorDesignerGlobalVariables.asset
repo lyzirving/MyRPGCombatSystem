@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mVariableData:
     variableStartIndex: 
-    JSONSerialization: '{"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"IsGlobal":true,"TransformmValue":0}]}'
+    JSONSerialization: '{"Variables":[]}'
     fieldSerializationData:
       typeName: []
       fieldNameHash: 
       startIndex: 
       dataPosition: 
-      unityObjects:
-      - {fileID: 0}
+      unityObjects: []
       byteData: 
       byteDataArray: 
   mVersion: 1.7.13

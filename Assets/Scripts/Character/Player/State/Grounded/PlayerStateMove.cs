@@ -71,7 +71,12 @@ public class PlayerStateMove : PlayerStateLocomotion
         Vector3 targetDir = m_Player.GetTargetDirection();
 
         m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
-        MoveImmediately(targetDir * m_Player.movementSpeed);
+        MoveImmediately(targetDir * m_Player.speedScaler);
+    }
+
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Move;
     }
 
     private void UpdateAnimationValue()

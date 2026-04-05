@@ -2,7 +2,7 @@
 
 public class CharacterStateBase : StateBase
 {
-    protected CharacterControllerBase m_ControllerBase;
+    protected CharacterControllerBase m_ControllerBase;    
 
     #region State Methods
     public virtual void OnContactGround(Collider collider) { }
@@ -13,7 +13,7 @@ public class CharacterStateBase : StateBase
     {
         m_ControllerBase = owner as CharacterControllerBase;
     }
-    #endregion
+    #endregion    
 
     #region Main Methods
     public void Move(in Vector3 force)

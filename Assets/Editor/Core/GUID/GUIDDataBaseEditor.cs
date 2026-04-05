@@ -1,6 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [CustomEditor(typeof(GUIDDataBase))]
 public class GUIDDataBaseEditor : Editor

@@ -8,6 +8,13 @@ public class AIController : CharacterControllerBase
 
     public AIModel model { get => m_AIModel; }
 
+    #region Override Virtual Methods
+    public override bool IsInAnimationTransition()
+    {
+        return m_AIModel.animator.IsInTransition(AnimationConsts.BASE_LAYER);
+    }
+    #endregion
+
     #region State Methods
     private void Awake()
     {

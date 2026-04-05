@@ -73,6 +73,11 @@ public class PlayerStateAttack : PlayerStateCombat
         m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
     }
 
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Attack;
+    }
+
     private void HandleAttackCombo(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state

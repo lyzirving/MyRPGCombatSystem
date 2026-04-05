@@ -1,6 +1,5 @@
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
-using UnityEngine;
 
 public class AIChase : AIBehaviourAction
 {
@@ -23,8 +22,7 @@ public class AIChase : AIBehaviourAction
     }
 
     public override void OnFixedUpdate()
-    {
-        //TODO: move by AI's configuration
-        m_AIController.MoveToImmediately(target.Value, 2f, 8f);
+    {     
+        m_AIController.MoveToImmediately(target.Value, m_AIController.walkSpeedScaler, m_AIController.config.rotateSpeed);
     }
 }

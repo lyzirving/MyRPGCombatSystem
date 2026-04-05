@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class WithinDistance : Conditional
 {
+    public DistanceZoneSettings distanceZoneSetting;
+    public EDistanceZone selectedZone = EDistanceZone.None;
     public float distanceThreshold = 2f;
+
     public SharedTransform target;
 
     public override TaskStatus OnUpdate()
@@ -14,6 +17,13 @@ public class WithinDistance : Conditional
             Debug.LogError("InRange: target hasn't been asigned yet!");
             return TaskStatus.Failure;
         }
-        return Vector3.Distance(transform.position, target.Value.position) < distanceThreshold ? TaskStatus.Success : TaskStatus.Failure;  
+        float distance = Vector3.Distance(transform.position, target.Value.position);
+
+        if (distanceZoneSetting != null && selectedZone > EDistanceZone.None && selectedZone < EDistanceZone.Num)
+        { 
+            return distanceZoneSetting.WithinRange(selectedZone, distance) ? TaskStatus.Success : TaskStatus.Failure;
+        }
+
+        return distance < distanceThreshold ? TaskStatus.Success : TaskStatus.Failure;  
     }    
 }

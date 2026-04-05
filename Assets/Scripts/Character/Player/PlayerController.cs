@@ -1,12 +1,9 @@
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 
 public class PlayerController : CharacterControllerBase
-{
-    public PlayerConfig config = new PlayerConfig();
+{    
     public AudioClip[] footStepAudioClips;
 
-    public float movementSpeed => config.baseSpeed * m_Attrs.speedModify;
     public PlayerModel model { get => m_PlayerModel; }
     public PlayerActionController action { get => m_ActionController; }
     public AttackComponent attackComponent { get => m_AttackComponent; } 
@@ -18,8 +15,15 @@ public class PlayerController : CharacterControllerBase
     // -------- Component in current node end --------
 
     // -------- Components in children start ------
-    private PlayerModel m_PlayerModel;    
-    // -------- Components in children end ------
+    private PlayerModel m_PlayerModel;
+    // -------- Components in children end --------
+
+    #region Override Virtual Methods
+    public override bool IsInAnimationTransition()
+    {
+        return m_PlayerModel.animator.IsInTransition(AnimationConsts.BASE_LAYER);
+    }
+    #endregion
 
     #region State Methods
     private void Awake()

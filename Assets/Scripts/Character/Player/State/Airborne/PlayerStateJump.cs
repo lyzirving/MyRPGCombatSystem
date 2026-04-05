@@ -66,16 +66,21 @@ public class PlayerStateJump : PlayerStateAirborne
         if (!m_IsJumpPerform)
         {
             m_IsJumpPerform = true;
-            Jump(GameSettings.characterConfig.jumpHeightLow);
+            Jump(m_Player.config.jumpHeight);
             return;
         }
 
         float velocity = m_Player.verticalVelocity.y;
         if (velocity < 0f)
-            m_Player.rigidBody.AddForce(Physics.gravity * GameSettings.characterConfig.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
+            m_Player.rigidBody.AddForce(Physics.gravity * m_Player.config.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
 
         UpdateAirborneMovement();
-    }    
+    }
+
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Jump;
+    }
     #endregion
 
     #region Main Methods

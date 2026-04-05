@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
+    [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
 
@@ -12,10 +13,15 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CharacterSensor m_Sensor;
     protected CapsuleCollider m_CapsuleCollider;
 
-    public CharacterAttrs attrs { get => m_Attrs; }
-    public Rigidbody rigidBody { get => m_Rigidbody; }
-    public CharacterSensor sensor { get => m_Sensor; }
+    public CharacterConfig config => m_Config;
+    public CharacterAttrs attrs => m_Attrs;
+    public Rigidbody rigidBody => m_Rigidbody;
+    public CharacterSensor sensor => m_Sensor;
     public CapsuleCollider capsule => m_CapsuleCollider;
+
+    public float speedScaler => m_Config.baseSpeed * m_Attrs.speedModify;
+    public float walkSpeedScaler => m_Config.baseSpeed * m_Config.walkSpeedModify;
+    public float runSpeedScaler => m_Config.baseSpeed * m_Config.runSpeedModify;
 
     public Vector3 verticalVelocity => new Vector3(0f, m_Rigidbody.linearVelocity.y, 0f);
     public Vector3 horizontalVelocity => new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);
@@ -24,7 +30,13 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public Vector3 cameraDirection => new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z).normalized;
     public Quaternion cameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
 
+    #region Virtual Methods
+    public virtual bool IsInAnimationTransition() { return false; }
+    #endregion
+
     #region Main Methods
+    public ECharacterAction GetCurrentAction() { return m_StateMachine.currentState.GetCurrentAction(); }
+
     /// <summary>
     /// v += f * dt
     /// </summary>
@@ -48,7 +60,9 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         if (target == null) return;
         if (target.position == transform.position) return;
 
-        Vector3 targetDir = target.position - transform.position;
+        var targetPos = target.position;        
+        targetPos.y = transform.position.y;
+        Vector3 targetDir = targetPos - transform.position;
         targetDir.Normalize();
 
         RotateToTargetDir(targetDir, rotationSpeed);

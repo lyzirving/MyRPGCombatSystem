@@ -10,7 +10,22 @@ public enum ECharacterState : UInt16
     Land,
     Attack,
     Hurt,
-    Defence
+    Defence,
+    Num
+}
+
+public enum ECharacterAction : UInt16
+{ 
+    None = 0,
+    Idle,
+    Move,
+    Jump,
+    Chase,
+    Attack,
+    CounterAttack,
+    Defence,
+    Dodge,    
+    Count
 }
 
 public enum EFootstep : UInt16

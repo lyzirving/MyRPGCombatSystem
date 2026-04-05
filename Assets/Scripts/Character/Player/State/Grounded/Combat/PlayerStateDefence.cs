@@ -73,6 +73,11 @@ public class PlayerStateDefence : PlayerStateCombat
         Vector3 targetDir = m_Player.GetTargetDirection();
         m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
     }
+
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Defence;
+    }
     #endregion    
 
     #region Animation Event Handle

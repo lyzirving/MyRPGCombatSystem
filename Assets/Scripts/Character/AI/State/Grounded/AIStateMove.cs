@@ -10,7 +10,6 @@ public class AIStateMove : AIStateLocomotion
             m_AIController.model.SetAnimationFloat(AnimationConsts.speed, 0f);
             m_AIController.model.SetAnimationFloat(AnimationConsts.angular, 0f);
         }
-        m_AIController.attrs.speedModify = 0.7f;
     }
 
     public override void Update()
