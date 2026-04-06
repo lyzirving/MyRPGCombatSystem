@@ -11,6 +11,7 @@ public enum ECharacterState : UInt16
     Attack,
     Hurt,
     Defence,
+    Roar,
     Num
 }
 
@@ -26,6 +27,19 @@ public enum ECharacterAction : UInt16
     Defence,
     Dodge,    
     Count
+}
+
+/// <summary>
+/// Internal state of defence within a character
+/// </summary>
+public enum EDefenceState : UInt16
+{
+    Enter = 0,
+    Loop,
+    CounterAttackAWait,
+    CounterAttackPerform,
+    CounterAttackRunOut,
+    End
 }
 
 public enum EFootstep : UInt16

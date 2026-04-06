@@ -9,9 +9,9 @@ public class AIController : CharacterControllerBase
     public AIModel model { get => m_AIModel; }
 
     #region Override Virtual Methods
-    public override bool IsInAnimationTransition()
+    public override bool IsInAnimationTransition(int layer = 0)
     {
-        return m_AIModel.animator.IsInTransition(AnimationConsts.BASE_LAYER);
+        return m_AIModel.animator.IsInTransition(layer);
     }
     #endregion
 
@@ -44,6 +44,9 @@ public class AIController : CharacterControllerBase
                 break;
             case ECharacterState.Hurt:
                 m_StateMachine?.ChangeState<AIStateHurt>(args);
+                break;
+            case ECharacterState.Roar:
+                m_StateMachine?.ChangeState<AIStateRoar>(args);
                 break;
             default:
                 break;

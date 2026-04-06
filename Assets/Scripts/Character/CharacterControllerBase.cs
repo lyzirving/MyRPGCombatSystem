@@ -19,6 +19,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public CharacterSensor sensor => m_Sensor;
     public CapsuleCollider capsule => m_CapsuleCollider;
 
+    public StateBase currentState => m_StateMachine.currentState;
     public float speedScaler => m_Config.baseSpeed * m_Attrs.speedModify;
     public float walkSpeedScaler => m_Config.baseSpeed * m_Config.walkSpeedModify;
     public float runSpeedScaler => m_Config.baseSpeed * m_Config.runSpeedModify;
@@ -31,7 +32,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public Quaternion cameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
 
     #region Virtual Methods
-    public virtual bool IsInAnimationTransition() { return false; }
+    public virtual bool IsInAnimationTransition(int layer = 0) { return false; }
     #endregion
 
     #region Main Methods

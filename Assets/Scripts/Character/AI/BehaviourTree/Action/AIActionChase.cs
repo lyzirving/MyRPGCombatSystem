@@ -1,7 +1,7 @@
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 
-public class AIChase : AIBehaviourAction
+public class AIActionChase : AIBehaviourAction
 {
     public SharedTransform target;
 
@@ -23,6 +23,6 @@ public class AIChase : AIBehaviourAction
 
     public override void OnFixedUpdate()
     {     
-        m_AIController.MoveToImmediately(target.Value, m_AIController.walkSpeedScaler, m_AIController.config.rotateSpeed);
+        m_AIController.MoveToImmediately(target.Value, m_AIController.runSpeedScaler, m_AIController.config.rotateSpeed);
     }
 }

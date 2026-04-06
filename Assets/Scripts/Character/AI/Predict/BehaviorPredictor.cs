@@ -15,12 +15,16 @@ public class BehaviorPredictor : MonoBehaviour
     [SerializeField] private DistanceZone m_DistanceZone = new DistanceZone();
     [SerializeField] private CharacterControllerBase m_TargetCharacter;
 
+    private float m_Confidence = 0f;
     private ECharacterAction m_Response = ECharacterAction.None;
     private ECharacterAction m_LastResponse = ECharacterAction.None;
 
     private ECharacterAction m_LastDetectedAction = ECharacterAction.None;
     private ECharacterAction m_LastPredictedAction = ECharacterAction.None;    
     private float m_LastDetectActionTime;
+
+    public ECharacterAction response => m_Response;
+    public float confidence => m_Confidence;
 
     private void Awake()
     {
@@ -34,26 +38,27 @@ public class BehaviorPredictor : MonoBehaviour
         m_DistanceZone.target = m_TargetCharacter.transform;
     }
 
-    private void Update()
+    public void Execute()
     {
-        float confidence = 0;
-        long currentPattern = 0;        
+        long currentPattern = 0;
+        float currentConfidence = 0;        
         ECharacterAction predictedAction = m_LastPredictedAction;
 
         m_DistanceZone.Update();
 
-        ECharacterAction currentAction = DetectPlayerAction();        
+        ECharacterAction currentAction = DetectPlayerAction();
         if (m_PatternAnalyzer.Predict())
         {
-            confidence = m_PatternAnalyzer.confidence;
+            currentConfidence = m_PatternAnalyzer.confidence;
             currentPattern = m_PatternAnalyzer.pattern;
             predictedAction = m_PatternAnalyzer.prediction;
-            m_Response = MakeActionWithPrecition(predictedAction, confidence);            
+            m_Response = MakeActionWithPrecition(predictedAction, currentConfidence);
         }
         else
         {
             m_Response = MakeAction();
         }
+        m_Confidence = currentConfidence;
 
         // For next prediction
         m_PatternAnalyzer.RecordAction(currentAction);
@@ -102,7 +107,7 @@ public class BehaviorPredictor : MonoBehaviour
         }
         else
         {
-            return ECharacterAction.Chase;
+            return ECharacterAction.Idle;
         }
 
         return ECharacterAction.None;

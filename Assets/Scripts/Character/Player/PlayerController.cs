@@ -19,9 +19,9 @@ public class PlayerController : CharacterControllerBase
     // -------- Components in children end --------
 
     #region Override Virtual Methods
-    public override bool IsInAnimationTransition()
+    public override bool IsInAnimationTransition(int layer = 0)
     {
-        return m_PlayerModel.animator.IsInTransition(AnimationConsts.BASE_LAYER);
+        return m_PlayerModel.animator.IsInTransition(layer);
     }
     #endregion
 

@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Config:
-    baseSpeed: 3
+    baseSpeed: 2.5
     walkSpeedModify: 0.4
     runSpeedModify: 1
     rotateSpeed: 8
@@ -268,19 +268,18 @@ MonoBehaviour:
       parentIndex: 
       startIndex: 
       variableStartIndex: 
-      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(510.141,11.4814968)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Repeater","NodeData":{"Offset":"(0.14093399,142.727249)"},"ID":1,"Name":"Repeater","Instant":true,"SharedIntcount":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolrepeatForever":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBoolendOnFailure":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(3.7035408,132.592514)"},"ID":2,"Name":"Selector","Instant":true,"AbortTypeabortType":"Self","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-124.385544,134.524658)"},"ID":3,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CanSeeObject","NodeData":{"Offset":"(-161.876648,169.622559)"},"ID":4,"Name":"Can
-        See Object","Instant":true,"SinglefieldOfView":80,"SingleeyeHeightOffset":1,"SinglesightDistance":7,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":0}},{"Type":"BehaviorDesigner.Runtime.Tasks.Inverter","NodeData":{"Offset":"(-1.314086,174.615463)"},"ID":5,"Name":"Inverter","Instant":true,"Children":[{"Type":"WithinDistance","NodeData":{"Offset":"(-2.5,134.166748)"},"ID":6,"Name":"Within
-        Distance","Instant":true,"DistanceZoneSettingsdistanceZoneSetting":1,"EDistanceZoneselectedZone":"CloseCombatRange","SingledistanceThreshold":1.1,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":2}}]},{"Type":"AIChase","NodeData":{"Offset":"(160.769241,174.615463)"},"ID":7,"Name":"AI
-        Chase","Instant":true,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":3}}]},{"Type":"AIIdle","NodeData":{"Offset":"(144.0486,139.935577)"},"ID":8,"Name":"AI
-        Idle","Instant":true}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":4}]}'
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(510.141,11.4814968)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Repeater","NodeData":{"Offset":"(0.14093399,142.727249)"},"ID":1,"Name":"Repeater","Instant":true,"SharedIntcount":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolrepeatForever":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBoolendOnFailure":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(1.621603,135.993713)"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-235.4609,171.483154)"},"ID":3,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CanSeeObject","NodeData":{"Offset":"(-95.48391,169.032166)"},"ID":4,"Name":"Can
+        See Object","Instant":true,"SinglefieldOfView":85,"SingleeyeHeightOffset":1,"SinglesightDistance":7,"SharedTransformtarget":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":0}},{"Type":"AIActionRoar","NodeData":{"Offset":"(84.94704,168.74881)"},"ID":5,"Name":"AI
+        Action Roar","Instant":true,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":1}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Repeater","NodeData":{"Offset":"(194.612732,175.646851)"},"ID":6,"Name":"Repeater","Instant":true,"SharedIntcount":{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":null,"Int32mValue":0},"SharedBoolrepeatForever":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":true},"SharedBoolendOnFailure":{"Type":"BehaviorDesigner.Runtime.SharedBool","Name":null,"BooleanmValue":false},"Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-1.11115074,145.555542)"},"ID":7,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"AIActionPredict","NodeData":{"Offset":"(-123.717773,194.979553)"},"ID":8,"Name":"AI
+        Action Predict","Instant":true},{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(133.925354,178.083191)"},"ID":9,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-115.30825,159.635651)"},"ID":10,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"ValidAIResponse","NodeData":{"Offset":"(-97.52012,163.433075)","Comment":"Check
+        Defence State"},"ID":11,"Name":"Valid AI Response","Instant":true,"ECharacterActiontarget":"Defence","Singleconfidence":0.7},{"Type":"AIActionDefence","NodeData":{"Offset":"(83.9524155,156.240936)"},"ID":12,"Name":"AI
+        Action Defence","Instant":true}]}]}]}]}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"Player","IsShared":true,"TransformmValue":2},{"Type":"BehaviorDesigner.Runtime.SharedInt","Name":"Response","IsShared":true,"Int32mValue":0},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"Confidence","IsShared":true,"SinglemValue":0}]}'
       fieldSerializationData:
         typeName: []
         fieldNameHash: 
         startIndex: 
         dataPosition: 
         unityObjects:
-        - {fileID: 496888497}
-        - {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
         - {fileID: 496888497}
         - {fileID: 496888497}
         - {fileID: 496888497}

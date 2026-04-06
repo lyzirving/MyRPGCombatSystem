@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Globalization;
 using UnityEngine;
 
 public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRotation);
@@ -50,6 +51,38 @@ public class CharacterModel : MonoBehaviour
     #endregion
 
     #region Animation Methods    
+    public bool IsTargetAnimation(string target, int layer)
+    {
+        if (m_Animator.IsInTransition(layer))
+        {
+            return m_Animator.GetNextAnimatorStateInfo(layer).IsName(target);
+        }
+        return m_Animator.GetCurrentAnimatorStateInfo(layer).IsName(target);
+    }
+
+    public bool GetTargetAnimationTime(string target, int layer, out float time)
+    {
+        if (m_Animator.IsInTransition(layer))
+        {
+            var nextInfo = m_Animator.GetNextAnimatorStateInfo(layer);
+            if (nextInfo.IsName(target))
+            {
+                time = nextInfo.normalizedTime % 1f;
+                return true;
+            }
+        }
+
+        var info = m_Animator.GetCurrentAnimatorStateInfo(layer);
+        if (info.IsName(target))
+        {
+            time = info.normalizedTime % 1f;
+            return true;
+        }
+
+        time = 0f;
+        return false;
+    }
+
     public void HitStop(float slowMotionScale = 0.9f)
     {
         if (m_HitStopRunning && m_HitStopCoroutine != null)
@@ -64,6 +97,11 @@ public class CharacterModel : MonoBehaviour
     public void StartAnimation(int hash)
     {
         m_Animator?.SetBool(hash, true);
+    }
+
+    public void TriggerAnimation(int hash)
+    {
+        m_Animator?.SetTrigger(hash);
     }
 
     public void StartAnimation(string name, float fixedTransitionDuration = 0.25f)

@@ -26,9 +26,10 @@ public static class AnimationConsts
     public static int combat { get; private set; }
     public static int land { get; private set; }
     public static int airborne { get; private set; }
-    public static int hit { get; private set; }
+    public static int hit { get; private set; }    
     public static int defence { get; private set; }
     public static int defenceRelease { get; private set; }
+    public static int roar { get; private set; }
 
     [Header("Ratio parameters in Animator")]
     public static int angular { get; private set; }
@@ -40,7 +41,7 @@ public static class AnimationConsts
 
     [Header("Animation state in Animator")]
     public static int hurtState { get; private set; }
-    public static int defenceState { get; private set; }
+    public static int defenceState { get; private set; }    
 
     public static void Init()
     {        
@@ -51,6 +52,7 @@ public static class AnimationConsts
         hit = Animator.StringToHash("isHit");
         defence = Animator.StringToHash("isDefence");
         defenceRelease = Animator.StringToHash("defenceRelease");
+        roar = Animator.StringToHash("roar");
 
         // Ratio parameters in Animator
         angular = Animator.StringToHash("angular");

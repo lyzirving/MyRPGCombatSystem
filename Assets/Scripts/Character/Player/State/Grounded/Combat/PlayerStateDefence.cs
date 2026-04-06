@@ -4,19 +4,6 @@ using UnityEngine;
 
 public class PlayerStateDefence : PlayerStateCombat
 {
-    /// <summary>
-    /// Internal state of defence
-    /// </summary>
-    private enum EDefenceState : UInt16
-    {
-        Enter = 0,
-        Loop,
-        CounterAttackAWait,
-        CounterAttackPerform,
-        CounterAttackRunOut,
-        End
-    }
-
     private EDefenceState m_SubState;
     private Coroutine m_RestoreAttackCoroutine;
 
