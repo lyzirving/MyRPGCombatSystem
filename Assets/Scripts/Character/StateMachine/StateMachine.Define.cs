@@ -73,6 +73,8 @@ public struct ChangeStateArgs
 
 public interface IStateMachineOwner 
 {
-    public void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs));
+    public void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs));    
     public void ExitCurrentState();
+    public void AddAdditiveState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs));
+    public void RemoveAdditiveState(ECharacterState state);
 }

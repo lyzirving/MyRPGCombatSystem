@@ -5,18 +5,20 @@ public class StateMachine
 {
     private IStateMachineOwner m_Owner;
     private Dictionary<Type, StateBase> m_StateDic = new Dictionary<Type, StateBase>();
+    private List<AdditiveState> m_AdditiveState = new List<AdditiveState>();
     private StateBase m_CurrentState;
 
-    public StateBase currentState { get => m_CurrentState; }    
+    public StateBase currentState { get => m_CurrentState; }
 
     public void Init(IStateMachineOwner owner)
     {
         m_Owner = owner;
     }
 
+    #region Method for Base State
     public bool ChangeState<T>(ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
     {
-        if (m_CurrentState != null && m_CurrentState.GetType() == typeof(T) && !args.reEnterState) 
+        if (m_CurrentState != null && m_CurrentState.GetType() == typeof(T) && !args.reEnterState)
             return false;
 
         var newState = GetState<T>();
@@ -26,13 +28,13 @@ public class StateMachine
             return true;
         }
         var exitState = m_CurrentState;
-        if(!OnStateExit(exitState, newState))
+        if (!OnStateExit(exitState, newState))
             return false;
 
         OnStateEnter(exitState, newState, args);
-        m_CurrentState = newState;     
-        return true;     
-    }
+        m_CurrentState = newState;
+        return true;
+    }    
 
     public void ExitCurrentState()
     {
@@ -47,6 +49,8 @@ public class StateMachine
         OnStateExit(m_CurrentState, null);
         m_CurrentState = null;
 
+        StopAllAdditiveState();
+
         foreach (var item in m_StateDic.Values)
         {
             item.UnInit();
@@ -54,7 +58,55 @@ public class StateMachine
 
         m_StateDic.Clear();
     }
+    #endregion
 
+    #region Method for Additive State
+    public void AddAdditive<T>(ChangeStateArgs args = default(ChangeStateArgs)) where T : AdditiveState, new()
+    {
+        var state = GetState<T>();
+        var addtive = state as AdditiveState;
+
+        if (addtive == null) return;
+
+        for (var i = 0; i < m_AdditiveState.Count; i++)
+        {
+            if (m_AdditiveState[i] == addtive)
+            {
+                m_AdditiveState[i].OnReAttach(args);
+                return;
+            }
+        }
+
+        m_AdditiveState.Add(addtive);
+        addtive.OnAttach(args);
+
+        MonoManager.instance.AddAdditiveUpdateListener(addtive.Update);
+        MonoManager.instance.AddAdditiveLateUpdateListener(addtive.LateUpdate);
+        MonoManager.instance.AddAdditiveFixedUpdateListener(addtive.FixedUpdate);
+    }
+
+    public void RemoveAdditive<T>() where T : AdditiveState, new()
+    {
+        var state = GetState<T>();
+        var addtive = state as AdditiveState;
+
+        if (addtive == null) return;
+
+        for (var i = 0; i < m_AdditiveState.Count; i++)
+        {
+            if (m_AdditiveState[i] == addtive)
+            {
+                m_AdditiveState.RemoveAt(i);
+                MonoManager.instance.RemoveAdditiveUpdateListener(addtive.Update);
+                MonoManager.instance.RemoveAdditiveLateUpdateListener(addtive.LateUpdate);
+                MonoManager.instance.RemoveAdditiveFixedUpdateListener(addtive.FixedUpdate);
+                addtive.OnDetach();
+            }
+        }
+    }
+    #endregion
+
+    #region Main Method
     private StateBase GetState<T>() where T : StateBase, new()
     {
         Type type = typeof(T);
@@ -97,5 +149,20 @@ public class StateMachine
             MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);
             MonoManager.instance.AddFixedUpdateListener(newState.FixedUpdate);
         }
-    }  
+    }
+
+    private void StopAllAdditiveState()
+    {
+        for (int i = 0; i < m_AdditiveState.Count; i++)
+        { 
+            var state = m_AdditiveState[i];
+            state.OnDetach();
+
+            MonoManager.instance.RemoveAdditiveUpdateListener(state.Update);
+            MonoManager.instance.RemoveAdditiveLateUpdateListener(state.LateUpdate);
+            MonoManager.instance.RemoveAdditiveFixedUpdateListener(state.FixedUpdate);
+        }
+        m_AdditiveState.Clear();
+    }
+    #endregion
 }

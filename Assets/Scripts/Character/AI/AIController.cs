@@ -41,15 +41,36 @@ public class AIController : CharacterControllerBase
                 break;
             case ECharacterState.Move:
                 m_StateMachine?.ChangeState<AIStateMove>(args);
-                break;
-            case ECharacterState.Hurt:
-                m_StateMachine?.ChangeState<AIStateHurt>(args);
-                break;
+                break;            
             case ECharacterState.Roar:
                 m_StateMachine?.ChangeState<AIStateRoar>(args);
                 break;
             case ECharacterState.Defence:
                 m_StateMachine?.ChangeState<AIStateDefence>(args);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public override void AddAdditiveState(ECharacterState state, ChangeStateArgs args = default)
+    {
+        switch (state)
+        {
+            case ECharacterState.Hurt:
+                m_StateMachine?.AddAdditive<AIStateHurt>(args);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public override void RemoveAdditiveState(ECharacterState state)
+    {
+        switch (state)
+        {
+            case ECharacterState.Hurt:
+                m_StateMachine?.RemoveAdditive<AIStateHurt>();
                 break;
             default:
                 break;
@@ -62,7 +83,7 @@ public class AIController : CharacterControllerBase
 
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
-        ChangeState(ECharacterState.Hurt, new ChangeStateArgs(true, source, skillData, hitPos));
+        AddAdditiveState(ECharacterState.Hurt, new ChangeStateArgs(true, source, skillData, hitPos));
     }
     #endregion
 }

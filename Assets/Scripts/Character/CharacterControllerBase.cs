@@ -118,6 +118,14 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     {
         m_StateMachine?.ExitCurrentState();
     }
+
+    public virtual void AddAdditiveState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs))
+    { 
+    }
+
+    public virtual void RemoveAdditiveState(ECharacterState state)
+    {
+    }
     #endregion
 
     #region ICharacterBehavior Methods

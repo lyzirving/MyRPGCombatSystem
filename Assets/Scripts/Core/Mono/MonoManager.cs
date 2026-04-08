@@ -8,6 +8,10 @@ public class MonoManager : SingletonMono<MonoManager>
     private Action m_LateUpdateAction;
     private Action m_FixedUpdateAction;
 
+    private Action m_AdditiveUpdateAction;
+    private Action m_AdditiveLateUpdateAction;
+    private Action m_AdditiveFixedUpdateAction;
+
     public static Coroutine Run(IEnumerator routine)
     {
         return instance.StartCoroutine(routine);
@@ -49,18 +53,51 @@ public class MonoManager : SingletonMono<MonoManager>
         m_FixedUpdateAction -= action;
     }
 
+    public void AddAdditiveUpdateListener(Action action)
+    {
+        m_AdditiveUpdateAction += action;
+    }
+
+    public void RemoveAdditiveUpdateListener(Action action)
+    {
+        m_AdditiveUpdateAction -= action;
+    }
+
+    public void AddAdditiveLateUpdateListener(Action action)
+    {
+        m_AdditiveLateUpdateAction += action;
+    }
+
+    public void RemoveAdditiveLateUpdateListener(Action action)
+    {
+        m_AdditiveLateUpdateAction -= action;
+    }
+
+    public void AddAdditiveFixedUpdateListener(Action action)
+    {
+        m_AdditiveFixedUpdateAction += action;
+    }
+
+    public void RemoveAdditiveFixedUpdateListener(Action action)
+    {
+        m_AdditiveFixedUpdateAction -= action;
+    }
+
     private void Update()
     {
         m_UpdateAction?.Invoke();
+        m_AdditiveUpdateAction?.Invoke();
     }
 
     private void LateUpdate()
     {
         m_LateUpdateAction?.Invoke();
+        m_AdditiveLateUpdateAction?.Invoke();
     }
 
     private void FixedUpdate()
     {
-        m_FixedUpdateAction?.Invoke();        
+        m_FixedUpdateAction?.Invoke();   
+        m_AdditiveFixedUpdateAction?.Invoke();
     }
 }

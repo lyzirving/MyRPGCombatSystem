@@ -1,19 +1,21 @@
 ﻿using UnityEngine;
 
-public class CharacterStateBase : StateBase
+public class CharacterStateBase : AdditiveState
 {
-    protected CharacterControllerBase m_ControllerBase;    
+    protected CharacterControllerBase m_ControllerBase;
 
     #region State Methods
-    public virtual void OnContactGround(Collider collider) { }
-
-    public virtual void OnExitGround() { }
-
     public override void Init(IStateMachineOwner owner)
     {
         m_ControllerBase = owner as CharacterControllerBase;
     }
-    #endregion    
+    #endregion
+
+    #region Virtual Methods
+    public virtual void OnContactGround(Collider collider) { }
+
+    public virtual void OnExitGround() { }
+    #endregion
 
     #region Main Methods
     public void Move(in Vector3 force)

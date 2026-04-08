@@ -3,6 +3,8 @@
 /// <summary>
 /// Final Animation = Base Layer + Additive Layer(Current Pose - Reference Pose)
 /// Reference Pose is by default the first frame of the clip.
+/// 
+/// AIStateHurt is used as AddtiveState in StateMachine
 /// </summary>
 public class AIStateHurt : AIStateGround
 {
@@ -14,7 +16,7 @@ public class AIStateHurt : AIStateGround
     private float m_KnockbackDistance;
     private ICharacterBehavior m_Source;
 
-    public override void Enter(StateBase exitState, ChangeStateArgs args)
+    public override void OnAttach(ChangeStateArgs args)
     {
         m_HitStunTime = args.skillData?.hitStunTime ?? 0f;
         m_KnockbackDistance = args.skillData?.knockbackDistance ?? 0f;
@@ -27,7 +29,7 @@ public class AIStateHurt : AIStateGround
         m_AIController.model.SetAnimationFloat(AnimationConsts.hitStunning, HasHitStunning() ? 1.1f : 0f);
     }
 
-    public override void ReEnter(ChangeStateArgs args)
+    public override void OnReAttach(ChangeStateArgs args)
     {
         m_HitStunTime = args.skillData?.hitStunTime ?? 0f;
         m_KnockbackDistance = args.skillData?.knockbackDistance ?? 0f;
@@ -40,10 +42,9 @@ public class AIStateHurt : AIStateGround
         m_AIController.model.SetAnimationFloat(AnimationConsts.hitStunning, HasHitStunning() ? 1.1f : 0f);
     }
 
-    public override bool Exit(StateBase newState)
+    public override void OnDetach()
     {
         m_AIController.model.StopAnimation(AnimationConsts.hit);
-        return true;
     }
 
     public override void Update()
@@ -58,12 +59,12 @@ public class AIStateHurt : AIStateGround
         }
         else if (HasHitStunning())// hit stunning ends
         {
-            m_AIController.ChangeState(ECharacterState.Idle);
+            m_AIController.RemoveAdditiveState(ECharacterState.Hurt);
         }
 
         if (deltaTime >= TRANSITION_INTERVAL)
         {
-            m_AIController.ChangeState(ECharacterState.Idle);
+            m_AIController.RemoveAdditiveState(ECharacterState.Hurt);
         }
     }    
 
