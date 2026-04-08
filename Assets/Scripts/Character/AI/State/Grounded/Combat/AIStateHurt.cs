@@ -40,9 +40,10 @@ public class AIStateHurt : AIStateGround
         m_AIController.model.SetAnimationFloat(AnimationConsts.hitStunning, HasHitStunning() ? 1.1f : 0f);
     }
 
-    public override void Exit(StateBase newState)
+    public override bool Exit(StateBase newState)
     {
         m_AIController.model.StopAnimation(AnimationConsts.hit);
+        return true;
     }
 
     public override void Update()

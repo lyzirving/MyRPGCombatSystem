@@ -25,8 +25,10 @@ public class StateMachine
             m_CurrentState.ReEnter(args);
             return true;
         }
-        var exitState = m_CurrentState;        
-        OnStateExit(exitState, newState);
+        var exitState = m_CurrentState;
+        if(!OnStateExit(exitState, newState))
+            return false;
+
         OnStateEnter(exitState, newState, args);
         m_CurrentState = newState;     
         return true;     
@@ -65,15 +67,23 @@ public class StateMachine
         return state;
     }
 
-    private void OnStateExit(StateBase exitState, StateBase newState)
+    private bool OnStateExit(StateBase exitState, StateBase newState)
     {
         if (exitState != null)
         {
             //Debug.Log($"[{exitState.GetType()}] exit");
-            exitState.Exit(newState);
-            MonoManager.instance.RemoveUpdateListener(exitState.Update);
-            MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
-            MonoManager.instance.RemoveFixedUpdateListener(exitState.FixedUpdate);
+            if (exitState.Exit(newState))
+            {
+                MonoManager.instance.RemoveUpdateListener(exitState.Update);
+                MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
+                MonoManager.instance.RemoveFixedUpdateListener(exitState.FixedUpdate);
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 

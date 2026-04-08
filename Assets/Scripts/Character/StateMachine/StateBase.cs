@@ -19,7 +19,9 @@ public abstract class StateBase
     /// <summary>
     /// Called once every time when a state exits
     /// </summary>
-    public virtual void Exit(StateBase newState) { }
+    /// <param name="newState"></param>
+    /// <returns>true, succeed to exit one state, otherwise, false.</returns>
+    public virtual bool Exit(StateBase newState) { return true; }
 
     public virtual void Update() { }
 

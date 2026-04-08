@@ -18,10 +18,11 @@ public class PlayerStateAttack : PlayerStateCombat
         m_NormalizedTime = 0f;
     }
 
-    public override void Exit(StateBase newState)
+    public override bool Exit(StateBase newState)
     {
         AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
         base.Exit(newState);
+        return true;
     }
 
     public override void Update()

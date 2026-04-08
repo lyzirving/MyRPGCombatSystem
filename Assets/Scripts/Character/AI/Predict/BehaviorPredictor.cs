@@ -1,3 +1,4 @@
+using BehaviorDesigner.Runtime;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,14 +18,16 @@ public class BehaviorPredictor : MonoBehaviour
 
     private float m_Confidence = 0f;
     private ECharacterAction m_Response = ECharacterAction.None;
-    private ECharacterAction m_LastResponse = ECharacterAction.None;
 
     private ECharacterAction m_LastDetectedAction = ECharacterAction.None;
     private ECharacterAction m_LastPredictedAction = ECharacterAction.None;    
     private float m_LastDetectActionTime;
 
-    public ECharacterAction response => m_Response;
-    public float confidence => m_Confidence;
+    private float m_ExecuteTime;
+    private float m_Interval = 0.1f;
+
+    private SharedInt m_BehaviorResponse;
+    private SharedFloat m_BehaviorConfidence;
 
     private void Awake()
     {
@@ -36,9 +39,28 @@ public class BehaviorPredictor : MonoBehaviour
     {
         m_DistanceZone.source = this.transform;
         m_DistanceZone.target = m_TargetCharacter.transform;
+
+        m_ExecuteTime = 0f;
+
+        BehaviorTree bt = GetComponent<BehaviorTree>();
+        m_BehaviorResponse = bt.GetVariable(AIConsts.STR_RESPONSE) as SharedInt;
+        m_BehaviorConfidence = bt.GetVariable(AIConsts.STR_CONFIDENCE) as SharedFloat;
     }
 
-    public void Execute()
+    private void Update()
+    {
+        if (Mathf.Approximately(m_ExecuteTime, 0f) || (Time.time - m_ExecuteTime > m_Interval))
+        {
+            Execute();
+
+            m_ExecuteTime = Time.time;
+
+            m_BehaviorResponse.SetValue((int)m_Response);
+            m_BehaviorConfidence.SetValue(m_Confidence);
+        }        
+    }
+
+    private void Execute()
     {
         long currentPattern = 0;
         float currentConfidence = 0;        
@@ -66,7 +88,6 @@ public class BehaviorPredictor : MonoBehaviour
 
         m_LastDetectedAction = currentAction;
         m_LastPredictedAction = predictedAction;
-        m_LastResponse = m_Response;
     }
 
     private ECharacterAction DetectPlayerAction()

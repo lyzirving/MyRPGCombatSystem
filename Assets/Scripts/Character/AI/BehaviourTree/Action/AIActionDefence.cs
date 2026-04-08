@@ -4,9 +4,19 @@ using UnityEngine;
 
 public class AIActionDefence : AIBehaviourAction
 {
+    public override void OnStart()
+    {
+        m_AIController.ChangeState(ECharacterState.Defence);
+    }
+
+    public override void OnEnd()
+    {
+        var state = m_AIController.currentState as AIStateDefence;
+        state?.ReleaseDefence();
+    }
+
     public override TaskStatus OnUpdate()
     {
-        Debug.LogWarning("AIActionDefence");
-        return TaskStatus.Success;
+        return TaskStatus.Running;
     }
 }

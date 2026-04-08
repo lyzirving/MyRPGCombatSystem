@@ -9,14 +9,15 @@ public class AIStateRoar : AIStateGround
         m_AIController.model.TriggerAnimation(AnimationConsts.roar);
     }
 
-    public override void Exit(StateBase newState)
+    public override bool Exit(StateBase newState)
     {
         target = null;
+        return true;
     }
 
     public override void Update()
     {
-        if (!m_AIController.model.GetTargetAnimationTime("Roar", AnimationConsts.BASE_LAYER, out float time))
+        if (!m_AIController.model.animator.GetTargetAnimationTime("Roar", AnimationConsts.BASE_LAYER, out float time))
         {
             Debug.LogError("Fail to get Roar animation's time");
             m_AIController.ChangeState(ECharacterState.Idle);

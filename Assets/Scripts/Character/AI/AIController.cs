@@ -48,6 +48,9 @@ public class AIController : CharacterControllerBase
             case ECharacterState.Roar:
                 m_StateMachine?.ChangeState<AIStateRoar>(args);
                 break;
+            case ECharacterState.Defence:
+                m_StateMachine?.ChangeState<AIStateDefence>(args);
+                break;
             default:
                 break;
         }

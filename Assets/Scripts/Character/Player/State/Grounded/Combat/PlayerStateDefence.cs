@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class PlayerStateDefence : PlayerStateCombat
@@ -22,11 +21,12 @@ public class PlayerStateDefence : PlayerStateCombat
         AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
     }
 
-    public override void Exit(StateBase newState)
+    public override bool Exit(StateBase newState)
     {
         AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
         m_Player.model.StopAnimation(AnimationConsts.defence);
         base.Exit(newState);
+        return true;
     }
 
     public override void Update()
