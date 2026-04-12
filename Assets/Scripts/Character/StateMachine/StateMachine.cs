@@ -18,15 +18,13 @@ public class StateMachine
     #region Method for Base State
     public bool ChangeState<T>(ChangeStateArgs args = default(ChangeStateArgs)) where T : StateBase, new()
     {
-        if (m_CurrentState != null && m_CurrentState.GetType() == typeof(T) && !args.reEnterState)
-            return false;
-
         var newState = GetState<T>();
-        if (args.reEnterState && newState == m_CurrentState && m_CurrentState != null)
+        if (newState == m_CurrentState && m_CurrentState != null)
         {
             m_CurrentState.ReEnter(args);
             return true;
         }
+
         var exitState = m_CurrentState;
         if (!OnStateExit(exitState, newState))
             return false;

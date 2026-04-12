@@ -7,6 +7,10 @@ public class AttackComponent : MonoBehaviour
     private ComboController m_Controller = new();
     private AttackBox[] m_AttackBox;  
 
+    public bool hasSkill => m_ComboSequences != null && m_ComboSequences.Length > 0;
+    public bool hasAttackBox => m_AttackBox != null && m_AttackBox.Length > 0;
+    public bool hasNextSkill => m_Controller.hasNextSkill;
+
     public ComboSequence combo { get => m_ComboSequences[m_Controller.comboIndex]; }
     public SkillData skill { get => combo.skillConfigs[m_Controller.skillIndex]; }
     public AttackBox attackBox { get => m_AttackBox[skill.attackBoxIndex]; }
@@ -25,11 +29,15 @@ public class AttackComponent : MonoBehaviour
 
         m_AttackBox = GetComponentsInChildren<AttackBox>();
         int len = m_AttackBox == null ? 0 : m_AttackBox.Length;
-        if (len == 0)
-            throw new System.Exception("No attack hotspots is bound");
-
-        CreateSkillHotspotIndex(playerBehavior);
-        CrateSkillConnection();
+        if (len != 0)
+        {
+            CreateSkillHotspotIndex(playerBehavior);
+            CrateSkillConnection();
+        }
+        else
+        {
+            Debug.LogWarning($"No attack hotspots is bound in go[{this.gameObject}]");     
+        }        
     }
 
     private void CreateSkillHotspotIndex(ICharacterBehavior playerBehavior)

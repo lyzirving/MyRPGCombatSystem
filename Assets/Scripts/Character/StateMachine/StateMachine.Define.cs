@@ -7,11 +7,7 @@ public struct ChangeStateArgs
     {
         Graph = 0, //Trigger animation by connection in Animaor Graph
         Manual     //Trigger animation manually by calling methods in code
-    }    
-    /// <summary>
-    /// Whether we should refresh state if current state doesn't change.
-    /// </summary>
-    public bool reEnterState;
+    }
     /// <summary>
     /// Current footStep of animation
     /// </summary>
@@ -30,19 +26,8 @@ public struct ChangeStateArgs
     public readonly SkillData skillData;
     public EAnimationPlayMode playMode;
 
-    public ChangeStateArgs(bool reEnterState)
-    {         
-        this.reEnterState = reEnterState;
-        this.footStep = EFootstep.None;
-        this.hitPos = Vector3.zero;
-        this.source = null;
-        this.skillData = null;
-        this.playMode = EAnimationPlayMode.Graph;
-    }
-
     public ChangeStateArgs(EAnimationPlayMode mode)
     {
-        this.reEnterState = false;
         this.footStep = EFootstep.None;
         this.hitPos = Vector3.zero;
         this.source = null;
@@ -52,7 +37,6 @@ public struct ChangeStateArgs
 
     public ChangeStateArgs(EFootstep footStep)
     {
-        this.reEnterState = false;
         this.footStep = footStep;
         this.hitPos = Vector3.zero;
         this.source = null;
@@ -60,9 +44,8 @@ public struct ChangeStateArgs
         this.playMode = EAnimationPlayMode.Graph;
     }
 
-    public ChangeStateArgs(bool reEnterState, in ICharacterBehavior source, in SkillData skillData, Vector3 hitPos)
+    public ChangeStateArgs(in ICharacterBehavior source, in SkillData skillData, Vector3 hitPos)
     {
-        this.reEnterState = reEnterState;
         this.footStep = EFootstep.None;
         this.hitPos = hitPos;
         this.source = source;

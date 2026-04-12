@@ -26,10 +26,6 @@ MonoBehaviour:
     launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchLeft
-  - type: 502
-    launchTime: 0.6
-    triggerTime: 0
-    animatorState: LightPunchLeft
   animatorState: LightPunchLeft
 --- !u!1107 &-8351681345609171028
 AnimatorStateMachine:
@@ -1026,10 +1022,6 @@ MonoBehaviour:
     launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchRight
-  - type: 502
-    launchTime: 0.6
-    triggerTime: 0
-    animatorState: LightPunchRight
   animatorState: LightPunchRight
 --- !u!114 &7884295624835533399
 MonoBehaviour:
@@ -1055,10 +1047,6 @@ MonoBehaviour:
     animatorState: LightKickRight
   - type: 103
     launchTime: 0.47
-    triggerTime: 0
-    animatorState: LightKickRight
-  - type: 502
-    launchTime: 0.58
     triggerTime: 0
     animatorState: LightKickRight
   animatorState: LightKickRight

@@ -17,7 +17,9 @@ public class BehaviorPredictor : MonoBehaviour
     [SerializeField] private CharacterControllerBase m_TargetCharacter;
 
     private float m_Confidence = 0f;
+    private float m_LastConfidence = 0f;
     private ECharacterAction m_Response = ECharacterAction.None;
+    private ECharacterAction m_LastResponse = ECharacterAction.None;
 
     private ECharacterAction m_LastDetectedAction = ECharacterAction.None;
     private ECharacterAction m_LastPredictedAction = ECharacterAction.None;    
@@ -65,29 +67,43 @@ public class BehaviorPredictor : MonoBehaviour
         long currentPattern = 0;
         float currentConfidence = 0;        
         ECharacterAction predictedAction = m_LastPredictedAction;
+        ECharacterAction response = m_LastResponse;
 
         m_DistanceZone.Update();
 
-        ECharacterAction currentAction = DetectPlayerAction();
+        ECharacterAction currentDetectedAction = DetectPlayerAction();
         if (m_PatternAnalyzer.Predict())
-        {
+        {            
             currentConfidence = m_PatternAnalyzer.confidence;
             currentPattern = m_PatternAnalyzer.pattern;
             predictedAction = m_PatternAnalyzer.prediction;
-            m_Response = MakeActionWithPrecition(predictedAction, currentConfidence);
+            if (currentConfidence <= m_PatternAnalyzer.settings.predictionConfidence)
+            {
+                currentConfidence = m_LastConfidence;
+                response = m_LastResponse;
+            }
+            else
+            {
+                response = MakeActionWithPrecition(predictedAction, currentConfidence);
+            }
         }
         else
         {
-            m_Response = MakeAction();
+            currentConfidence = m_LastConfidence;
+            response = m_LastResponse;
         }
+
         m_Confidence = currentConfidence;
+        m_Response = response;
 
         // For next prediction
-        m_PatternAnalyzer.RecordAction(currentAction);
-        m_PatternAnalyzer.UpdatePatternDatabase(currentPattern, currentAction);
+        m_PatternAnalyzer.RecordAction(currentDetectedAction);
+        m_PatternAnalyzer.UpdatePatternDatabase(currentPattern, currentDetectedAction);
 
-        m_LastDetectedAction = currentAction;
+        m_LastDetectedAction = currentDetectedAction;
         m_LastPredictedAction = predictedAction;
+        m_LastResponse = m_Response;
+        m_LastConfidence = m_Confidence;
     }
 
     private ECharacterAction DetectPlayerAction()
@@ -109,28 +125,20 @@ public class BehaviorPredictor : MonoBehaviour
         return m_TargetCharacter.GetCurrentAction();
     }
 
-    private ECharacterAction MakeAction()
-    {
-        return ECharacterAction.None;
-    }
-
     private ECharacterAction MakeActionWithPrecition(ECharacterAction nextAction, float confidence)
     {
-        if (confidence <= m_PatternAnalyzer.settings.predictionConfidence)
-            return MakeAction();
-
-        if (m_DistanceZone.zone == EDistanceZone.CloseCombatRange)
+        ECharacterAction response = ECharacterAction.None;
+        switch (m_DistanceZone.zone)
         {
-            if (nextAction == ECharacterAction.Attack)
-            {
-                return ECharacterAction.Defence;
-            }
+            case EDistanceZone.CloseCombatRange:
+                if (nextAction == ECharacterAction.Attack)
+                    response = ECharacterAction.Defence;
+                else
+                    response = ECharacterAction.Attack;
+                break;
+            default:
+                break;
         }
-        else
-        {
-            return ECharacterAction.Idle;
-        }
-
-        return ECharacterAction.None;
+        return response;
     }
 }

@@ -9,15 +9,18 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
 
+    protected int m_CharacterGUID = GUIDConsts.PlayerAnimation;
     protected Rigidbody m_Rigidbody;    
     protected CharacterSensor m_Sensor;
     protected CapsuleCollider m_CapsuleCollider;
+    protected AttackComponent m_AttackComponent;
 
     public CharacterConfig config => m_Config;
     public CharacterAttrs attrs => m_Attrs;
     public Rigidbody rigidBody => m_Rigidbody;
     public CharacterSensor sensor => m_Sensor;
     public CapsuleCollider capsule => m_CapsuleCollider;
+    public AttackComponent attackComponent { get => m_AttackComponent; }
 
     public StateBase currentState => m_StateMachine.currentState;
     public float speedScaler => m_Config.baseSpeed * m_Attrs.speedModify;
@@ -106,6 +109,9 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
         m_StateMachine = new StateMachine();
         m_StateMachine.Init(this);
+
+        m_AttackComponent = GetComponent<AttackComponent>();
+        m_AttackComponent?.Init(this);
     }
     #endregion
 
@@ -132,10 +138,17 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public virtual bool isLightAttack => false;
 
     public virtual Transform modelTransform => null;
+    public int GUID => m_CharacterGUID;
 
-    public virtual void OnAttackBegin() { }
+    public virtual void OnAttackBegin() 
+    {
+        m_AttackComponent?.attackBox.OnAttackBegin();
+    }
 
-    public virtual void OnAttackEnd() { }
+    public virtual void OnAttackEnd() 
+    {
+        m_AttackComponent?.attackBox.OnAttackEnd();
+    }
 
     public virtual void OnAttackHit(ICharacterBehavior target, Vector3 hitPos) { }
 

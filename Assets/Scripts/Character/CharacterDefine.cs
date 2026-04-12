@@ -43,6 +43,14 @@ public enum EDefenceState : UInt16
     End
 }
 
+public enum EAttackState : UInt16
+{
+    Start = 0,    
+    ReadyCombo,
+    End,
+    Num
+}
+
 public enum EFootstep : UInt16
 {
     None = 0,

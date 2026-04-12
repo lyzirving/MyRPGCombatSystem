@@ -5,13 +5,11 @@ public class PlayerController : CharacterControllerBase
     public AudioClip[] footStepAudioClips;
 
     public PlayerModel model { get => m_PlayerModel; }
-    public PlayerActionController action { get => m_ActionController; }
-    public AttackComponent attackComponent { get => m_AttackComponent; } 
+    public PlayerActionController action { get => m_ActionController; }    
 
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
     private AudioPool m_AudioPool;
-    private AttackComponent m_AttackComponent;
     // -------- Component in current node end --------
 
     // -------- Components in children start ------
@@ -31,10 +29,7 @@ public class PlayerController : CharacterControllerBase
         base.Init();
 
         m_ActionController = GetComponent<PlayerActionController>();
-        m_AudioPool = GetComponent<AudioPool>();
-
-        m_AttackComponent = GetComponent<AttackComponent>();
-        m_AttackComponent.Init(this);
+        m_AudioPool = GetComponent<AudioPool>();        
 
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
@@ -95,12 +90,7 @@ public class PlayerController : CharacterControllerBase
     public override void OnAttackBegin()
     {
         m_AudioPool?.PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);
-        m_AttackComponent.attackBox.OnAttackBegin();
-    }
-
-    public override void OnAttackEnd()
-    {
-        m_AttackComponent.attackBox.OnAttackEnd();
+        base.OnAttackBegin();
     }
 
     public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)

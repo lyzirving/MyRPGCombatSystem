@@ -27,7 +27,7 @@ public class PlayerStateAttack : PlayerStateCombat
 
     public override void Update()
     {
-        if (!m_Player.model.animator.GetNormalizedTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime))
+        if (!m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime))
         {
             Debug.LogError($"Fail to get animator state[{m_Player.attackComponent.skill.animatorState}]'s normalized time");
             return;
@@ -44,7 +44,7 @@ public class PlayerStateAttack : PlayerStateCombat
         if (m_Player.attackComponent.UpdateCombo())
         {
             m_Player.attackComponent.NextSkill();
-            m_Player.ChangeState(ECharacterState.Attack, new ChangeStateArgs(true));
+            m_Player.ChangeState(ECharacterState.Attack);
             return;
         }
 

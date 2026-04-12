@@ -43,6 +43,11 @@ public class AIStateDefence : AIStateCombat
         }
     }
 
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Defence;
+    }
+
     public void ReleaseDefence()
     {
         m_AIController.model.SetAnimationBool(AnimationConsts.defenceRelease, true);

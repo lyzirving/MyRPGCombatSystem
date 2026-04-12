@@ -18,6 +18,7 @@ public class AIController : CharacterControllerBase
     #region State Methods
     private void Awake()
     {
+        m_CharacterGUID = GUIDConsts.AIAnimation;
         base.Init();
 
         // Init components in children
@@ -47,6 +48,9 @@ public class AIController : CharacterControllerBase
                 break;
             case ECharacterState.Defence:
                 m_StateMachine?.ChangeState<AIStateDefence>(args);
+                break;
+            case ECharacterState.Attack:
+                m_StateMachine?.ChangeState<AIStateAttack>(args);
                 break;
             default:
                 break;
@@ -83,7 +87,7 @@ public class AIController : CharacterControllerBase
 
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
-        AddAdditiveState(ECharacterState.Hurt, new ChangeStateArgs(true, source, skillData, hitPos));
+        AddAdditiveState(ECharacterState.Hurt, new ChangeStateArgs(source, skillData, hitPos));
     }
     #endregion
 }

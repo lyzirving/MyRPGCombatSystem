@@ -10,6 +10,7 @@ public class SkillData : ScriptableObject
     public float crossFadeInTime = 0.15f;
     [Tooltip("Input floating window duration in seconds")]
     public float inputWindowDuration = 0.2f;
+    [Tooltip("Time to end current animation and transfer to another state")]
     public float transitionNormalizedTime = 1f;
 
     [Header("Trigger Attributes")]

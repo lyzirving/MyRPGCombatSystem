@@ -24,14 +24,14 @@ public class CharacterModel : MonoBehaviour
 
     private void Start()
     {
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, OnAttackStart);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, OnAttackEnd);
+        AnimationEventReceiver.instance.RegisterAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackStart, OnAttackStart);
+        AnimationEventReceiver.instance.RegisterAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnDisable()
     {
-        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, OnAttackStart);
-        AnimationEventReceiver.instance?.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, OnAttackEnd);
+        AnimationEventReceiver.instance?.RemoveAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackStart, OnAttackStart);
+        AnimationEventReceiver.instance?.RemoveAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackEnd, OnAttackEnd);
     }
 
     private void OnAnimatorMove()
