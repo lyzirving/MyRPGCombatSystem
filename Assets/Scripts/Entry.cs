@@ -12,6 +12,7 @@ public class Entry : MonoBehaviour
         AnimationConsts.Init();
         AnimationEventReceiver.Init();
         VFXManager.Init();
+        AIManager.Init();
     }
 
     public void ReloadScene()

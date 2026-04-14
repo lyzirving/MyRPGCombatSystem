@@ -4,7 +4,7 @@ using UnityEngine;
 public delegate void DistanceZoneChangeDelegate(EDistanceZone newZone, EDistanceZone oldZone, float distance);
 
 [Serializable]
-public class DistanceZone
+public class DistanceZone : MonoBehaviour
 {
     [SerializeField] private DistanceZoneSettings m_Settings;
 
@@ -12,7 +12,6 @@ public class DistanceZone
     private float m_Distance = 0.0f;
 
     private Transform m_Target = null;
-    private Transform m_Source = null;
 
     private DistanceZoneChangeDelegate m_ZoneChangeNotify;
 
@@ -23,18 +22,19 @@ public class DistanceZone
         get => m_Target;
         set => m_Target = value;
     }
-    public Transform source
+
+    private void Update()
     {
-        get => m_Source;
-        set => m_Source = value;
+        UpdateDistance();
     }
 
-    public void Update()
+    public void UpdateDistance()
     {
-        if (m_Settings == null) throw new Exception("DistanceZoneSettings hasn't been configured!");        
-        if(m_Target == null || m_Source == null) return;
+        if (m_Settings == null) throw new Exception("DistanceZoneSettings hasn't been configured!");   
+        
+        if(m_Target == null) return;
 
-        m_Distance = Vector3.Distance(m_Source.position, m_Target.position);
+        m_Distance = Vector3.Distance(transform.position, m_Target.position);
         var currentZone = m_Settings.GetZone(m_Distance);
         if (m_Zone != currentZone)
         {

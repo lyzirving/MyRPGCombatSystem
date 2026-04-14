@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 44516790}
   - component: {fileID: 44516791}
   - component: {fileID: 44516794}
+  - component: {fileID: 44516795}
   - component: {fileID: 44516793}
   - component: {fileID: 44516792}
   m_Layer: 10
@@ -310,8 +311,6 @@ MonoBehaviour:
       patternLength: 3
       predictionConfidence: 0.7
       maxHistorySize: 100
-  m_DistanceZone:
-    m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
   m_TargetCharacter: {fileID: 496888499}
 --- !u!114 &44516794
 MonoBehaviour:
@@ -327,6 +326,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComboSequences:
   - {fileID: 11400000, guid: ddc82a4eac0745c43b7002392d04c127, type: 2}
+--- !u!114 &44516795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44516787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eaa29142cddabd4b872fe9ba23eebc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
 --- !u!4 &62995458 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1812909498023395591, guid: b11f706943f2bd544ad7005f6acc5c52, type: 3}
@@ -1192,6 +1204,9 @@ GameObject:
   - component: {fileID: 496888505}
   - component: {fileID: 496888499}
   - component: {fileID: 496888506}
+  - component: {fileID: 496888508}
+  - component: {fileID: 496888507}
+  - component: {fileID: 496888509}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1332,6 +1347,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolSize: 5
+--- !u!114 &496888507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55b903d1691cc9942a360f727a359a05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fieldOfView: 90
+  eyeHeightOffset: 1.4
+  sightDistance: 7
+  gizmosColor: {r: 0, g: 0, b: 1, a: 1}
+  targetTag: Enemy
+--- !u!114 &496888508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a93b0d6f8371a4c90cd63deda6fd86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scanInterval: 1
+--- !u!114 &496888509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eaa29142cddabd4b872fe9ba23eebc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
 --- !u!1 &507923619
 GameObject:
   m_ObjectHideFlags: 0

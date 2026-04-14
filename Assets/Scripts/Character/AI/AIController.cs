@@ -24,6 +24,8 @@ public class AIController : CharacterControllerBase
         // Init components in children
         m_AIModel = GetComponentInChildren<AIModel>();
         m_AIModel.Init(this);
+
+        AIManager.instance.Register(this);
     }
 
     private void Start()

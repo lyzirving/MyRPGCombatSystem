@@ -13,9 +13,9 @@ public class BehaviorPredictor : MonoBehaviour
 {
     [SerializeField] private float m_DetectActionInterval = 0.15f;
     [SerializeField] private PatternAnalyzer m_PatternAnalyzer = new PatternAnalyzer();    
-    [SerializeField] private DistanceZone m_DistanceZone = new DistanceZone();
     [SerializeField] private CharacterControllerBase m_TargetCharacter;
 
+    private DistanceZone m_DistanceZone;
     private float m_Confidence = 0f;
     private float m_LastConfidence = 0f;
     private ECharacterAction m_Response = ECharacterAction.None;
@@ -39,7 +39,7 @@ public class BehaviorPredictor : MonoBehaviour
 
     private void Start()
     {
-        m_DistanceZone.source = this.transform;
+        m_DistanceZone = GetComponent<DistanceZone>();
         m_DistanceZone.target = m_TargetCharacter.transform;
 
         m_ExecuteTime = 0f;
@@ -68,8 +68,6 @@ public class BehaviorPredictor : MonoBehaviour
         float currentConfidence = 0;        
         ECharacterAction predictedAction = m_LastPredictedAction;
         ECharacterAction response = m_LastResponse;
-
-        m_DistanceZone.Update();
 
         ECharacterAction currentDetectedAction = DetectPlayerAction();
         if (m_PatternAnalyzer.Predict())

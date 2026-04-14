@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : CharacterControllerBase
+public class PlayerController : CharacterControllerBase, ICharacterScanListener
 {    
     public AudioClip[] footStepAudioClips;
 
@@ -10,6 +10,7 @@ public class PlayerController : CharacterControllerBase
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
     private AudioPool m_AudioPool;
+    private CharacterScan m_CharacterSanner;
     // -------- Component in current node end --------
 
     // -------- Components in children start ------
@@ -33,13 +34,21 @@ public class PlayerController : CharacterControllerBase
 
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
-        m_PlayerModel.Init(this);        
+        m_PlayerModel.Init(this);
+
+        m_CharacterSanner = GetComponent<CharacterScan>();
+        m_CharacterSanner.AddListener(this);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         ChangeState(ECharacterState.Idle);
+    }
+
+    private void OnDestroy()
+    {
+        m_CharacterSanner.RemoveListener(this);
     }
     #endregion
 
@@ -116,6 +125,23 @@ public class PlayerController : CharacterControllerBase
             //TODO: add config for counter attack window
             defenceState.OnHit(0.2f);
         }
+    }
+    #endregion
+
+    #region ICharacterScanListener Methods
+    public void OnTargetLost(CharacterControllerBase target)
+    {
+        m_DistanceZone.target = null;
+    }
+
+    public void OnTargetFound(CharacterControllerBase target)
+    {
+        m_DistanceZone.target = target.transform;
+    }
+
+    public void OnTargetChange(CharacterControllerBase current, CharacterControllerBase last)
+    {
+        m_DistanceZone.target = current.transform;
     }
     #endregion
 }

@@ -14,6 +14,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CharacterSensor m_Sensor;
     protected CapsuleCollider m_CapsuleCollider;
     protected AttackComponent m_AttackComponent;
+    protected DistanceZone m_DistanceZone;
 
     public CharacterConfig config => m_Config;
     public CharacterAttrs attrs => m_Attrs;
@@ -112,6 +113,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
         m_AttackComponent = GetComponent<AttackComponent>();
         m_AttackComponent?.Init(this);
+
+        m_DistanceZone = GetComponent<DistanceZone>();
     }
     #endregion
 
