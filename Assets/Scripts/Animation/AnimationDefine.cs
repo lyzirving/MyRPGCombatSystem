@@ -23,6 +23,8 @@ public static class AnimationConsts
     public const int HURT_LAYER = 1;
 
     [Header("Transition parameters in Animator")]
+    public static int locomotion { get; private set; }
+    public static int locked { get; private set; }
     public static int combat { get; private set; }
     public static int land { get; private set; }
     public static int airborne { get; private set; }
@@ -44,8 +46,10 @@ public static class AnimationConsts
     public static int defenceState { get; private set; }    
 
     public static void Init()
-    {        
+    {
         // Transition parameters in Animator
+        locomotion = Animator.StringToHash("isLocomotion");
+        locked = Animator.StringToHash("isLocked");
         combat = Animator.StringToHash("isCombat");
         land = Animator.StringToHash("isLanding");
         airborne = Animator.StringToHash("isAirborne");

@@ -4,6 +4,7 @@ public class PlayerStateIdle : PlayerStateLocomotion
 {
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {               
+        base.Enter(exitState, args);
         if(exitState != null && exitState.GetType() != typeof(PlayerStateMove))
         {
             m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f);

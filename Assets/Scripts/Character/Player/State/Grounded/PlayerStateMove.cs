@@ -17,6 +17,7 @@ public class PlayerStateMove : PlayerStateLocomotion
 
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
+        base.Enter(exitState, args);
         m_AnimLoopCnt = 0;
         m_AnimTime = 0f;
     }

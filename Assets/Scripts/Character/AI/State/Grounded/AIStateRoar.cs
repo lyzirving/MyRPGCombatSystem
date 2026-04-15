@@ -35,6 +35,7 @@ public class AIStateRoar : AIStateGround
         if(target != null)
         {
             Vector3 targetDir = target.position - m_AIController.transform.position;
+            targetDir.y = 0;
             targetDir.Normalize();
             m_AIController.RotateToTargetDir(targetDir, m_AIController.config.rotateSpeed);
         }
