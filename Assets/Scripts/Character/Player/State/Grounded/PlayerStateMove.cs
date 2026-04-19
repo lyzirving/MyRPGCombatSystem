@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerStateMove : PlayerStateLocomotion
 {
-    private int m_AnimLoopCnt;
-    private float m_AnimTime;
+    protected int m_CurrentLoop;
+    protected float m_CurrentTime;
 
     public EFootstep currentFoopStep
     {
@@ -18,49 +18,22 @@ public class PlayerStateMove : PlayerStateLocomotion
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
-        m_AnimLoopCnt = 0;
-        m_AnimTime = 0f;
+        m_CurrentLoop = 0;
+        m_CurrentTime = 0f;
     }
 
     public override void Update()
     {
-        int currentLoop = 0;
-        float currentTime = 0f;
-        if (m_Player.model.animator.IsInTransition(AnimationConsts.BASE_LAYER))
-        {
-            currentLoop = m_AnimLoopCnt;
-            currentTime = m_AnimTime;
-        }
-        else
-        {
-            var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(AnimationConsts.BASE_LAYER);
-            currentLoop = Mathf.FloorToInt(state.normalizedTime);
-            currentTime = state.normalizedTime % 1f;
-        }
+        GetCurrentAnimationTimeInfo(out int currentLoop, out float currentTime);
 
-        if (m_Player.action.isLightAttack)
-        {
-            m_Player.ChangeState(ECharacterState.Attack);
+        if(ChangeToOtherState(currentTime))
             return;
-        }        
-
-        if (m_Player.action.isJump)
-        {
-            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(currentTime < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep));
-            return;
-        }
-
-        if (!m_Player.action.isMoving)
-        {
-            m_Player.ChangeState(ECharacterState.Idle);
-            return;
-        }
-        
+                
+        UpdateFootStep(currentLoop, currentTime, m_CurrentLoop, m_CurrentTime);
         UpdateAnimationValue();
-        UpdateFootStep(currentLoop, currentTime, m_AnimLoopCnt, m_AnimTime);
 
-        m_AnimTime = currentTime;
-        m_AnimLoopCnt = currentLoop;
+        m_CurrentTime = currentTime;
+        m_CurrentLoop = currentLoop;
     }    
 
     public override void FixedUpdate()
@@ -80,7 +53,8 @@ public class PlayerStateMove : PlayerStateLocomotion
         return ECharacterAction.Move;
     }
 
-    private void UpdateAnimationValue()
+    #region Virtual Method
+    protected virtual void UpdateAnimationValue()
     {
         float speed = m_Player.action.shouldRun ? 2f : 1f;
         m_Player.model.SetAnimationFloat(AnimationConsts.speed, speed, 0.1f, Time.deltaTime);
@@ -92,8 +66,27 @@ public class PlayerStateMove : PlayerStateLocomotion
         float sign = Mathf.Sign(Vector3.Cross(forward, targetDir).y);
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, angular * sign, 0.1f, Time.deltaTime);
     }
+    #endregion
 
-    private void UpdateFootStep(int currentLoop, float currtentTime, int lastLoop, float lastTime)
+    protected void GetCurrentAnimationTimeInfo(out int loop, out float time)
+    {
+        // Note: Only consider the case when entering the move animation.
+        //       If character quits the animation, the Update() will not run.
+        if (m_Player.model.animator.IsInTransition(AnimationConsts.BASE_LAYER))
+        {
+            var state = m_Player.model.animator.GetNextAnimatorStateInfo(AnimationConsts.BASE_LAYER);
+            loop = Mathf.FloorToInt(state.normalizedTime);
+            time = state.normalizedTime % 1f;
+        }
+        else
+        {
+            var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(AnimationConsts.BASE_LAYER);
+            loop = Mathf.FloorToInt(state.normalizedTime);
+            time = state.normalizedTime % 1f;
+        }
+    }
+
+    protected void UpdateFootStep(int currentLoop, float currtentTime, int lastLoop, float lastTime)
     {
         float time = Time.time;
         if (currentLoop != lastLoop && Mathf.Abs(currentLoop - lastLoop) == 1)
@@ -105,5 +98,28 @@ public class PlayerStateMove : PlayerStateLocomotion
         {
             m_Player.OnFootStep(EFootstep.LeftFootstep);
         }
-    }
+    }    
+
+    protected bool ChangeToOtherState(float currentTime)
+    {
+        if (m_Player.action.isLightAttack)
+        {
+            m_Player.ChangeState(ECharacterState.Attack);
+            return true;
+        }
+
+        if (m_Player.action.isJump)
+        {
+            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(currentTime < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep));
+            return true;
+        }
+
+        if (!m_Player.action.isMoving)
+        {
+            m_Player.ChangeState(ECharacterState.Idle);
+            return true;
+        }
+
+        return false;
+    }    
 }

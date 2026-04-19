@@ -24,10 +24,15 @@ public class ViewChecker : MonoBehaviour
         Vector3 dir = target.position - transform.position;
         dir.Normalize();
 
-        float dot = Vector3.Dot(dir, transform.forward);
+        return IsDirectionInView(dir);
+    }
+
+    public bool IsDirectionInView(Vector3 direction)
+    {
+        float dot = Vector3.Dot(direction, transform.forward);
         if (dot < 0f) return false;
 
-        float angle = Vector3.Angle(transform.forward, dir);
+        float angle = Vector3.Angle(transform.forward, direction);
         return angle < fieldOfView / 2f;
     }
 

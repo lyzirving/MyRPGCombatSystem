@@ -38,6 +38,8 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
 
         m_CharacterSanner = GetComponent<CharacterScan>();
         m_CharacterSanner.AddListener(this);
+
+        m_DistanceZone.AddZoneChangeNotify(OnDistanzeZoneChange);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -48,11 +50,17 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
 
     private void OnDestroy()
     {
+        m_DistanceZone.RemoveZoneChangeNotify(OnDistanzeZoneChange);
         m_CharacterSanner.RemoveListener(this);
     }
     #endregion
 
     #region Main Methods
+    public bool IsDirectionInView(Vector3 direction)
+    {
+        return m_CharacterSanner.IsDirectionInView(direction);
+    }
+
     public Vector3 GetTargetDirection()
     {
         if (!m_ActionController.isMoving)
@@ -72,6 +80,9 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
                 break;
             case ECharacterState.Move:
                 m_StateMachine?.ChangeState<PlayerStateMove>(args);
+                break;
+            case ECharacterState.LockedOnMove:
+                m_StateMachine?.ChangeState<PlayerStateLockedOnMove>(args);
                 break;
             case ECharacterState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
@@ -119,9 +130,9 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
 
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
-        if (m_StateMachine.currentState is PlayerStateDefence)
+        var defenceState = m_StateMachine.GetCurrentState<PlayerStateDefence>();
+        if (defenceState != null)
         {
-            var defenceState = m_StateMachine.currentState as PlayerStateDefence;
             //TODO: add config for counter attack window
             defenceState.OnHit(0.2f);
         }
@@ -131,17 +142,31 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
     #region ICharacterScanListener Methods
     public void OnTargetLost(CharacterControllerBase target)
     {
-        m_DistanceZone.target = null;
+        lockTarget = null;
+        m_PlayerModel.SetAnimationBool(AnimationConsts.locked, false);
+        if (IsCurrentState<PlayerStateLockedOnMove>())
+            ChangeState(ECharacterState.Move);
     }
 
     public void OnTargetFound(CharacterControllerBase target)
     {
-        m_DistanceZone.target = target.transform;
+        lockTarget = target.transform;
     }
 
     public void OnTargetChange(CharacterControllerBase current, CharacterControllerBase last)
     {
-        m_DistanceZone.target = current.transform;
+        lockTarget = current.transform;
     }
     #endregion
+
+    private void OnDistanzeZoneChange(EDistanceZone newZone, EDistanceZone oldZone, float distance)
+    {
+        if (newZone == EDistanceZone.Mid && m_DistanceZone.target != null)
+        {
+            ChangeState(ECharacterState.LockedOnMove);
+        }
+        else if (oldZone == EDistanceZone.Mid && newZone > oldZone)
+        {            
+        }
+    }
 }

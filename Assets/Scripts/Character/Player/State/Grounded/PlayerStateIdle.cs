@@ -5,7 +5,11 @@ public class PlayerStateIdle : PlayerStateLocomotion
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {               
         base.Enter(exitState, args);
-        if(exitState != null && exitState.GetType() != typeof(PlayerStateMove))
+
+        bool immediateChange = (exitState != null) &&
+                               (exitState.GetType() != typeof(PlayerStateMove)) &&
+                               (exitState.GetType() != typeof(PlayerStateLockedOnMove));
+        if (immediateChange)
         {
             m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f);
             m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f);
@@ -36,7 +40,7 @@ public class PlayerStateIdle : PlayerStateLocomotion
 
         if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(ECharacterState.Move);
+            m_Player.ChangeState(m_Player.lockTarget != null ? ECharacterState.LockedOnMove : ECharacterState.Move);
             return;
         }
 

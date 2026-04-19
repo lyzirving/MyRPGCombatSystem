@@ -85,11 +85,11 @@ public class CharacterModel : MonoBehaviour
     public void SetAnimationBool(int nameHash, bool value)
     {
         m_Animator?.SetBool(nameHash, value);
-    }
+    }    
 
     public void SetAnimationFloat(int nameHash, float value)
     {
-        m_Animator?.SetFloat(nameHash, value);
+        m_Animator?.SetFloat(nameHash, value);        
     }
 
     public void SetAnimationFloat(int nameHash, float value, float dampTime, float deltaTime)
@@ -99,7 +99,12 @@ public class CharacterModel : MonoBehaviour
 
     public float GetAnimationFloat(int nameHash)
     {
-        return m_Animator.GetFloat(nameHash);
+        return m_Animator?.GetFloat(nameHash) ?? 0f;
+    }
+
+    public bool GetAnimationBool(int nameHash)
+    {
+        return m_Animator?.GetBool(nameHash) ?? false;
     }
 
     public void SetLayerWeight(int layer, float weight)

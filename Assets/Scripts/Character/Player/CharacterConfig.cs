@@ -15,4 +15,9 @@ public class CharacterConfig
 
     [Header("Falling Data")]
     [Range(1f, 5f)] public float fallGravityRatio = 1.2f;
+
+    [Header("ReCentering")]
+    public float recenterStartAngle = 30f;
+    public float recenterStopAngle = 5f;
+    public float recenterDuration = 0.15f;
 }

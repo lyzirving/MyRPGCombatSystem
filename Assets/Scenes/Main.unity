@@ -242,6 +242,9 @@ MonoBehaviour:
     rotateSpeed: 8
     jumpHeight: 1.5
     fallGravityRatio: 1.2
+    recenterStartAngle: 30
+    recenterStopAngle: 5
+    recenterDuration: 0.15
 --- !u!114 &44516792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1250,6 +1253,9 @@ MonoBehaviour:
     rotateSpeed: 8
     jumpHeight: 1.5
     fallGravityRatio: 1.2
+    recenterStartAngle: 30
+    recenterStopAngle: 5
+    recenterDuration: 0.15
   footStepAudioClips:
   - {fileID: 8300000, guid: f3558fa2213d261489d41540785339f1, type: 3}
   - {fileID: 8300000, guid: 022ac6ca1e548f243b8007b7f905c374, type: 3}
@@ -1318,6 +1324,7 @@ MonoBehaviour:
   m_FollowTarget: {fileID: 91168825}
   m_HorizontalRotationSpeed: 0.3
   m_VerticalRotationSpeed: 0.12
+  m_CinemachineCamera: {fileID: 1801572040}
   m_BottomClamp: -20
   m_TopClamp: 35
 --- !u!114 &496888505

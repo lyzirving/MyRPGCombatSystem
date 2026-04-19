@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,6 +20,7 @@ public class PlayerActionController : MonoBehaviour
     [SerializeField] private Transform m_FollowTarget;
     [SerializeField] private float m_HorizontalRotationSpeed = 0.3f;
     [SerializeField] private float m_VerticalRotationSpeed = 0.12f;
+    [SerializeField] private CinemachineCamera m_CinemachineCamera;
     [Range(-45, 45)]
     // limit camera's vertical movement
     [SerializeField] private float m_BottomClamp = -20f;
@@ -27,20 +29,31 @@ public class PlayerActionController : MonoBehaviour
     [SerializeField] private float m_TopClamp = 35f;
     private float m_CinemachineTargetPitch = 0f;
     private float m_CinemachineTargetYaw = 0f;
+    private CinemachineThirdPersonFollow m_ThirdPersonFollow = null;
+    private Vector3 m_BaseShoulderOffset = Vector3.zero;
     // ------------------ Camera Control End ----------------------
 
     public Vector2 playerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
     public Vector2 cameraMovement => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
     public bool isCameraMoving => cameraMovement != Vector2.zero;
+    public Vector3 cameraFwd => Camera.main.transform.forward;
+    public Vector3 baseShoulderOffset => m_BaseShoulderOffset;
+    public Vector3 currentShoulderOffset => m_ThirdPersonFollow.ShoulderOffset;
 
     public bool shouldRun { get => m_ShouldPlayerRun; }
     public bool isMoving { get => playerMovement != Vector2.zero; }
-    public bool isJump { get => m_IsJumpPerformed; } 
+    public bool isJump { get => m_IsJumpPerformed; }
     public bool isRoll { get => m_IsRollPerformed; }
     public bool isLightAttack { get => m_IsLightAttackPerformed; }
     public bool holdDefence => m_IsDefenceHold;
 
     #region State Methods
+    private void Awake()
+    {
+        m_ThirdPersonFollow = m_CinemachineCamera.GetComponent<CinemachineThirdPersonFollow>();
+        m_BaseShoulderOffset = m_ThirdPersonFollow.ShoulderOffset;
+    }
+
     private void OnEnable()
     {
         InputManager.instance.playerActions.RunToggle.performed += OnSwitchRunToggle;
@@ -76,6 +89,24 @@ public class PlayerActionController : MonoBehaviour
     #endregion
 
     #region Main Methods
+    public void SetCameraShoulderOffset(Vector3 offset)
+    { 
+        m_ThirdPersonFollow.ShoulderOffset = offset;
+    }
+
+    public void SetCameraYawSmoothDamp(float target, ref float velocity, float dampTime, float deltaTime)
+    {
+        float old = m_CinemachineTargetYaw;
+        m_CinemachineTargetYaw = Mathf.SmoothDampAngle(m_CinemachineTargetYaw, target, ref velocity, dampTime, float.MaxValue, deltaTime);
+    }
+
+    public float CalcCameraYaw(Vector3 direction)
+    {
+        float angle = Vector3.Angle(Vector3.back, direction);
+        bool right = Vector3.Cross(Vector3.back, direction).y > 0;
+        return right ? angle : 360f - angle;
+    }
+
     public Vector3 GetInputDirection()
     {
         Vector3 move = Vector3.zero;

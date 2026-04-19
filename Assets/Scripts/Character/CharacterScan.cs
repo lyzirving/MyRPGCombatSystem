@@ -44,6 +44,11 @@ public class CharacterScan : MonoBehaviour
         m_Listeners.Clear();
     }
 
+    public bool IsDirectionInView(Vector3 direction)
+    { 
+        return m_ViewChecker.IsDirectionInView(direction);
+    }
+
     public void AddListener(ICharacterScanListener listener)
     {
         foreach (var item in m_Listeners)

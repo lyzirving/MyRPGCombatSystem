@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class StateMachine
 {
@@ -9,6 +10,18 @@ public class StateMachine
     private StateBase m_CurrentState;
 
     public StateBase currentState { get => m_CurrentState; }
+
+    public T GetCurrentState<T>() where T : StateBase
+    {
+        if (m_CurrentState == null) return null;
+        return m_CurrentState as T;
+    }
+
+    public bool IsCurrentState<T>() where T : StateBase
+    {
+        if (m_CurrentState == null) return false;
+        return m_CurrentState is T;
+    }
 
     public void Init(IStateMachineOwner owner)
     {

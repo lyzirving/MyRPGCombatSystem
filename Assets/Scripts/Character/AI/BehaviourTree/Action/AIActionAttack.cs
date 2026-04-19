@@ -21,8 +21,7 @@ public class AIActionAttack : AIBehaviourAction
     {
         if (Time.time - m_StartTime >= interval)
         {
-            bool isState = m_AIController.currentState is AIStateAttack;
-            if (!isState)
+            if (!m_AIController.IsCurrentState<AIStateAttack>())
             {
                 m_StartTime = Time.time;
                 m_AIController.ChangeState(ECharacterState.Attack);                

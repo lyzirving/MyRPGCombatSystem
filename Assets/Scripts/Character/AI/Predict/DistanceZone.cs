@@ -14,13 +14,28 @@ public class DistanceZone : MonoBehaviour
     private Transform m_Target = null;
 
     private DistanceZoneChangeDelegate m_ZoneChangeNotify;
-
-    public EDistanceZone zone => m_Zone;
+    
     public float distance => m_Distance;
     public Transform target
     {
         get => m_Target;
-        set => m_Target = value;
+        set
+        {
+            m_Target = value;
+            UpdateDistance();
+        }
+    }
+
+    public EDistanceZone zone
+    {
+        get => m_Zone;
+        set
+        {
+            EDistanceZone last = m_Zone;
+            m_Zone = value;
+            if (m_Zone != last)
+                m_ZoneChangeNotify?.Invoke(m_Zone, last, m_Distance);
+        }
     }
 
     private void Update()
@@ -30,17 +45,17 @@ public class DistanceZone : MonoBehaviour
 
     public void UpdateDistance()
     {
-        if (m_Settings == null) throw new Exception("DistanceZoneSettings hasn't been configured!");   
-        
-        if(m_Target == null) return;
+        if (m_Settings == null) throw new Exception("DistanceZoneSettings hasn't been configured!");
+
+        if (m_Target == null)
+        {
+            zone = EDistanceZone.None;
+            return;
+        }
 
         m_Distance = Vector3.Distance(transform.position, m_Target.position);
         var currentZone = m_Settings.GetZone(m_Distance);
-        if (m_Zone != currentZone)
-        {
-            m_ZoneChangeNotify?.Invoke(currentZone, m_Zone, m_Distance);
-            m_Zone = currentZone;
-        }      
+        zone = currentZone;   
     }
 
     public void AddZoneChangeNotify(DistanceZoneChangeDelegate method)

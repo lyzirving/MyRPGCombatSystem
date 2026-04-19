@@ -11,7 +11,7 @@ public class AIActionDefence : AIBehaviourAction
 
     public override void OnEnd()
     {
-        var state = m_AIController.currentState as AIStateDefence;
+        var state = m_AIController.GetCurrentState<AIStateDefence>();
         state?.ReleaseDefence();
     }
 

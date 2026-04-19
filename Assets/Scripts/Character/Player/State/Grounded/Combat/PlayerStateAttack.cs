@@ -67,7 +67,7 @@ public class PlayerStateAttack : PlayerStateCombat
     {
         m_Player.ResetHorizontalVelocity();
 
-        if (!m_Player.action.isMoving)
+        if (!m_Player.action.isMoving || m_Player.model.GetAnimationBool(AnimationConsts.locked))
             return;
 
         Vector3 targetDir = m_Player.GetTargetDirection();

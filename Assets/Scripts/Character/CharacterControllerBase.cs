@@ -22,6 +22,11 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public CharacterSensor sensor => m_Sensor;
     public CapsuleCollider capsule => m_CapsuleCollider;
     public AttackComponent attackComponent { get => m_AttackComponent; }
+    public Transform lockTarget
+    {
+        get => m_DistanceZone.target;
+        set => m_DistanceZone.target = value;
+    }
 
     public StateBase currentState => m_StateMachine.currentState;
     public float speedScaler => m_Config.baseSpeed * m_Attrs.speedModify;
@@ -40,6 +45,16 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #endregion
 
     #region Main Methods
+    public T GetCurrentState<T>() where T : StateBase
+    {
+        return m_StateMachine.GetCurrentState<T>();
+    }
+
+    public bool IsCurrentState<T>() where T : StateBase
+    {
+        return m_StateMachine.IsCurrentState<T>();
+    }    
+
     public ECharacterAction GetCurrentAction() { return m_StateMachine.currentState.GetCurrentAction(); }
 
     /// <summary>

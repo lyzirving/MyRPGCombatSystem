@@ -9,7 +9,7 @@ public class AIActionRoar : AIBehaviourAction
     public override void OnStart()
     {
         m_AIController.ChangeState(ECharacterState.Roar);
-        var state = m_AIController.currentState as AIStateRoar;
+        var state = m_AIController.GetCurrentState<AIStateRoar>();
         if (state != null)
         {
             state.target = player.Value;
@@ -22,6 +22,6 @@ public class AIActionRoar : AIBehaviourAction
 
     public override TaskStatus OnUpdate()
     {
-        return m_AIController.currentState is AIStateRoar ? TaskStatus.Running : TaskStatus.Success;
+        return m_AIController.IsCurrentState<AIStateRoar>()  ? TaskStatus.Running : TaskStatus.Success;
     }
 }
