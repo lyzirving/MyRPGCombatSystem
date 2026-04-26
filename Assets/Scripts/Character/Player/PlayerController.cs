@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class PlayerController : CharacterControllerBase, ICharacterScanListener
-{    
+{
     public AudioClip[] footStepAudioClips;
 
     public PlayerModel model { get => m_PlayerModel; }
@@ -81,8 +81,8 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
             case ECharacterState.Move:
                 m_StateMachine?.ChangeState<PlayerStateMove>(args);
                 break;
-            case ECharacterState.LockedOnMove:
-                m_StateMachine?.ChangeState<PlayerStateLockedOnMove>(args);
+            case ECharacterState.StrafeMove:
+                m_StateMachine?.ChangeState<PlayerStateStrafeMove>(args);
                 break;
             case ECharacterState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
@@ -95,6 +95,9 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
                 break;
             case ECharacterState.Defence:
                 m_StateMachine?.ChangeState<PlayerStateDefence>(args);
+                break;
+            case ECharacterState.Dodge:
+                m_StateMachine?.ChangeState<PlayerStateDodge>(args);
                 break;
             default:
                 break;
@@ -144,18 +147,21 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
     {
         lockTarget = null;
         m_PlayerModel.SetAnimationBool(AnimationConsts.locked, false);
-        if (IsCurrentState<PlayerStateLockedOnMove>())
+        if (IsCurrentState<PlayerStateStrafeMove>())
             ChangeState(ECharacterState.Move);
     }
 
     public void OnTargetFound(CharacterControllerBase target)
     {
         lockTarget = target.transform;
+        m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
     }
 
     public void OnTargetChange(CharacterControllerBase current, CharacterControllerBase last)
     {
         lockTarget = current.transform;
+        if(lockTarget != null)
+            m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
     }
     #endregion
 
@@ -163,7 +169,7 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
     {
         if (newZone == EDistanceZone.Mid && m_DistanceZone.target != null)
         {
-            ChangeState(ECharacterState.LockedOnMove);
+            ChangeState(ECharacterState.StrafeMove);
         }
         else if (oldZone == EDistanceZone.Mid && newZone > oldZone)
         {            

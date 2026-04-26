@@ -9,7 +9,7 @@ public class AIStateDefence : AIStateCombat
         base.Enter(exitState, args);
         m_SubState = EDefenceState.Enter;
         m_AIController.model.SetAnimationBool(AnimationConsts.defenceRelease, false);
-        m_AIController.model.StartAnimation(AnimationConsts.defence);
+        m_AIController.model.SetAnimationBool(AnimationConsts.defence, true);
     }
 
     public override void ReEnter(ChangeStateArgs args)
@@ -22,7 +22,7 @@ public class AIStateDefence : AIStateCombat
         if(m_SubState == EDefenceState.Exiting)
             return false;
 
-        m_AIController.model.StopAnimation(AnimationConsts.defence);
+        m_AIController.model.SetAnimationBool(AnimationConsts.defence, false);
         base.Exit(newState);
         return true;
     }

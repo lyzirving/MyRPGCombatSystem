@@ -28,13 +28,16 @@ public static class AnimationConsts
     public static int combat { get; private set; }
     public static int land { get; private set; }
     public static int airborne { get; private set; }
-    public static int hit { get; private set; }    
+    public static int hit { get; private set; }
+    public static int dodge { get; private set; }
+    public static int strafe { get; private set; }
     public static int defence { get; private set; }
     public static int defenceRelease { get; private set; }
     public static int roar { get; private set; }
 
     [Header("Ratio parameters in Animator")]
     public static int angular { get; private set; }
+    public static int verticalAngular { get; private set; }
     public static int speed { get; private set; }
     public static int jumpRatio { get; private set; }
     public static int feetTween { get; private set; }
@@ -54,12 +57,15 @@ public static class AnimationConsts
         land = Animator.StringToHash("isLanding");
         airborne = Animator.StringToHash("isAirborne");
         hit = Animator.StringToHash("isHit");
+        dodge = Animator.StringToHash("isDodge");
+        strafe = Animator.StringToHash("isStrafe");
         defence = Animator.StringToHash("isDefence");
         defenceRelease = Animator.StringToHash("defenceRelease");
         roar = Animator.StringToHash("roar");
 
         // Ratio parameters in Animator
         angular = Animator.StringToHash("angular");
+        verticalAngular = Animator.StringToHash("verticalAngular");
         speed = Animator.StringToHash("speed");
         jumpRatio = Animator.StringToHash("jumpRatio");
         feetTween = Animator.StringToHash("feetTween");

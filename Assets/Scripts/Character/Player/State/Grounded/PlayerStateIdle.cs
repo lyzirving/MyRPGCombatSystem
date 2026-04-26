@@ -8,7 +8,7 @@ public class PlayerStateIdle : PlayerStateLocomotion
 
         bool immediateChange = (exitState != null) &&
                                (exitState.GetType() != typeof(PlayerStateMove)) &&
-                               (exitState.GetType() != typeof(PlayerStateLockedOnMove));
+                               (exitState.GetType() != typeof(PlayerStateStrafeMove));
         if (immediateChange)
         {
             m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f);
@@ -18,8 +18,7 @@ public class PlayerStateIdle : PlayerStateLocomotion
     }
 
     public override void Update()
-    {
-        bool isComingIn = m_Player.model.animator.IsTransitToState("Locomotion", AnimationConsts.BASE_LAYER);        
+    {        
         if (m_Player.action.isLightAttack)
         {
             m_Player.ChangeState(ECharacterState.Attack);
@@ -38,9 +37,16 @@ public class PlayerStateIdle : PlayerStateLocomotion
             return;
         }
 
+        if(m_Player.lockTarget != null && m_Player.action.isDodge)
+        {
+            m_Player.MakeDodgeAction(m_Player.action.playerMovement);
+            m_Player.ChangeState(ECharacterState.Dodge);
+            return;
+        }
+
         if (m_Player.action.isMoving)
         {
-            m_Player.ChangeState(m_Player.lockTarget != null ? ECharacterState.LockedOnMove : ECharacterState.Move);
+            m_Player.ChangeState(m_Player.lockTarget != null ? ECharacterState.StrafeMove : ECharacterState.Move);
             return;
         }
 

@@ -4,14 +4,14 @@ public class PlayerStateAirborne : PlayerStateBase
 {
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
-        m_Player.model.StartAnimation(AnimationConsts.airborne);
+        m_Player.model.SetAnimationBool(AnimationConsts.airborne, true);
     }
 
     public override bool Exit(StateBase newState)
     {
         if (newState != null && !newState.GetType().IsSubclassOf(typeof(PlayerStateAirborne)))
         {
-            m_Player.model.StopAnimation(AnimationConsts.airborne);
+            m_Player.model.SetAnimationBool(AnimationConsts.airborne, false);
         }
         return true;
     }

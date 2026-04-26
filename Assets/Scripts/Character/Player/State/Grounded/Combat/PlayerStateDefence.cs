@@ -12,8 +12,8 @@ public class PlayerStateDefence : PlayerStateCombat
         base.Enter(exitState, args);
         MonoManager.Stop(m_RestoreAttackCoroutine);
         m_SubState = EDefenceState.Enter;
-        m_Player.model.StopAnimation(AnimationConsts.defenceRelease);
-        m_Player.model.StartAnimation(AnimationConsts.defence);
+        m_Player.model.SetAnimationBool(AnimationConsts.defenceRelease, false);
+        m_Player.model.SetAnimationBool(AnimationConsts.defence, true);
         if (args.playMode == ChangeStateArgs.EAnimationPlayMode.Manual)
         {
             m_Player.model.StartAnimation(AnimationConsts.defenceState, 0.05f, AnimationConsts.BASE_LAYER);
@@ -24,7 +24,7 @@ public class PlayerStateDefence : PlayerStateCombat
     public override bool Exit(StateBase newState)
     {
         AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
-        m_Player.model.StopAnimation(AnimationConsts.defence);
+        m_Player.model.SetAnimationBool(AnimationConsts.defence, false);
         base.Exit(newState);
         return true;
     }
@@ -42,7 +42,7 @@ public class PlayerStateDefence : PlayerStateCombat
         if (!m_Player.action.holdDefence && m_SubState != EDefenceState.End)
         {
             m_SubState = EDefenceState.End;
-            m_Player.model.StartAnimation(AnimationConsts.defenceRelease);            
+            m_Player.model.SetAnimationBool(AnimationConsts.defenceRelease, true);            
             return;
         }
         else if(m_Player.action.holdDefence && m_SubState == EDefenceState.Enter && m_Player.model.animator.IsTransitToState("DefenceHold", AnimationConsts.BASE_LAYER))
@@ -58,7 +58,7 @@ public class PlayerStateDefence : PlayerStateCombat
             return;
 
         Vector3 targetDir = m_Player.GetTargetDirection();
-        m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
+        m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
     }
 
     public override ECharacterAction GetCurrentAction()

@@ -71,7 +71,7 @@ public class PlayerStateAttack : PlayerStateCombat
             return;
 
         Vector3 targetDir = m_Player.GetTargetDirection();
-        m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
+        m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
     }
 
     public override ECharacterAction GetCurrentAction()

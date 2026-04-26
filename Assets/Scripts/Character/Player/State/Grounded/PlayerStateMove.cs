@@ -41,10 +41,10 @@ public class PlayerStateMove : PlayerStateLocomotion
         if (!m_Player.action.isMoving)
             return;
 
-        m_Player.attrs.speedModify = m_Player.action.shouldRun ? m_Player.config.runSpeedModify : m_Player.config.walkSpeedModify;
+        m_Player.attrs.speedModify = m_Player.action.shouldRun ? m_Player.config.move.runModify : m_Player.config.move.walkModify;
         Vector3 targetDir = m_Player.GetTargetDirection();
 
-        m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
+        m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
         MoveImmediately(targetDir * m_Player.speedScaler);
     }
 

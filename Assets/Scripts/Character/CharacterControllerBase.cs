@@ -15,6 +15,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CapsuleCollider m_CapsuleCollider;
     protected AttackComponent m_AttackComponent;
     protected DistanceZone m_DistanceZone;
+    protected ECharacterDodgeAction m_DodgeAction = ECharacterDodgeAction.None;
 
     public CharacterConfig config => m_Config;
     public CharacterAttrs attrs => m_Attrs;
@@ -29,10 +30,14 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     }
 
     public StateBase currentState => m_StateMachine.currentState;
-    public float speedScaler => m_Config.baseSpeed * m_Attrs.speedModify;
-    public float walkSpeedScaler => m_Config.baseSpeed * m_Config.walkSpeedModify;
-    public float runSpeedScaler => m_Config.baseSpeed * m_Config.runSpeedModify;
-
+    public float speedScaler => m_Config.move.baseSpeed * m_Attrs.speedModify;
+    public float walkSpeedScaler => m_Config.move.baseSpeed * m_Config.move.walkModify;
+    public float runSpeedScaler => m_Config.move.baseSpeed * m_Config.move.runModify;
+    public ECharacterDodgeAction dodgeAction
+    {
+        get => m_DodgeAction;
+        set => m_DodgeAction = value;
+    }
     public Vector3 verticalVelocity => new Vector3(0f, m_Rigidbody.linearVelocity.y, 0f);
     public Vector3 horizontalVelocity => new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);
     public bool isMovingUp => m_Rigidbody.linearVelocity.y > 0f;
@@ -114,6 +119,18 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public void ResetVerticalVelocity()
     {
         m_Rigidbody.linearVelocity = horizontalVelocity;
+    }
+
+    public void MakeDodgeAction(Vector2 input)
+    {
+        dodgeAction = ECharacterDodgeAction.Forward;
+
+        if (input.x > 0.4f)
+            dodgeAction = ECharacterDodgeAction.Right;
+        else if (input.x < -0.4f)
+            dodgeAction = ECharacterDodgeAction.Left;
+        else if(input.y < -0.4f)
+            dodgeAction = ECharacterDodgeAction.Backward;
     }
 
     protected void Init()

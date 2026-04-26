@@ -4,7 +4,7 @@ public enum ECharacterState : UInt16
 {
     Idle = 0,
     Move,
-    LockedOnMove,
+    StrafeMove,
     Jump,
     Roll,
     Falling,
@@ -12,22 +12,9 @@ public enum ECharacterState : UInt16
     Attack,
     Hurt,
     Defence,
+    Dodge,
     Roar,
     Num
-}
-
-public enum ECharacterAction : UInt16
-{ 
-    None = 0,
-    Idle,
-    Move,
-    Jump,
-    Chase,
-    Attack,
-    CounterAttack,
-    Defence,
-    Dodge,    
-    Count
 }
 
 /// <summary>
@@ -50,6 +37,13 @@ public enum EAttackState : UInt16
     ReadyCombo,
     End,
     Num
+}
+
+public enum EDodgeState : UInt16
+{
+    Start = 0,
+    Floating,
+    Stop
 }
 
 public enum EFootstep : UInt16

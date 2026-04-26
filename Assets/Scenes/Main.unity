@@ -236,15 +236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Config:
-    baseSpeed: 2.5
-    walkSpeedModify: 0.4
-    runSpeedModify: 1
-    rotateSpeed: 8
-    jumpHeight: 1.5
-    fallGravityRatio: 1.2
-    recenterStartAngle: 30
-    recenterStopAngle: 5
-    recenterDuration: 0.15
+    move: {fileID: 11400000, guid: 439c3201d8716a9418838e7abf23f1b7, type: 2}
+    jump: {fileID: 11400000, guid: a143e05e52e4e6747b15b81a848de10a, type: 2}
+    dodge: {fileID: 11400000, guid: c9e399d87cbf454429e2683d027da91d, type: 2}
 --- !u!114 &44516792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1247,15 +1241,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Config:
-    baseSpeed: 3
-    walkSpeedModify: 0.4
-    runSpeedModify: 1
-    rotateSpeed: 8
-    jumpHeight: 1.5
-    fallGravityRatio: 1.2
-    recenterStartAngle: 30
-    recenterStopAngle: 5
-    recenterDuration: 0.15
+    move: {fileID: 11400000, guid: 6597a19e675be3145a1c9455704d52e1, type: 2}
+    jump: {fileID: 11400000, guid: 6a2e13c04bcb0c448ab85e2734a510a1, type: 2}
+    dodge: {fileID: 11400000, guid: e779db99e938fbc42888f0efee072884, type: 2}
   footStepAudioClips:
   - {fileID: 8300000, guid: f3558fa2213d261489d41540785339f1, type: 3}
   - {fileID: 8300000, guid: 022ac6ca1e548f243b8007b7f905c374, type: 3}

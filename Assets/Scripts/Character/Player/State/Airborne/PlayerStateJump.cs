@@ -66,13 +66,13 @@ public class PlayerStateJump : PlayerStateAirborne
         if (!m_IsJumpPerform)
         {
             m_IsJumpPerform = true;
-            Jump(m_Player.config.jumpHeight);
+            Jump(m_Player.config.jump.normalHeight);
             return;
         }
 
         float velocity = m_Player.verticalVelocity.y;
         if (velocity < 0f)
-            m_Player.rigidBody.AddForce(Physics.gravity * m_Player.config.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
+            m_Player.rigidBody.AddForce(Physics.gravity * m_Player.config.jump.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
 
         UpdateAirborneMovement();
     }
@@ -97,7 +97,7 @@ public class PlayerStateJump : PlayerStateAirborne
 
         Vector3 targetDir = m_Player.GetTargetDirection();
 
-        m_Player.RotateToTargetDir(targetDir, m_Player.config.rotateSpeed);
+        m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
 
         float v = m_Player.sensor.averageVelocity.magnitude;
         Move(targetDir * v);

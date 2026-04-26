@@ -23,6 +23,6 @@ public class AIActionChase : AIBehaviourAction
 
     public override void OnFixedUpdate()
     {     
-        m_AIController.MoveToImmediately(target.Value, m_AIController.runSpeedScaler, m_AIController.config.rotateSpeed);
+        m_AIController.MoveToImmediately(target.Value, m_AIController.runSpeedScaler, m_AIController.config.move.rotateSpeed);
     }
 }

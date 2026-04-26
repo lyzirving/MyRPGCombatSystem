@@ -13,6 +13,7 @@ public class PlayerActionController : MonoBehaviour
     private bool m_IsRollPerformed = false;
     private bool m_IsLightAttackPerformed = false;
     private bool m_IsDefenceHold = false;
+    private bool m_IsDodgePerformed = false;
     // ------------------ Action Toggle End ------------------------
 
     // ------------------ Camera Control Start ----------------------
@@ -30,28 +31,33 @@ public class PlayerActionController : MonoBehaviour
     private float m_CinemachineTargetPitch = 0f;
     private float m_CinemachineTargetYaw = 0f;
     private CinemachineThirdPersonFollow m_ThirdPersonFollow = null;
-    private Vector3 m_BaseShoulderOffset = Vector3.zero;
+    private float m_BaseCameraSide = 1f;
     // ------------------ Camera Control End ----------------------
 
     public Vector2 playerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
     public Vector2 cameraMovement => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
     public bool isCameraMoving => cameraMovement != Vector2.zero;
     public Vector3 cameraFwd => Camera.main.transform.forward;
-    public Vector3 baseShoulderOffset => m_BaseShoulderOffset;
-    public Vector3 currentShoulderOffset => m_ThirdPersonFollow.ShoulderOffset;
+    public float baseCameraSide => m_BaseCameraSide;
+    public float currentCameraSide
+    {
+        get => m_ThirdPersonFollow.CameraSide;
+        set => m_ThirdPersonFollow.CameraSide = Mathf.Clamp(value, 0f, 1f);
+    }
 
-    public bool shouldRun { get => m_ShouldPlayerRun; }
-    public bool isMoving { get => playerMovement != Vector2.zero; }
-    public bool isJump { get => m_IsJumpPerformed; }
-    public bool isRoll { get => m_IsRollPerformed; }
-    public bool isLightAttack { get => m_IsLightAttackPerformed; }
+    public bool shouldRun => m_ShouldPlayerRun;
+    public bool isMoving => playerMovement != Vector2.zero;
+    public bool isJump => m_IsJumpPerformed;
+    public bool isRoll => m_IsRollPerformed;
+    public bool isLightAttack => m_IsLightAttackPerformed;
+    public bool isDodge => m_IsDodgePerformed;
     public bool holdDefence => m_IsDefenceHold;
 
     #region State Methods
     private void Awake()
     {
         m_ThirdPersonFollow = m_CinemachineCamera.GetComponent<CinemachineThirdPersonFollow>();
-        m_BaseShoulderOffset = m_ThirdPersonFollow.ShoulderOffset;
+        m_BaseCameraSide = m_ThirdPersonFollow.CameraSide;
     }
 
     private void OnEnable()
@@ -62,6 +68,7 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
         InputManager.instance.playerActions.HoldDefence.performed += OnDefenceHold;
         InputManager.instance.playerActions.HoldDefence.canceled += OnDefenceCancel;
+        InputManager.instance.playerActions.Dodge.performed += OnDodgePerformed;
     }
 
     private void OnDisable()
@@ -72,6 +79,7 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
         InputManager.instance.playerActions.HoldDefence.performed -= OnDefenceHold;
         InputManager.instance.playerActions.HoldDefence.canceled -= OnDefenceCancel;
+        InputManager.instance.playerActions.Dodge.performed -= OnDodgePerformed;
     }
 
     private void LateUpdate()
@@ -89,11 +97,6 @@ public class PlayerActionController : MonoBehaviour
     #endregion
 
     #region Main Methods
-    public void SetCameraShoulderOffset(Vector3 offset)
-    { 
-        m_ThirdPersonFollow.ShoulderOffset = offset;
-    }
-
     public void SetCameraYawSmoothDamp(float target, ref float velocity, float dampTime, float deltaTime)
     {
         float old = m_CinemachineTargetYaw;
@@ -163,6 +166,12 @@ public class PlayerActionController : MonoBehaviour
         m_IsDefenceHold = false;
     }
 
+    private void OnDodgePerformed(InputAction.CallbackContext context)
+    {
+        m_IsDodgePerformed = true;
+        MonoManager.Run(OnDodgeCancel());
+    }
+
     private IEnumerator OnJumpCancel()
     {
         yield return m_WaitForEndOfFrame;
@@ -179,6 +188,12 @@ public class PlayerActionController : MonoBehaviour
     {
         yield return m_WaitForEndOfFrame;
         m_IsLightAttackPerformed = false;
+    }
+
+    private IEnumerator OnDodgeCancel()
+    {
+        yield return m_WaitForEndOfFrame;
+        m_IsDodgePerformed = false;
     }
     #endregion
 }

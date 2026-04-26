@@ -4,20 +4,7 @@ using UnityEngine;
 [Serializable]
 public class CharacterConfig
 {
-    [Header("Base Movement")]
-    [Range(0f, 25f)] public float baseSpeed = 3f;
-    [Range(0f, 1f)] public float walkSpeedModify = 0.4f;
-    [Range(0.5f, 3f)] public float runSpeedModify = 1f;
-    [Range(1f, 20f)] public float rotateSpeed = 8f;
-
-    [Header("Jumpping Data")]
-    public float jumpHeight = 1.5f;
-
-    [Header("Falling Data")]
-    [Range(1f, 5f)] public float fallGravityRatio = 1.2f;
-
-    [Header("ReCentering")]
-    public float recenterStartAngle = 30f;
-    public float recenterStopAngle = 5f;
-    public float recenterDuration = 0.15f;
+    public CharacterMoveData move;
+    public CharacterJumpData jump;
+    public CharacterDodgeData dodge;    
 }

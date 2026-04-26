@@ -24,7 +24,7 @@ public class AIStateHurt : AIStateGround
         m_EnterTime = Time.time;
         m_StunningTime = 0f;
 
-        m_AIController.model.StartAnimation(AnimationConsts.hit);
+        m_AIController.model.SetAnimationBool(AnimationConsts.hit, true);
         m_AIController.model.SetAnimationFloat(AnimationConsts.hitTween, CalcHitTween(args.hitPos));
         m_AIController.model.SetAnimationFloat(AnimationConsts.hitStunning, HasHitStunning() ? 1.1f : 0f);
     }
@@ -44,7 +44,7 @@ public class AIStateHurt : AIStateGround
 
     public override void OnDetach()
     {
-        m_AIController.model.StopAnimation(AnimationConsts.hit);
+        m_AIController.model.SetAnimationBool(AnimationConsts.hit, false);
     }
 
     public override void Update()

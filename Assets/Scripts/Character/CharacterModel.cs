@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Globalization;
 using UnityEngine;
 
 public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRotation);
@@ -62,11 +61,6 @@ public class CharacterModel : MonoBehaviour
         m_HitStopCoroutine = MonoManager.Run(HitStopCoroutine(slowMotionScale));
     }
 
-    public void StartAnimation(int hash)
-    {
-        m_Animator?.SetBool(hash, true);
-    }
-
     public void TriggerAnimation(int hash)
     {
         m_Animator?.SetTrigger(hash);
@@ -115,11 +109,6 @@ public class CharacterModel : MonoBehaviour
     public int GetLayerIndex(string layerName)
     {
         return m_Animator?.GetLayerIndex(layerName) ?? -1;
-    }    
-
-    public void StopAnimation(int hash)
-    {
-        m_Animator?.SetBool(hash, false);
     }
 
     private IEnumerator HitStopCoroutine(float slowMotionScale)
