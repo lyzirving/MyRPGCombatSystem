@@ -10,28 +10,36 @@ public interface ICharacterScanListener
 
 public class CharacterScan : MonoBehaviour
 {
-    public float scanInterval = 1f;
+    public float scanInterval = 0.2f;
+    [SerializeField] private ViewChecker m_ViewChecker;
+
+    private PlayerActionController m_PlayerAction;
 
     private float m_LastScanTime;
     private CharacterControllerBase m_Target;
-    private float m_TargetDistance;
-
-    private ViewChecker m_ViewChecker;
+    private float m_TargetDistance;   
+    
     private List<ICharacterScanListener> m_Listeners = new List<ICharacterScanListener>();
 
     private void Awake()
     {
+        m_ViewChecker = new ViewChecker(this.transform);
+        m_ViewChecker.eyeHeightOffset = 1.4f;
+
         m_LastScanTime = Time.time;
         ResetTarget();
     }
 
     private void Start()
     {
-        m_ViewChecker = GetComponent<ViewChecker>();
+        m_PlayerAction = GetComponent<PlayerActionController>();
     }
 
     private void Update()
     {
+        m_ViewChecker.forward = m_PlayerAction.cameraFwd.NormalizeIgnoreY();
+
+        // TODO: Place Scan() in a worker thread, only sync result and character attribute change.
         if (Time.time - m_LastScanTime > scanInterval)
         {
             Scan();
@@ -42,6 +50,11 @@ public class CharacterScan : MonoBehaviour
     private void OnDestroy()
     {
         m_Listeners.Clear();
+    }
+
+    private void OnDrawGizmos()
+    {
+        m_ViewChecker?.DrawViewRange();
     }
 
     public bool IsDirectionInView(Vector3 direction)

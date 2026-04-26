@@ -18,11 +18,7 @@ public class CanSeeObject : Conditional
 
     public override void OnAwake()
     {
-        m_ViewChecker = GetComponent<ViewChecker>();
-        if (m_ViewChecker == null)
-        {
-            m_ViewChecker = this.gameObject.AddComponent<ViewChecker>();           
-        }
+        m_ViewChecker = new ViewChecker(this.transform);
         m_ViewChecker.fieldOfView = fieldOfView;
         m_ViewChecker.eyeHeightOffset = eyeHeightOffset;
         m_ViewChecker.sightDistance = sightDistance;
@@ -34,18 +30,15 @@ public class CanSeeObject : Conditional
     {
         if(target == null || target.Value == null) return TaskStatus.Failure;
 
-        if (m_ViewChecker.CanSeeObject(target.Value))
-        {
-            return TaskStatus.Success;
-        }
+        m_ViewChecker.forward = m_ViewChecker.forward.NormalizeIgnoreY();
+
+        if (m_ViewChecker.CanSeeObject(target.Value)) return TaskStatus.Success;
 
         return TaskStatus.Running;
     }
 
     public override void OnDrawGizmos()
     {
-        if(m_ViewChecker == null) return;
-
-        m_ViewChecker.DrawViewRange();
+        m_ViewChecker?.DrawViewRange();
     }
 }

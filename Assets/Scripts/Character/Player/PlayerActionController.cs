@@ -28,6 +28,7 @@ public class PlayerActionController : MonoBehaviour
     // limit camera's vertical movement
     [Range(0, 90)]
     [SerializeField] private float m_TopClamp = 35f;
+
     private float m_CinemachineTargetPitch = 0f;
     private float m_CinemachineTargetYaw = 0f;
     private CinemachineThirdPersonFollow m_ThirdPersonFollow = null;
@@ -90,7 +91,6 @@ public class PlayerActionController : MonoBehaviour
         var input = cameraMovement;
         m_CinemachineTargetPitch = UpdateRotation(m_CinemachineTargetPitch, input.y, m_BottomClamp, m_TopClamp, true, m_VerticalRotationSpeed);
         m_CinemachineTargetYaw = UpdateRotation(m_CinemachineTargetYaw, input.x, float.MinValue, float.MaxValue, false, m_HorizontalRotationSpeed);
-
         ApplyRotations(m_CinemachineTargetPitch, m_CinemachineTargetYaw);
     }
 

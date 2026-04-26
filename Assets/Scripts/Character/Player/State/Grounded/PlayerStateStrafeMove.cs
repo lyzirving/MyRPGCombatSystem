@@ -45,7 +45,7 @@ public class PlayerStateStrafeMove : PlayerStateMove
             return;
 
         m_Player.attrs.speedModify = m_Player.config.move.runModify;
-        m_Player.RotateToTargetDir(m_Player.action.cameraFwd, m_Player.config.move.rotateSpeed);        
+        m_Player.RotateToTargetDir(m_Player.action.cameraFwd.NormalizeIgnoreY(), m_Player.config.move.rotateSpeed);        
 
         Vector2 input = m_Player.action.playerMovement;
         Vector3 moveDir = m_Player.transform.right * input.x + m_Player.transform.forward * input.y;
