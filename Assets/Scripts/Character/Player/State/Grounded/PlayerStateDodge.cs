@@ -19,6 +19,7 @@ public class PlayerStateDodge : PlayerStateLocomotion
         if(m_State != EDodgeState.Stop)
             return false;
 
+        m_Player.ghostTrail.EndTrail();
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f);
         m_Player.model.SetAnimationFloat(AnimationConsts.verticalAngular, 0f);
         m_Player.model.SetAnimationBool(AnimationConsts.dodge, false);
@@ -35,6 +36,8 @@ public class PlayerStateDodge : PlayerStateLocomotion
         {            
             m_State = EDodgeState.Floating;
             SetAnimationValue(m_Player.dodgeAction);
+            m_Player.ghostTrail.BeginTrail();
+            m_Player.PlayOneShot(m_Player.config.dodge.audio);
         }
         else if (m_State == EDodgeState.Stop)
         {
@@ -73,20 +76,27 @@ public class PlayerStateDodge : PlayerStateLocomotion
         {
             case ECharacterDodgeAction.Forward:
                 deltaPosition *= m_Player.config.dodge.forwardScale;
+                deltaPosition = Vector3.Dot(m_Player.transform.forward, deltaPosition) * m_Player.transform.forward;
+                m_Player.transform.Translate(deltaPosition, Space.World);
                 break;
             case ECharacterDodgeAction.Backward:
                 deltaPosition *= m_Player.config.dodge.backwardScale;
+                deltaPosition = Vector3.Dot(-m_Player.transform.forward, deltaPosition) * -m_Player.transform.forward;
+                m_Player.transform.Translate(deltaPosition, Space.World);
                 break;
             case ECharacterDodgeAction.Left:
                 deltaPosition *= m_Player.config.dodge.leftScale;
+                deltaPosition = Vector3.Dot(-m_Player.transform.right, deltaPosition) * -m_Player.transform.right;
+                m_Player.transform.Translate(deltaPosition, Space.World);
                 break;
             case ECharacterDodgeAction.Right:
                 deltaPosition *= m_Player.config.dodge.rightScale;
+                deltaPosition = Vector3.Dot(m_Player.transform.right, deltaPosition) * m_Player.transform.right;
+                m_Player.transform.Translate(deltaPosition, Space.World);
                 break;
             default:
                 break;
         }
-        m_Player.transform.Translate(deltaPosition, Space.World);
     }
 
     private void SetAnimationValue(ECharacterDodgeAction action)

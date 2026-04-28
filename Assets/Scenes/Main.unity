@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 44516795}
   - component: {fileID: 44516793}
   - component: {fileID: 44516792}
+  - component: {fileID: 44516796}
   m_Layer: 10
   m_Name: AI
   m_TagString: Enemy
@@ -239,6 +240,7 @@ MonoBehaviour:
     move: {fileID: 11400000, guid: 439c3201d8716a9418838e7abf23f1b7, type: 2}
     jump: {fileID: 11400000, guid: a143e05e52e4e6747b15b81a848de10a, type: 2}
     dodge: {fileID: 11400000, guid: c9e399d87cbf454429e2683d027da91d, type: 2}
+    footstep: {fileID: 0}
 --- !u!114 &44516792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +339,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
+--- !u!114 &44516796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44516787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711debe29b79287499d87b401268bed3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolSize: 10
 --- !u!4 &62995458 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -1812909498023395591, guid: b11f706943f2bd544ad7005f6acc5c52, type: 3}
@@ -1204,6 +1219,7 @@ GameObject:
   - component: {fileID: 496888506}
   - component: {fileID: 496888508}
   - component: {fileID: 496888509}
+  - component: {fileID: 496888510}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1244,9 +1260,8 @@ MonoBehaviour:
     move: {fileID: 11400000, guid: 6597a19e675be3145a1c9455704d52e1, type: 2}
     jump: {fileID: 11400000, guid: 6a2e13c04bcb0c448ab85e2734a510a1, type: 2}
     dodge: {fileID: 11400000, guid: e779db99e938fbc42888f0efee072884, type: 2}
-  footStepAudioClips:
-  - {fileID: 8300000, guid: f3558fa2213d261489d41540785339f1, type: 3}
-  - {fileID: 8300000, guid: 022ac6ca1e548f243b8007b7f905c374, type: 3}
+    footstep: {fileID: 11400000, guid: aeffba83bf671fb4bab8bc684bc0db94, type: 2}
+  m_GhostTrail: {fileID: 0}
 --- !u!54 &496888502
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1315,7 +1330,6 @@ MonoBehaviour:
   m_CinemachineCamera: {fileID: 1801572040}
   m_BottomClamp: -20
   m_TopClamp: 35
-  m_YawLimit: 50
 --- !u!114 &496888505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1342,7 +1356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 711debe29b79287499d87b401268bed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 5
+  poolSize: 10
 --- !u!114 &496888508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1375,6 +1389,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
+--- !u!114 &496888510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ead8975cd7204c9489bcbe82f474ccf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 1896448778}
+  materials:
+  - {fileID: 2100000, guid: 57d41db1c9fa7bb4b8716b226e94eb57, type: 2}
+  lifeTime: 0.2
+  meshLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  timeInterval: 0.08
+  distInterval: 0.1
 --- !u!1 &507923619
 GameObject:
   m_ObjectHideFlags: 0
@@ -4082,6 +4117,11 @@ CanvasRenderer:
 --- !u!4 &1887627354 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -104578136787704052, guid: b11f706943f2bd544ad7005f6acc5c52, type: 3}
+  m_PrefabInstance: {fileID: 267541549}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1896448778 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 464141968781854204, guid: b11f706943f2bd544ad7005f6acc5c52, type: 3}
   m_PrefabInstance: {fileID: 267541549}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1899057020 stripped

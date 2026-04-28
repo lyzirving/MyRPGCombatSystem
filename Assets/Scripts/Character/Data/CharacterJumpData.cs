@@ -4,5 +4,7 @@ using UnityEngine;
 public class CharacterJumpData : ScriptableObject
 {
     [Range(0.2f, 10f)] public float normalHeight = 1.5f;
-    [Range(1f, 5f)]    public float fallGravityRatio = 1.2f;
+    [Range(1f, 5f)] public float fallGravityRatio = 1.2f;
+
+    public AudioClip audio;
 }

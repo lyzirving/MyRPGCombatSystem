@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AudioPool : MonoBehaviour
 {
-    public int poolSize = 5;
+    public int poolSize = 10;
 
-    private List<AudioSource> m_AudioPool = new List<AudioSource>();
+    private List<AudioSource> m_Pool = new List<AudioSource>();
     private int m_AvailableIndex = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,7 +24,7 @@ public class AudioPool : MonoBehaviour
             source.priority = 128; // medium priority
             source.outputAudioMixerGroup = null;
 
-            m_AudioPool.Add(source);
+            m_Pool.Add(source);
         }
     }
 
@@ -32,9 +32,9 @@ public class AudioPool : MonoBehaviour
     {
         if (clip == null) return;
 
-        if (m_AvailableIndex < m_AudioPool.Count)
+        if (m_AvailableIndex < m_Pool.Count)
         {
-            AudioSource source = m_AudioPool[m_AvailableIndex];
+            AudioSource source = m_Pool[m_AvailableIndex];
             source.PlayOneShot(clip);
             ++m_AvailableIndex;
             StartCoroutine(ReturnToPool(source, clip.length));

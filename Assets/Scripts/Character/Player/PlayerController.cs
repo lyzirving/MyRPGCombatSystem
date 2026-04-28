@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class PlayerController : CharacterControllerBase, ICharacterScanListener
 {
-    public AudioClip[] footStepAudioClips;
-
-    public PlayerModel model { get => m_PlayerModel; }
-    public PlayerActionController action { get => m_ActionController; }    
+    public PlayerModel model => m_PlayerModel;
+    public PlayerActionController action => m_ActionController;
+    public GhostTrail ghostTrail => m_GhostTrail;
 
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
-    private AudioPool m_AudioPool;
     private CharacterScan m_CharacterSanner;
+    private GhostTrail m_GhostTrail;
     // -------- Component in current node end --------
 
     // -------- Components in children start ------
@@ -29,8 +28,9 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
     {
         base.Init();
 
-        m_ActionController = GetComponent<PlayerActionController>();
-        m_AudioPool = GetComponent<AudioPool>();        
+        m_GhostTrail = GetComponent<GhostTrail>();
+
+        m_ActionController = GetComponent<PlayerActionController>();      
 
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
@@ -112,7 +112,7 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
 
     public override void OnAttackBegin()
     {
-        m_AudioPool?.PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);
+        PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);
         base.OnAttackBegin();
     }
 
@@ -125,10 +125,7 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
 
     public override void OnFootStep(EFootstep footStep)
     {
-        if (footStepAudioClips == null || footStepAudioClips.Length == 0)
-            return;
-
-        m_AudioPool?.PlayOneShot(footStepAudioClips[1]);
+        PlayOneShot(config.footstep.runningAudio);
     }
 
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
@@ -168,8 +165,7 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
     private void OnDistanzeZoneChange(EDistanceZone newZone, EDistanceZone oldZone, float distance)
     {
         if (newZone == EDistanceZone.Mid && m_DistanceZone.target != null)
-        {
-            ChangeState(ECharacterState.StrafeMove);
+        {            
         }
         else if (oldZone == EDistanceZone.Mid && newZone > oldZone)
         {            

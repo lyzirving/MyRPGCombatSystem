@@ -18,3 +18,4 @@ MonoBehaviour:
   backwardScale: 1
   forwardHeight: 0.3
   backwardHeight: 0.2
+  audio: {fileID: 8300000, guid: fbf43cda2d80f2a40ae986066d0a5157, type: 3}

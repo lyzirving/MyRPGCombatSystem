@@ -290,7 +290,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2453a2b9-22a4-4684-9c05-52619775289a"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": ""Hold(duration=0.15)"",
                     ""processors"": """",
                     ""groups"": """",

@@ -46,6 +46,13 @@ public enum EDodgeState : UInt16
     Stop
 }
 
+public enum EJumpState : UInt16
+{
+    Start = 0,
+    Airborne,
+    Landed
+}
+
 public enum EFootstep : UInt16
 {
     None = 0,

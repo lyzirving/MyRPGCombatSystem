@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(AudioPool))]
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
     [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();
@@ -15,6 +16,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CapsuleCollider m_CapsuleCollider;
     protected AttackComponent m_AttackComponent;
     protected DistanceZone m_DistanceZone;
+    protected AudioPool m_AudioPool;
     protected ECharacterDodgeAction m_DodgeAction = ECharacterDodgeAction.None;
 
     public CharacterConfig config => m_Config;
@@ -133,6 +135,11 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
             dodgeAction = ECharacterDodgeAction.Backward;
     }
 
+    public void PlayOneShot(AudioClip clip)
+    {
+        m_AudioPool?.PlayOneShot(clip);
+    }
+
     protected void Init()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
@@ -147,6 +154,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_AttackComponent?.Init(this);
 
         m_DistanceZone = GetComponent<DistanceZone>();
+
+        m_AudioPool = GetComponent<AudioPool>();
     }
     #endregion
 

@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efefd4d36bfa31046824dc4f6cc10772, type: 3}
-  m_Name: PlayerJumpData
+  m_Script: {fileID: 11500000, guid: 95c054d2bf955aa48bc587a3862e5b69, type: 3}
+  m_Name: PlayerFootstepData
   m_EditorClassIdentifier: 
-  normalHeight: 1.5
-  fallGravityRatio: 1.2
-  audio: {fileID: 8300000, guid: e68a83ddc325e4341bac2fe31f5fe5c3, type: 3}
+  runningAudio: {fileID: 8300000, guid: b7a597cedb850c740ab3db8f8b98c693, type: 3}

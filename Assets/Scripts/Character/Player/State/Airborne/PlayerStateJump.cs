@@ -17,11 +17,14 @@ public class PlayerStateJump : PlayerStateAirborne
     private float m_JumpStartRatio;
     private System.Random m_SysRandom = new System.Random();
 
+    private EJumpState m_State = EJumpState.Start;
+
     #region State Methods
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
 
+        m_State = EJumpState.Start;
         m_JumpFromMove = exitState.GetType() == typeof(PlayerStateMove);
         m_IsJumpPerform = false;
         m_FirstEnter = true;
@@ -41,6 +44,21 @@ public class PlayerStateJump : PlayerStateAirborne
         m_JumpStartRatio = (m_JumpFromMove && m_Player.action.shouldRun) ? POWER_JUMP_UP_RATIO : NORMAL_JUMP_UP_RATIO;        
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, m_JumpStartRatio);
         m_Player.model.SetAnimationFloat(AnimationConsts.feetTween, feetTween);
+    }
+
+    public override bool Exit(StateBase newState)
+    {
+        bool isFall = newState is PlayerStateFall;
+        if (m_State != EJumpState.Landed && !isFall)
+            return false;
+
+        if (isFall)
+        {
+            base.Exit(newState);
+            return true;
+        }
+        
+        return base.Exit(newState);
     }
 
     public override void Update()
@@ -67,6 +85,8 @@ public class PlayerStateJump : PlayerStateAirborne
         {
             m_IsJumpPerform = true;
             Jump(m_Player.config.jump.normalHeight);
+            m_State = EJumpState.Airborne;
+            m_Player.PlayOneShot(m_Player.config.jump.audio);
             return;
         }
 
@@ -80,6 +100,12 @@ public class PlayerStateJump : PlayerStateAirborne
     public override ECharacterAction GetCurrentAction()
     {
         return ECharacterAction.Jump;
+    }
+
+    public override void OnContactGround(Collider collider)
+    {
+        m_State = EJumpState.Landed;
+        base.OnContactGround(collider);
     }
     #endregion
 
@@ -97,7 +123,8 @@ public class PlayerStateJump : PlayerStateAirborne
 
         Vector3 targetDir = m_Player.GetTargetDirection();
 
-        m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
+        if(!m_Player.model.GetAnimationBool(AnimationConsts.locked))
+            m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
 
         float v = m_Player.sensor.averageVelocity.magnitude;
         Move(targetDir * v);

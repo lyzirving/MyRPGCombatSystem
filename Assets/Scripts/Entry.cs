@@ -13,6 +13,7 @@ public class Entry : MonoBehaviour
         AnimationEventReceiver.Init();
         VFXManager.Init();
         AIManager.Init();
+        GhostPool.Init();
     }
 
     public void ReloadScene()

@@ -52,8 +52,12 @@ public class DistanceZone : MonoBehaviour
             zone = EDistanceZone.None;
             return;
         }
+        Vector3 currentPos = transform.position;
+        Vector3 targetPos = m_Target.position;
+        currentPos.y = 0f;
+        targetPos.y = 0f;
 
-        m_Distance = Vector3.Distance(transform.position, m_Target.position);
+        m_Distance = Vector3.Distance(currentPos, targetPos);
         var currentZone = m_Settings.GetZone(m_Distance);
         zone = currentZone;   
     }

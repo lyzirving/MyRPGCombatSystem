@@ -10,4 +10,6 @@ public class CharacterDodgeData : ScriptableObject
 
     public float forwardHeight = 0.3f;
     public float backwardHeight = 0.2f;
+
+    public AudioClip audio;
 }

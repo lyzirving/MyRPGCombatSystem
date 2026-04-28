@@ -6,5 +6,6 @@ public class CharacterConfig
 {
     public CharacterMoveData move;
     public CharacterJumpData jump;
-    public CharacterDodgeData dodge;    
+    public CharacterDodgeData dodge;   
+    public CharacterFootstepData footstep;
 }
