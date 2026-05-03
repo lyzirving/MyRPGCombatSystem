@@ -10,7 +10,7 @@ public interface ICharacterScanListener
 
 public class CharacterScan : MonoBehaviour
 {
-    public float scanInterval = 0.2f;
+    public float scanInterval = 0.05f;
     [SerializeField] private ViewChecker m_ViewChecker;
 
     private PlayerActionController m_PlayerAction;
@@ -37,7 +37,7 @@ public class CharacterScan : MonoBehaviour
 
     private void Update()
     {
-        m_ViewChecker.forward = m_PlayerAction.cameraFwd.NormalizeIgnoreY();
+        m_ViewChecker.forward = this.transform.forward;
 
         // TODO: Place Scan() in a worker thread, only sync result and character attribute change.
         if (Time.time - m_LastScanTime > scanInterval)

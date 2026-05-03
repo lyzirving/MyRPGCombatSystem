@@ -1261,7 +1261,6 @@ MonoBehaviour:
     jump: {fileID: 11400000, guid: 6a2e13c04bcb0c448ab85e2734a510a1, type: 2}
     dodge: {fileID: 11400000, guid: e779db99e938fbc42888f0efee072884, type: 2}
     footstep: {fileID: 11400000, guid: aeffba83bf671fb4bab8bc684bc0db94, type: 2}
-  m_GhostTrail: {fileID: 0}
 --- !u!54 &496888502
 Rigidbody:
   m_ObjectHideFlags: 0

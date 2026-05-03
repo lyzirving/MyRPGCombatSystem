@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class ViewChecker
 {
-    public float fieldOfView = 90f;
+    public float fieldOfView = 135f;
     public float eyeHeightOffset = 1f;
     public float sightDistance = 7f;
     public Color gizmosColor = Color.blue;    

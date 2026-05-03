@@ -5,7 +5,7 @@ using UnityEngine;
 //TODO: Support multiple objects
 public class CanSeeObject : Conditional
 {
-    public float fieldOfView = 90f;
+    public float fieldOfView = 135f;
     public float eyeHeightOffset = 1f;
     public float sightDistance = 7f;
 
