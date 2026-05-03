@@ -16,7 +16,7 @@ public sealed class ScreenRadialBlurVolumeComponent : VolumeComponent, IPostProc
     // Set the name of the volume component in the list in the Volume Profile.
     public ScreenRadialBlurVolumeComponent()
     {
-        displayName = "ScreenRadialBlur";
+        displayName = "ScreenRadialBlurEffect";
     }    
 
     public bool IsActive()

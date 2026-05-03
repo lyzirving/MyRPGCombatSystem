@@ -13,7 +13,7 @@ public class ScreenRadialBlurFeature : ScriptableRendererFeature
     [System.Serializable]
     public class Settings
     {
-        public LayerMask layerMask;
+        public RenderPassEvent renderPassEvent;
         [Range(0f, 1f)] public float scale = 1f;
         [Range(0f, 1f)] public float intensity = 1f;
         [Range(0f, 1f)] public float pivotX = 0.5f;
@@ -58,7 +58,7 @@ public class ScreenRadialBlurFeature : ScriptableRendererFeature
         if (myVolume == null || !myVolume.IsActive())
             return;
 
-        m_Pass.renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+        m_Pass.renderPassEvent = settings.renderPassEvent;
 
         // Specify that the effect doesn't need scene depth, normals, motion vectors,
         // or the color texture as input.

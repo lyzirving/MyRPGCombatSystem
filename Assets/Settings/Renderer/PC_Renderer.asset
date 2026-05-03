@@ -67,14 +67,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 4294967295
+    renderPassEvent: 600
     scale: 1
     intensity: 0
     pivotX: 0.5
     pivotY: 0.5
-    denominator: 90
+    denominator: 100
 --- !u!114 &7833122117494664109
 MonoBehaviour:
   m_ObjectHideFlags: 0

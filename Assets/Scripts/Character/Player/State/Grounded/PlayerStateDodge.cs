@@ -1,9 +1,31 @@
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerStateDodge : PlayerStateLocomotion
 {
+    private float RADIAL_BLUR_DURATION = 0.2f;
+    private float RADIAL_BLUR_DEST_INTENSITY = 0.8f;
+
+    private ScreenRadialBlurVolumeComponent m_VolumeComp;
     private EDodgeState m_State = EDodgeState.Start;
     private bool m_IsJumpPerformed = false;
+    private Tween m_ScreenRadialBlurTween;
+    private float m_ScreenRadialBlurIntensity;
+
+    public override void Init(IStateMachineOwner owner)
+    {
+        base.Init(owner);
+        GameObject globalVolumeObj = GameObject.Find("Global Volume");
+        if (globalVolumeObj != null)
+        {
+            Volume volume = globalVolumeObj.GetComponent<Volume>();
+            if (volume != null && volume.profile != null)
+            {
+                volume.profile.TryGet(out m_VolumeComp);
+            }
+        }
+    }
 
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
@@ -12,6 +34,7 @@ public class PlayerStateDodge : PlayerStateLocomotion
         m_Player.model.RegisterRootMotionAction(HandleRootMotion);
         m_State = EDodgeState.Start;
         m_IsJumpPerformed = false;
+        m_ScreenRadialBlurIntensity = 0f;
     }
 
     public override bool Exit(StateBase newState)
@@ -24,6 +47,7 @@ public class PlayerStateDodge : PlayerStateLocomotion
         m_Player.model.SetAnimationFloat(AnimationConsts.verticalAngular, 0f);
         m_Player.model.SetAnimationBool(AnimationConsts.dodge, false);
         m_Player.model.RemoveRootMotionAction(HandleRootMotion);
+        OnRadialBlurEffectExit();       
         base.Exit(newState);
         return true;
     }
@@ -37,6 +61,7 @@ public class PlayerStateDodge : PlayerStateLocomotion
             m_State = EDodgeState.Floating;
             SetAnimationValue(m_Player.dodgeAction);
             m_Player.ghostTrail.BeginTrail();
+            OnRadialBlurEffectEnter();
             m_Player.PlayOneShot(m_Player.config.dodge.audio);
         }
         else if (m_State == EDodgeState.Stop)
@@ -122,5 +147,42 @@ public class PlayerStateDodge : PlayerStateLocomotion
             default:
                 break;
         }
+    }
+
+    private void OnRadialBlurEffectEnter()
+    {
+        if(m_VolumeComp == null) return;
+
+        m_ScreenRadialBlurTween?.Kill();
+
+        m_ScreenRadialBlurTween = DOTween.To(() => m_ScreenRadialBlurIntensity, (value) => m_ScreenRadialBlurIntensity = value, 
+            RADIAL_BLUR_DEST_INTENSITY, 
+            RADIAL_BLUR_DURATION)
+            .SetLoops(1)
+            .SetEase(Ease.InSine)
+            .OnUpdate(OnScreenRadialUpdate)
+            .OnComplete(OnScreenRadialForwardComplete);
+    }
+
+    private void OnRadialBlurEffectExit()
+    {
+        if (m_VolumeComp == null) return;
+
+        m_ScreenRadialBlurTween?.Kill();
+        m_VolumeComp.intensity.value = m_ScreenRadialBlurIntensity = 0f;
+    }
+
+    private void OnScreenRadialUpdate()
+    {        
+        m_VolumeComp.intensity.value = m_ScreenRadialBlurIntensity;
+    }
+
+    private void OnScreenRadialForwardComplete()
+    {
+        m_ScreenRadialBlurTween = DOTween.To(() => m_ScreenRadialBlurIntensity, (value) => m_ScreenRadialBlurIntensity = value,
+            0f, RADIAL_BLUR_DURATION)
+            .SetLoops(1)
+            .SetEase(Ease.InSine)
+            .OnUpdate(OnScreenRadialUpdate);
     }
 }
