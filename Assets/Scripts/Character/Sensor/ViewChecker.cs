@@ -10,21 +10,21 @@ public class ViewChecker
     public Color gizmosColor = Color.blue;    
 
     //TODO: use serializable dictionary
-    public string targetTag;
-
-    public Vector3 forward
-    {
-        get => m_Forward; 
-        set => m_Forward = value;
-    }
+    public string targetTag;    
 
     private Transform m_Host;
     private Vector3 m_Forward;
 
-    public ViewChecker(Transform host)
+    public Transform host
     {
-        m_Host = host;
-        m_Forward = host.forward;
+        get => m_Host;
+        set => m_Host = value;
+    }
+
+    public Vector3 forward
+    {
+        get => m_Forward;
+        set => m_Forward = value;
     }
 
     public bool CanSeeObject(Transform target)

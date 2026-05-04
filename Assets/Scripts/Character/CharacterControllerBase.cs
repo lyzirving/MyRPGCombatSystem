@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(CharacterSensor))]
 [RequireComponent(typeof(AudioPool))]
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
@@ -15,7 +16,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CharacterSensor m_Sensor;
     protected CapsuleCollider m_CapsuleCollider;
     protected AttackComponent m_AttackComponent;
-    protected DistanceZone m_DistanceZone;
     protected AudioPool m_AudioPool;
     protected ECharacterDodgeAction m_DodgeAction = ECharacterDodgeAction.None;
 
@@ -27,10 +27,9 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public AttackComponent attackComponent { get => m_AttackComponent; }
     public Transform lockTarget
     {
-        get => m_DistanceZone.target;
-        set => m_DistanceZone.target = value;
+        get => m_Sensor.distZone.target;
+        set => m_Sensor.distZone.target = value;
     }
-
     public StateBase currentState => m_StateMachine.currentState;
     public float speedScaler => m_Config.move.baseSpeed * m_Attrs.speedModify;
     public float walkSpeedScaler => m_Config.move.baseSpeed * m_Config.move.walkModify;
@@ -144,7 +143,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         m_CapsuleCollider = GetComponent<CapsuleCollider>();
-        m_Sensor = this.transform.AddComponent<CharacterSensor>();
+
+        m_Sensor = GetComponent<CharacterSensor>();
         m_Sensor.Init(this);
 
         m_StateMachine = new StateMachine();
@@ -152,8 +152,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
         m_AttackComponent = GetComponent<AttackComponent>();
         m_AttackComponent?.Init(this);
-
-        m_DistanceZone = GetComponent<DistanceZone>();
 
         m_AudioPool = GetComponent<AudioPool>();
     }
@@ -210,6 +208,22 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     {
         var state = m_StateMachine.currentState as CharacterStateBase;
         state?.OnExitGround();
-    }    
+    }
+
+    public virtual void OnTargetFind(Transform target)
+    { 
+    }
+
+    public virtual void OnTargetLost(Transform target)
+    { 
+    }
+
+    public virtual void OnTargetChange(Transform current, Transform last)
+    { 
+    }
+
+    public virtual void OnTargetDistZoneChange(EDistanceZone newZone, EDistanceZone oldZone, float distance)
+    { 
+    }
     #endregion
 }

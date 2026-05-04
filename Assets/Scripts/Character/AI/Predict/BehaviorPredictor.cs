@@ -39,8 +39,8 @@ public class BehaviorPredictor : MonoBehaviour
 
     private void Start()
     {
-        m_DistanceZone = GetComponent<DistanceZone>();
-        m_DistanceZone.target = m_TargetCharacter.transform;
+        m_DistanceZone = GetComponent<CharacterSensor>().distZone;
+        m_DistanceZone.target= m_TargetCharacter.transform;
 
         m_ExecuteTime = 0f;
 

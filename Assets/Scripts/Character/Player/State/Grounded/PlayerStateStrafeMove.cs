@@ -3,13 +3,13 @@ using UnityEngine;
 public class PlayerStateStrafeMove : PlayerStateMove
 {
     public override void Enter(StateBase exitState, ChangeStateArgs args)
-    {
+    {    
         base.Enter(exitState, args);
         m_Player.model.SetAnimationBool(AnimationConsts.strafe, true);   
     }
 
     public override bool Exit(StateBase newState)
-    {
+    {      
         m_Player.model.SetAnimationBool(AnimationConsts.strafe, false);
         return base.Exit(newState);
     }
@@ -29,7 +29,7 @@ public class PlayerStateStrafeMove : PlayerStateMove
             return;
         }
 
-        if (m_Player.action.isMoving && !m_Player.IsDirectionInView(m_Player.action.cameraFwd))
+        if (m_Player.action.isMoving && !m_Player.sensor.WithinView(m_Player.action.cameraFwd))
         {
             m_Player.lockTarget = null;
             m_Player.ChangeState(ECharacterState.Move);

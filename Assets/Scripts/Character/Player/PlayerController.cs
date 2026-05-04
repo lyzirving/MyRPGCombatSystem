@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : CharacterControllerBase, ICharacterScanListener
+public class PlayerController : CharacterControllerBase
 {
     public PlayerModel model => m_PlayerModel;
     public PlayerActionController action => m_ActionController;
@@ -8,7 +8,6 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
 
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
-    private CharacterScan m_CharacterSanner;
     private GhostTrail m_GhostTrail;
     // -------- Component in current node end --------
 
@@ -35,11 +34,6 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
         // Init components in children
         m_PlayerModel = GetComponentInChildren<PlayerModel>();
         m_PlayerModel.Init(this);
-
-        m_CharacterSanner = GetComponent<CharacterScan>();
-        m_CharacterSanner.AddListener(this);
-
-        m_DistanceZone.AddZoneChangeNotify(OnDistanzeZoneChange);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -47,19 +41,9 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
     {
         ChangeState(ECharacterState.Idle);
     }
-
-    private void OnDestroy()
-    {
-        m_DistanceZone.RemoveZoneChangeNotify(OnDistanzeZoneChange);
-        m_CharacterSanner.RemoveListener(this);
-    }
     #endregion
 
     #region Main Methods
-    public bool IsDirectionInView(Vector3 direction)
-    {
-        return m_CharacterSanner.IsDirectionInView(direction);
-    }
 
     public Vector3 GetTargetDirection()
     {
@@ -137,10 +121,14 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
             defenceState.OnHit(0.2f);
         }
     }
-    #endregion
 
-    #region ICharacterScanListener Methods
-    public void OnTargetLost(CharacterControllerBase target)
+    public override void OnTargetFind(Transform target)
+    {
+        lockTarget = target;
+        m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
+    }
+
+    public override void OnTargetLost(Transform target)
     {
         lockTarget = null;
         m_PlayerModel.SetAnimationBool(AnimationConsts.locked, false);
@@ -148,27 +136,11 @@ public class PlayerController : CharacterControllerBase, ICharacterScanListener
             ChangeState(ECharacterState.Move);
     }
 
-    public void OnTargetFound(CharacterControllerBase target)
+    public override void OnTargetChange(Transform current, Transform last)
     {
-        lockTarget = target.transform;
-        m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
-    }
-
-    public void OnTargetChange(CharacterControllerBase current, CharacterControllerBase last)
-    {
-        lockTarget = current.transform;
-        if(lockTarget != null)
+        lockTarget = current;
+        if (lockTarget != null)
             m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
     }
     #endregion
-
-    private void OnDistanzeZoneChange(EDistanceZone newZone, EDistanceZone oldZone, float distance)
-    {
-        if (newZone == EDistanceZone.Mid && m_DistanceZone.target != null)
-        {            
-        }
-        else if (oldZone == EDistanceZone.Mid && newZone > oldZone)
-        {            
-        }
-    }
 }

@@ -1,27 +1,44 @@
 using System;
 using UnityEngine;
 
-public delegate void DistanceZoneChangeDelegate(EDistanceZone newZone, EDistanceZone oldZone, float distance);
-
 [Serializable]
-public class DistanceZone : MonoBehaviour
+public class DistanceZone
 {
+    public delegate void DistanceChangeNotify(EDistanceZone newZone, EDistanceZone oldZone, float distance);
+
     [SerializeField] private DistanceZoneSettings m_Settings;
 
-    private EDistanceZone m_Zone = EDistanceZone.Far;    
+    private EDistanceZone m_Zone = EDistanceZone.Far;
     private float m_Distance = 0.0f;
 
+    private Transform m_Host = null;
     private Transform m_Target = null;
+    private DistanceChangeNotify m_ZoneChangeNotify;
 
-    private DistanceZoneChangeDelegate m_ZoneChangeNotify;
-    
     public float distance => m_Distance;
+
+    public DistanceChangeNotify onChange
+    {
+        get => m_ZoneChangeNotify;
+        set => m_ZoneChangeNotify = value;
+    }
+    
     public Transform target
     {
         get => m_Target;
         set
         {
             m_Target = value;
+            UpdateDistance();
+        }
+    }
+
+    public Transform host
+    {
+        get => m_Host;
+        set
+        {
+            m_Host = value;
             UpdateDistance();
         }
     }
@@ -38,37 +55,23 @@ public class DistanceZone : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        UpdateDistance();
-    }
-
     public void UpdateDistance()
     {
         if (m_Settings == null) throw new Exception("DistanceZoneSettings hasn't been configured!");
 
-        if (m_Target == null)
+        if (m_Target == null || m_Host == null)
         {
             zone = EDistanceZone.None;
             return;
         }
-        Vector3 currentPos = transform.position;
+
+        Vector3 currentPos = m_Host.position;
         Vector3 targetPos = m_Target.position;
         currentPos.y = 0f;
         targetPos.y = 0f;
 
         m_Distance = Vector3.Distance(currentPos, targetPos);
         var currentZone = m_Settings.GetZone(m_Distance);
-        zone = currentZone;   
-    }
-
-    public void AddZoneChangeNotify(DistanceZoneChangeDelegate method)
-    {
-        m_ZoneChangeNotify += method;
-    }
-
-    public void RemoveZoneChangeNotify(DistanceZoneChangeDelegate method)
-    {
-        m_ZoneChangeNotify -= method;
+        zone = currentZone;
     }
 }
