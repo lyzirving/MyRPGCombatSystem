@@ -1,29 +1,16 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AIModel))]
 public class AIController : CharacterControllerBase
 {
-    // -------- Components in children start ------
-    private AIModel m_AIModel;
-    // -------- Components in children end --------
-
-    public AIModel model { get => m_AIModel; }
-
-    #region Override Virtual Methods
-    public override bool IsInAnimationTransition(int layer = 0)
-    {
-        return m_AIModel.animator.IsInTransition(layer);
-    }
-    #endregion
-
     #region State Methods
     private void Awake()
     {
         m_CharacterGUID = GUIDConsts.AIAnimation;
         base.Init();
 
-        // Init components in children
-        m_AIModel = GetComponentInChildren<AIModel>();
-        m_AIModel.Init(this);
+        m_Model = GetComponent<AIModel>();
+        m_Model.Init(this);
 
         AIManager.instance.Register(this);
     }
@@ -85,8 +72,6 @@ public class AIController : CharacterControllerBase
     #endregion
 
     #region ICharacterBehavior Methods
-    public override Transform modelTransform { get => m_AIModel.transform; }
-
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
         AddAdditiveState(ECharacterState.Hurt, new ChangeStateArgs(source, skillData, hitPos));

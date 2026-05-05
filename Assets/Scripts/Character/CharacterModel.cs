@@ -18,7 +18,7 @@ public class CharacterModel : MonoBehaviour
     #region State Methods
     private void Awake()
     {
-        m_Animator = GetComponent<Animator>();
+        m_Animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()

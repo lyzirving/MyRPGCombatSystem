@@ -112,7 +112,7 @@ public class BehaviorPredictor : MonoBehaviour
             return ECharacterAction.None;
         }
 
-        if (m_TargetCharacter.IsInAnimationTransition() && m_LastDetectedAction != ECharacterAction.None)
+        if (m_TargetCharacter.IsAnimationInTransition() && m_LastDetectedAction != ECharacterAction.None)
             return m_LastDetectedAction;
 
         if (Time.time - m_LastDetectActionTime < m_DetectActionInterval && m_LastDetectedAction != ECharacterAction.None)

@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -10,17 +9,19 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
+    protected CharacterModel m_Model;
 
     protected int m_CharacterGUID = GUIDConsts.PlayerAnimation;
-    protected Rigidbody m_Rigidbody;    
-    protected CharacterSensor m_Sensor;
-    protected CapsuleCollider m_CapsuleCollider;
-    protected AttackComponent m_AttackComponent;
-    protected AudioPool m_AudioPool;
     protected ECharacterDodgeAction m_DodgeAction = ECharacterDodgeAction.None;
+    protected CharacterSensor m_Sensor;
+    protected AttackComponent m_AttackComponent;
+    protected Rigidbody m_Rigidbody;
+    protected CapsuleCollider m_CapsuleCollider;    
+    protected AudioPool m_AudioPool;
 
     public CharacterConfig config => m_Config;
     public CharacterAttrs attrs => m_Attrs;
+    public CharacterModel model => m_Model;
     public Rigidbody rigidBody => m_Rigidbody;
     public CharacterSensor sensor => m_Sensor;
     public CapsuleCollider capsule => m_CapsuleCollider;
@@ -30,7 +31,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         get => m_Sensor.distZone.target;
         set => m_Sensor.distZone.target = value;
     }
-    public StateBase currentState => m_StateMachine.currentState;
+    public StateBase currentState => m_StateMachine.currentState;    
     public float speedScaler => m_Config.move.baseSpeed * m_Attrs.speedModify;
     public float walkSpeedScaler => m_Config.move.baseSpeed * m_Config.move.walkModify;
     public float runSpeedScaler => m_Config.move.baseSpeed * m_Config.move.runModify;
@@ -40,15 +41,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         set => m_DodgeAction = value;
     }
     public Vector3 verticalVelocity => new Vector3(0f, m_Rigidbody.linearVelocity.y, 0f);
-    public Vector3 horizontalVelocity => new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);
-    public bool isMovingUp => m_Rigidbody.linearVelocity.y > 0f;
-    public bool isMoveHorizontally => horizontalVelocity.magnitude > Mathf.Epsilon;
-    public Vector3 cameraDirection => new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z).normalized;
-    public Quaternion cameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
-
-    #region Virtual Methods
-    public virtual bool IsInAnimationTransition(int layer = 0) { return false; }
-    #endregion
+    public Vector3 horizontalVelocity => new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);    
 
     #region Main Methods
     public T GetCurrentState<T>() where T : StateBase
@@ -139,6 +132,11 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_AudioPool?.PlayOneShot(clip);
     }
 
+    public bool IsAnimationInTransition(int layer = 0)
+    {
+        return m_Model?.animator.IsInTransition(layer) ?? false;
+    }
+
     protected void Init()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
@@ -179,7 +177,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #region ICharacterBehavior Methods
     public virtual bool isLightAttack => false;
 
-    public virtual Transform modelTransform => null;
+    public virtual Transform modelTransform => m_Model.transform;
+
     public int GUID => m_CharacterGUID;
 
     public virtual void OnAttackBegin() 

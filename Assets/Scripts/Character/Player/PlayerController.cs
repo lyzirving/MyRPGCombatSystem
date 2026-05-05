@@ -1,8 +1,8 @@
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerModel))]
 public class PlayerController : CharacterControllerBase
 {
-    public PlayerModel model => m_PlayerModel;
     public PlayerActionController action => m_ActionController;
     public GhostTrail ghostTrail => m_GhostTrail;
 
@@ -10,30 +10,17 @@ public class PlayerController : CharacterControllerBase
     private PlayerActionController m_ActionController;
     private GhostTrail m_GhostTrail;
     // -------- Component in current node end --------
-
-    // -------- Components in children start ------
-    private PlayerModel m_PlayerModel;
-    // -------- Components in children end --------
-
-    #region Override Virtual Methods
-    public override bool IsInAnimationTransition(int layer = 0)
-    {
-        return m_PlayerModel.animator.IsInTransition(layer);
-    }
-    #endregion
-
     #region State Methods
     private void Awake()
     {
         base.Init();
 
+        m_Model = GetComponent<PlayerModel>();
+        m_Model.Init(this);
+
         m_GhostTrail = GetComponent<GhostTrail>();
 
-        m_ActionController = GetComponent<PlayerActionController>();      
-
-        // Init components in children
-        m_PlayerModel = GetComponentInChildren<PlayerModel>();
-        m_PlayerModel.Init(this);
+        m_ActionController = GetComponent<PlayerActionController>();              
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,13 +31,12 @@ public class PlayerController : CharacterControllerBase
     #endregion
 
     #region Main Methods
-
     public Vector3 GetTargetDirection()
     {
         if (!m_ActionController.isMoving)
             return this.transform.forward;
 
-        return cameraRotation * m_ActionController.GetInputDirection();
+        return m_ActionController.cameraRotation * m_ActionController.GetInputDirection();
     }
     #endregion
 
@@ -92,8 +78,6 @@ public class PlayerController : CharacterControllerBase
     #region ICharacterBehavior Methods
     public override bool isLightAttack { get => m_ActionController.isLightAttack; }
 
-    public override Transform modelTransform { get => m_PlayerModel.transform; }
-
     public override void OnAttackBegin()
     {
         PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);
@@ -102,7 +86,7 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)
     {
-        m_PlayerModel.HitStop(m_AttackComponent.skill.skillHitData.hitStopTimeScale);
+        m_Model.HitStop(m_AttackComponent.skill.skillHitData.hitStopTimeScale);
         target?.OnHit(hitPos, this, m_AttackComponent.skill);
         VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnPrefab, hitPos, Quaternion.identity);
     }
@@ -125,13 +109,13 @@ public class PlayerController : CharacterControllerBase
     public override void OnTargetFind(Transform target)
     {
         lockTarget = target;
-        m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
+        m_Model.SetAnimationBool(AnimationConsts.locked, true);
     }
 
     public override void OnTargetLost(Transform target)
     {
         lockTarget = null;
-        m_PlayerModel.SetAnimationBool(AnimationConsts.locked, false);
+        m_Model.SetAnimationBool(AnimationConsts.locked, false);
         if (IsCurrentState<PlayerStateStrafeMove>())
             ChangeState(ECharacterState.Move);
     }
@@ -140,7 +124,7 @@ public class PlayerController : CharacterControllerBase
     {
         lockTarget = current;
         if (lockTarget != null)
-            m_PlayerModel.SetAnimationBool(AnimationConsts.locked, true);
+            m_Model.SetAnimationBool(AnimationConsts.locked, true);
     }
     #endregion
 }
