@@ -27,40 +27,13 @@ public class PlayerStateAttack : PlayerStateCombat
 
     public override void Update()
     {
-        if (!m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime))
-        {
-            Debug.LogError($"Fail to get animator state[{m_Player.attackComponent.skill.animatorState}]'s normalized time");
-            return;
-        }
-
-        // Break attack and turn into defence
-        if (m_Player.action.holdDefence)
-        {
-            m_Player.attackComponent.EndCombo();
-            m_Player.ChangeState(ECharacterState.Defence, new ChangeStateArgs(ChangeStateArgs.EAnimationPlayMode.Manual));
-            return;
-        }
-
-        if (m_Player.attackComponent.UpdateCombo())
-        {
-            m_Player.attackComponent.NextSkill();
-            m_Player.ChangeState(ECharacterState.Attack);
-            return;
-        }
-
+        m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime);
         if (m_NormalizedTime >= m_Player.attackComponent.skill.transitionNormalizedTime)
         {
             m_Player.attackComponent.EndCombo();
-            m_Player.ChangeState(ECharacterState.Idle);
+            Execute(ECharacterAction.Idle);
             return;
-        }
-
-        // Change to another state
-        if (m_Player.action.isJump)
-        {
-            m_Player.attackComponent.EndCombo();
-            m_Player.ChangeState(ECharacterState.Jump);                        
-        }              
+        }             
     }
 
     public override void FixedUpdate()
@@ -72,6 +45,46 @@ public class PlayerStateAttack : PlayerStateCombat
 
         Vector3 targetDir = m_Player.GetTargetDirection();
         m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
+    }
+
+    public override bool CanExecute(ECharacterAction action)
+    {
+        switch (action)
+        {
+            case ECharacterAction.Defence:
+            case ECharacterAction.LightAttack:
+            case ECharacterAction.Jump:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public override void Execute(ECharacterAction action)
+    {
+        switch (action)
+        {
+            case ECharacterAction.Idle:
+                m_Player.ChangeState(ECharacterState.Idle);
+                return;
+            case ECharacterAction.Defence:
+                m_Player.attackComponent.EndCombo();
+                m_Player.ChangeState(ECharacterState.Defence, new ChangeStateArgs(ChangeStateArgs.EAnimationPlayMode.Manual));
+                return;
+            case ECharacterAction.Jump:
+                m_Player.attackComponent.EndCombo();
+                m_Player.ChangeState(ECharacterState.Jump);
+                return;
+            case ECharacterAction.LightAttack:
+                if (m_Player.attackComponent.GoNextSkill())
+                {
+                    m_Player.attackComponent.NextSkill();
+                    m_Player.ChangeState(ECharacterState.Attack);
+                }
+                return;
+            default: 
+                break;
+        }
     }
 
     public override ECharacterAction GetCurrentAction()

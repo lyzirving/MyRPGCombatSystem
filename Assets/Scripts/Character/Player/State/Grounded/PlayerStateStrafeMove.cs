@@ -14,29 +14,28 @@ public class PlayerStateStrafeMove : PlayerStateMove
         return base.Exit(newState);
     }
 
-    public override void Update()
+    public override bool HandleInput()
     {
         if (m_Player.lockTarget == null)
         {
             m_Player.ChangeState(ECharacterState.Move);
-            return;
-        }
-
-        if (m_Player.action.isDodge)
-        {
-            m_Player.MakeDodgeAction(m_Player.action.playerMovement);
-            m_Player.ChangeState(ECharacterState.Dodge);
-            return;
+            return true;
         }
 
         if (m_Player.action.isMoving && !m_Player.sensor.WithinView(m_Player.action.cameraFwd))
         {
             m_Player.lockTarget = null;
             m_Player.ChangeState(ECharacterState.Move);
-            return;
+            return true;
         }
 
-        base.Update();
+        if (!m_Player.action.isMoving)
+        {
+            m_Player.ChangeState(ECharacterState.Idle);
+            return true;
+        }
+
+        return false;
     }
 
     public override void FixedUpdate()
@@ -52,6 +51,24 @@ public class PlayerStateStrafeMove : PlayerStateMove
         moveDir.y = 0;
         moveDir.Normalize();
         MoveImmediately(moveDir * m_Player.speedScaler);
+    }
+
+    public override bool CanExecute(ECharacterAction action)
+    {
+        return true;
+    }
+
+    public override void Execute(ECharacterAction action)
+    {
+        if (action == ECharacterAction.Dodge)
+        {
+            m_Player.MakeDodgeAction(m_Player.action.playerMovement);
+            m_Player.ChangeState(ECharacterState.Dodge);
+        }
+        else
+        {
+            base.Execute(action);
+        }
     }
 
     protected override void UpdateAnimationValue()

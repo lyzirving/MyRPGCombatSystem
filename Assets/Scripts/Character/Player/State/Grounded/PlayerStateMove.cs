@@ -22,12 +22,26 @@ public class PlayerStateMove : PlayerStateLocomotion
         m_CurrentTime = 0f;
     }
 
+    public override bool HandleInput()
+    {
+        if (m_Player.action.isMoving && m_Player.lockTarget != null && !(m_Player.currentState is PlayerStateStrafeMove))
+        {
+            m_Player.ChangeState(ECharacterState.StrafeMove);
+            return true;
+        }
+
+        if (!m_Player.action.isMoving)
+        {
+            m_Player.ChangeState(ECharacterState.Idle);
+            return true;
+        }
+
+        return false;
+    }
+
     public override void Update()
     {
         GetCurrentAnimationTimeInfo(out int currentLoop, out float currentTime);
-
-        if(ChangeToOtherState(currentTime))
-            return;
                 
         UpdateFootStep(currentLoop, currentTime, m_CurrentLoop, m_CurrentTime);
         UpdateAnimationValue();
@@ -46,6 +60,26 @@ public class PlayerStateMove : PlayerStateLocomotion
 
         m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
         MoveImmediately(targetDir * m_Player.speedScaler);
+    }
+
+    public override bool CanExecute(ECharacterAction action)
+    {
+        return true;
+    }
+
+    public override void Execute(ECharacterAction action)
+    {
+        switch (action)
+        {
+            case ECharacterAction.Jump:
+                m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(m_CurrentTime < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep));
+                return;
+            case ECharacterAction.LightAttack:
+                m_Player.ChangeState(ECharacterState.Attack);
+                return;
+            default:
+                break;
+        }
     }
 
     public override ECharacterAction GetCurrentAction()
@@ -98,34 +132,5 @@ public class PlayerStateMove : PlayerStateLocomotion
         {
             m_Player.OnFootStep(EFootstep.LeftFootstep);
         }
-    }    
-
-    protected bool ChangeToOtherState(float currentTime)
-    {
-        if (m_Player.action.isLightAttack)
-        {
-            m_Player.ChangeState(ECharacterState.Attack);
-            return true;
-        }
-
-        if (m_Player.action.isJump)
-        {
-            m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(currentTime < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep));
-            return true;
-        }
-
-        if (m_Player.action.isMoving && m_Player.lockTarget != null && !(m_Player.currentState is PlayerStateStrafeMove))
-        {
-            m_Player.ChangeState(ECharacterState.StrafeMove);
-            return true;
-        }
-
-        if (!m_Player.action.isMoving)
-        {
-            m_Player.ChangeState(ECharacterState.Idle);
-            return true;
-        }
-
-        return false;
-    }    
+    }  
 }

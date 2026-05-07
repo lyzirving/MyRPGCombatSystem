@@ -39,39 +39,21 @@ public class ComboController
         m_StartTime = -1f;
     }
 
-    /// <summary>
-    /// Update combo status
-    /// </summary>
-    /// <returns>true, if we should switch to next skill</returns>
-    public bool UpdateCombo()
+    public bool GoNextSkill()
     {
         if (!isComboStart || !hasNextSkill)
             return false;
 
         // Check whether time exceeds the input floating window
-        if(Time.time > (m_StartTime + nextSkill.inputWindowDuration))
+        if (Time.time > (m_StartTime + nextSkill.inputWindowDuration))
             return false;
 
-        if (IsSkillActionPeform(nextSkill.action))
-            return true;
-
-        return false;
+        return true;
     }
 
     public void NextSkill()
     { 
         skillIndex++;
         m_StartTime = -1f;
-    }
-
-    private bool IsSkillActionPeform(CombatDefine.EAttack action)
-    {
-        switch (action)
-        {
-            case CombatDefine.EAttack.LA:
-                return m_PlayerBehavior.isLightAttack;
-            default:
-                return false;
-        }
     }
 }

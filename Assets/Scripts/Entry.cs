@@ -15,11 +15,4 @@ public class Entry : MonoBehaviour
         AIManager.Init();
         GhostPool.Init();
     }
-
-    public void ReloadScene()
-    {
-        string active = SceneManager.GetActiveScene().name;
-        Debug.Log($"ReloadScene[{active}]");
-        SceneManager.LoadScene(active);
-    }
 }

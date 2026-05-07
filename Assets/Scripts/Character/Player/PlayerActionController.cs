@@ -1,21 +1,29 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerActionController : MonoBehaviour
 {
-    // ------------------ Action Toggle Start ----------------------
-    private WaitForEndOfFrame m_WaitForEndOfFrame = new WaitForEndOfFrame();
-    private bool m_ShouldPlayerRun = true;
-    private bool m_IsJumpPerformed = false;
-    private bool m_IsRollPerformed = false;
-    private bool m_IsLightAttackPerformed = false;
-    private bool m_IsDefenceHold = false;
-    private bool m_IsDodgePerformed = false;
-    // ------------------ Action Toggle End ------------------------
+    private ICharacterBehavior m_CharacterBehavior;
 
-    // ------------------ Camera Control Start ----------------------
+    #region Action Toggle
+    private bool m_ShouldPlayerRun = true;
+    private bool m_IsDefenceHold = false;
+
+    public Vector2 playerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
+    public bool shouldRun => m_ShouldPlayerRun;
+    public bool isMoving => playerMovement != Vector2.zero;
+    public bool isDefenceHolding => m_IsDefenceHold;
+    #endregion
+
+    #region Buffered Command
+    [Header("Buffer Settings")]
+    [SerializeField] private int maxCmdBufferSize = 5;
+    [SerializeField] private float bufferWindow = 0.3f;
+    private MaxHeap<BufferedCommand> m_BufferedCommand = new MaxHeap<BufferedCommand>();
+    #endregion
+
+    #region Camera Control
     [Header("Camera Control")]
     [SerializeField] private Transform m_FollowTarget;
     [SerializeField] private float m_HorizontalRotationSpeed = 0.3f;
@@ -29,43 +37,43 @@ public class PlayerActionController : MonoBehaviour
 
     private float m_CinemachineTargetPitch = 0f;
     private float m_CinemachineTargetYaw = 0f;
-    // ------------------ Camera Control End ----------------------
-    
+
     public Vector2 cameraMovement => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
     public Quaternion cameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
     public Vector3 cameraFwd => Camera.main.transform.forward;
     public bool isCameraMoving => cameraMovement != Vector2.zero;
-
-    public Vector2 playerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
-    public bool shouldRun => m_ShouldPlayerRun;
-    public bool isMoving => playerMovement != Vector2.zero;
-    public bool isJump => m_IsJumpPerformed;
-    public bool isRoll => m_IsRollPerformed;
-    public bool isLightAttack => m_IsLightAttackPerformed;
-    public bool isDodge => m_IsDodgePerformed;
-    public bool holdDefence => m_IsDefenceHold;
+    #endregion
 
     #region State Methods
     private void OnEnable()
     {
+        // --------------- State Related Start --------------
         InputManager.instance.playerActions.RunToggle.performed += OnSwitchRunToggle;
-        InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
-        InputManager.instance.playerActions.Roll.performed += OnRollPerformed;
-        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
         InputManager.instance.playerActions.HoldDefence.performed += OnDefenceHold;
         InputManager.instance.playerActions.HoldDefence.canceled += OnDefenceCancel;
+        // --------------- State Related End ----------------
+
+        // --------------- Event Related Start --------------
+        InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
+        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;        
         InputManager.instance.playerActions.Dodge.performed += OnDodgePerformed;
+        // --------------- Event Related End ----------------
     }
 
     private void OnDisable()
     {
         InputManager.instance.playerActions.RunToggle.performed -= OnSwitchRunToggle;
-        InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
-        InputManager.instance.playerActions.Roll.performed -= OnRollPerformed;
-        InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
         InputManager.instance.playerActions.HoldDefence.performed -= OnDefenceHold;
         InputManager.instance.playerActions.HoldDefence.canceled -= OnDefenceCancel;
+
+        InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
+        InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;        
         InputManager.instance.playerActions.Dodge.performed -= OnDodgePerformed;
+    }
+
+    private void Update()
+    {
+        CheckBufferedCommand();
     }
 
     private void LateUpdate()
@@ -82,6 +90,11 @@ public class PlayerActionController : MonoBehaviour
     #endregion
 
     #region Main Methods
+    public void Init(ICharacterBehavior characterBehavior)
+    {
+        m_CharacterBehavior = characterBehavior;
+    }
+
     public Vector3 GetInputDirection()
     {
         Vector3 move = Vector3.zero;
@@ -104,33 +117,55 @@ public class PlayerActionController : MonoBehaviour
     }
     #endregion
 
+    #region Buffered Command Methods
+    private void EnqueueBufferedCommand(ECharacterAction action)
+    {
+        while (m_BufferedCommand.count >= maxCmdBufferSize)
+        {
+            m_BufferedCommand.Dequeue();
+        }
+
+        m_BufferedCommand.Enqueue(new BufferedCommand(action, BufferedCommand.Priority(action), bufferWindow));
+    }
+
+    private void CheckBufferedCommand()
+    {
+        // Only one cmd a frame. Note do not use while, it may cause infinite loop
+        if (m_BufferedCommand.count > 0)
+        {
+            var cmd = m_BufferedCommand.Peek();
+            if (cmd.IsValid())
+            {
+                var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
+                if (state != null && state.CanExecute(cmd.action))
+                {
+                    state.Execute(cmd.action);
+                    m_BufferedCommand.Dequeue();
+                }
+            }
+            else
+            {
+                m_BufferedCommand.Dequeue();
+            }
+        }
+    }
+    #endregion
+
     #region Toggle Methods
     private void OnSwitchRunToggle(InputAction.CallbackContext context)
     {
         m_ShouldPlayerRun = !m_ShouldPlayerRun;
     }
 
-    private void OnJumpPerformed(InputAction.CallbackContext context)
-    {
-        m_IsJumpPerformed = true;
-        MonoManager.Run(OnJumpCancel());
-    }
-
-    private void OnRollPerformed(InputAction.CallbackContext context)
-    {
-        m_IsRollPerformed = true;
-        MonoManager.Run(OnRollCancel());
-    }
-
-    private void OnLightAttackPerformed(InputAction.CallbackContext context)
-    {
-        m_IsLightAttackPerformed = true;        
-        MonoManager.Run(OnAttackCancel());     
-    }
-
     private void OnDefenceHold(InputAction.CallbackContext context)
     {
         m_IsDefenceHold = true;
+
+        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
+        if (state?.CanExecute(ECharacterAction.Defence) ?? false)
+            state.Execute(ECharacterAction.Defence);
+        else
+            EnqueueBufferedCommand(ECharacterAction.Defence);
     }
 
     private void OnDefenceCancel(InputAction.CallbackContext context)
@@ -138,34 +173,31 @@ public class PlayerActionController : MonoBehaviour
         m_IsDefenceHold = false;
     }
 
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {       
+        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
+        if (state?.CanExecute(ECharacterAction.Jump) ?? false)
+            state.Execute(ECharacterAction.Jump);
+        else
+            EnqueueBufferedCommand(ECharacterAction.Jump);
+    }
+
+    private void OnLightAttackPerformed(InputAction.CallbackContext context)
+    {
+        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
+        if (state?.CanExecute(ECharacterAction.LightAttack) ?? false)
+            state.Execute(ECharacterAction.LightAttack);
+        else
+            EnqueueBufferedCommand(ECharacterAction.LightAttack);    
+    }    
+
     private void OnDodgePerformed(InputAction.CallbackContext context)
     {
-        m_IsDodgePerformed = true;
-        MonoManager.Run(OnDodgeCancel());
-    }
-
-    private IEnumerator OnJumpCancel()
-    {
-        yield return m_WaitForEndOfFrame;
-        m_IsJumpPerformed = false;
-    }
-
-    private IEnumerator OnRollCancel()
-    {
-        yield return m_WaitForEndOfFrame;
-        m_IsRollPerformed = false;
-    }
-
-    private IEnumerator OnAttackCancel()
-    {
-        yield return m_WaitForEndOfFrame;
-        m_IsLightAttackPerformed = false;
-    }
-
-    private IEnumerator OnDodgeCancel()
-    {
-        yield return m_WaitForEndOfFrame;
-        m_IsDodgePerformed = false;
+        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
+        if (state?.CanExecute(ECharacterAction.Dodge) ?? false)
+            state.Execute(ECharacterAction.Dodge);
+        else
+            EnqueueBufferedCommand(ECharacterAction.Dodge);
     }
     #endregion
 }

@@ -23,11 +23,13 @@ public abstract class StateBase
     /// <returns>true, succeed to exit one state, otherwise, false.</returns>
     public virtual bool Exit(StateBase newState) { return true; }
 
+    public virtual bool HandleInput() { return false;  }
+
     public virtual void Update() { }
 
     public virtual void LateUpdate() { }
 
-    public virtual void FixedUpdate() { }
+    public virtual void FixedUpdate() { }    
 
     public virtual ECharacterAction GetCurrentAction() { return ECharacterAction.None; }
 }

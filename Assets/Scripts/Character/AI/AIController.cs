@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(AIModel))]
 public class AIController : CharacterControllerBase
 {
     #region State Methods
@@ -9,7 +8,7 @@ public class AIController : CharacterControllerBase
         m_CharacterGUID = GUIDConsts.AIAnimation;
         base.Init();
 
-        m_Model = GetComponent<AIModel>();
+        m_Model = GetComponentInChildren<AIModel>();
         m_Model.Init(this);
 
         AIManager.instance.Register(this);

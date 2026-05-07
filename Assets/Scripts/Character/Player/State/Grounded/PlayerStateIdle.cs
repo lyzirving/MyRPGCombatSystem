@@ -17,39 +17,18 @@ public class PlayerStateIdle : PlayerStateLocomotion
         m_Player.attrs.speedModify = 0f;
     }
 
-    public override void Update()
-    {        
-        if (m_Player.action.isLightAttack)
-        {
-            m_Player.ChangeState(ECharacterState.Attack);
-            return;
-        }
-
-        if (m_Player.action.isJump)
-        {
-            m_Player.ChangeState(ECharacterState.Jump);
-            return;
-        }
-
-        if (m_Player.action.holdDefence)
-        {
-            m_Player.ChangeState(ECharacterState.Defence);
-            return;
-        }
-
-        if(m_Player.lockTarget != null && m_Player.action.isDodge)
-        {
-            m_Player.MakeDodgeAction(m_Player.action.playerMovement);
-            m_Player.ChangeState(ECharacterState.Dodge);
-            return;
-        }
-
+    public override bool HandleInput()
+    {
         if (m_Player.action.isMoving)
         {
             m_Player.ChangeState(m_Player.lockTarget != null ? ECharacterState.StrafeMove : ECharacterState.Move);
-            return;
+            return true;
         }
+        return false;
+    }
 
+    public override void Update()
+    {               
         m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f, 0.1f, Time.deltaTime);
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f, 0.1f, Time.deltaTime);
     }
@@ -62,5 +41,38 @@ public class PlayerStateIdle : PlayerStateLocomotion
     public override ECharacterAction GetCurrentAction()
     {
         return ECharacterAction.Idle;
+    }
+
+    public override bool CanExecute(ECharacterAction action)
+    {
+        switch (action)
+        {
+            case ECharacterAction.Dodge:
+                return m_Player.lockTarget != null;
+            default:
+                return true;
+        }
+    }
+
+    public override void Execute(ECharacterAction action)
+    {
+        switch (action)
+        {
+            case ECharacterAction.Defence:
+                m_Player.ChangeState(ECharacterState.Defence);
+                return;
+            case ECharacterAction.Jump:
+                m_Player.ChangeState(ECharacterState.Jump);
+                return;
+            case ECharacterAction.LightAttack:
+                m_Player.ChangeState(ECharacterState.Attack);
+                return;               
+            case ECharacterAction.Dodge:
+                m_Player.MakeDodgeAction(m_Player.action.playerMovement);
+                m_Player.ChangeState(ECharacterState.Dodge);
+                return;
+            default:
+                break;
+        }
     }
 }

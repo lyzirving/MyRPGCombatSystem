@@ -2,9 +2,9 @@ using UnityEngine;
 
 public interface ICharacterBehavior
 {
-    public bool isLightAttack { get; }
-    public Transform modelTransform { get; }
     public int GUID { get; }
+    public Transform modelTransform { get; }    
+    public StateMachine stateMachine { get; }
     public void OnAttackBegin();
     public void OnAttackEnd();
     public void OnAttackHit(ICharacterBehavior target, Vector3 hitPos);

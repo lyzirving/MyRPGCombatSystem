@@ -151,7 +151,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_AttackComponent = GetComponent<AttackComponent>();
         m_AttackComponent?.Init(this);
 
-        m_AudioPool = GetComponent<AudioPool>();
+        m_AudioPool = GetComponent<AudioPool>();        
     }
     #endregion
 
@@ -175,11 +175,9 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #endregion
 
     #region ICharacterBehavior Methods
-    public virtual bool isLightAttack => false;
-
-    public virtual Transform modelTransform => m_Model.transform;
-
     public int GUID => m_CharacterGUID;
+    public Transform modelTransform => m_Model.transform;
+    public StateMachine stateMachine => m_StateMachine;
 
     public virtual void OnAttackBegin() 
     {

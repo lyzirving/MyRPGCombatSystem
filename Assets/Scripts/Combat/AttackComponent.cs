@@ -103,9 +103,9 @@ public class AttackComponent : MonoBehaviour
         m_Controller.BeginCombo();
     }
 
-    public bool UpdateCombo()
+    public bool GoNextSkill()
     {
-        return m_Controller.UpdateCombo();
+        return m_Controller.GoNextSkill();
     }
 
     public void NextSkill()

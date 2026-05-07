@@ -8,6 +8,7 @@ public enum ECharacterAction : UInt16
     Jump,
     Chase,
     Attack,
+    LightAttack,    
     CounterAttack,
     Defence,
     Dodge,

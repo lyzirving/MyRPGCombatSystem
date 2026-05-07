@@ -52,6 +52,11 @@ public class PlayerStateDodge : PlayerStateLocomotion
         return true;
     }
 
+    public override bool HandleInput()
+    {
+        return false;
+    }
+
     public override void Update()
     {
         m_Player.model.animator.GetTargetAnimationTime("Dodge", AnimationConsts.BASE_LAYER, out float time);
@@ -90,6 +95,11 @@ public class PlayerStateDodge : PlayerStateLocomotion
         }
     }
 
+    public override bool CanExecute(ECharacterAction action)
+    {
+        return false;
+    }
+
     public override ECharacterAction GetCurrentAction()
     {
         return ECharacterAction.Dodge;
@@ -100,25 +110,35 @@ public class PlayerStateDodge : PlayerStateLocomotion
         switch (m_Player.dodgeAction)
         {
             case ECharacterDodgeAction.Forward:
-                deltaPosition *= m_Player.config.dodge.forwardScale;
-                deltaPosition = Vector3.Dot(m_Player.transform.forward, deltaPosition) * m_Player.transform.forward;
-                m_Player.transform.Translate(deltaPosition, Space.World);
-                break;
+                {
+                    var playerFwd = m_Player.transform.forward.NormalizeIgnoreY();
+                    deltaPosition *= m_Player.config.dodge.forwardScale;                    
+                    deltaPosition = Vector3.Dot(playerFwd, deltaPosition) * playerFwd;
+                    m_Player.transform.Translate(deltaPosition, Space.World);
+                    break;
+                }
             case ECharacterDodgeAction.Backward:
-                deltaPosition *= m_Player.config.dodge.backwardScale;
-                deltaPosition = Vector3.Dot(-m_Player.transform.forward, deltaPosition) * -m_Player.transform.forward;
-                m_Player.transform.Translate(deltaPosition, Space.World);
-                break;
+                {
+                    var playerFwd = m_Player.transform.forward.NormalizeIgnoreY();
+                    deltaPosition *= m_Player.config.dodge.backwardScale;
+                    deltaPosition = Vector3.Dot(-playerFwd, deltaPosition) * -playerFwd;
+                    m_Player.transform.Translate(deltaPosition, Space.World);
+                    break;
+                }
             case ECharacterDodgeAction.Left:
-                deltaPosition *= m_Player.config.dodge.leftScale;
-                deltaPosition = Vector3.Dot(-m_Player.transform.right, deltaPosition) * -m_Player.transform.right;
-                m_Player.transform.Translate(deltaPosition, Space.World);
-                break;
+                {
+                    deltaPosition *= m_Player.config.dodge.leftScale;
+                    deltaPosition = Vector3.Dot(-m_Player.transform.right, deltaPosition) * -m_Player.transform.right;
+                    m_Player.transform.Translate(deltaPosition, Space.World);
+                    break;
+                }
             case ECharacterDodgeAction.Right:
-                deltaPosition *= m_Player.config.dodge.rightScale;
-                deltaPosition = Vector3.Dot(m_Player.transform.right, deltaPosition) * m_Player.transform.right;
-                m_Player.transform.Translate(deltaPosition, Space.World);
-                break;
+                {
+                    deltaPosition *= m_Player.config.dodge.rightScale;
+                    deltaPosition = Vector3.Dot(m_Player.transform.right, deltaPosition) * m_Player.transform.right;
+                    m_Player.transform.Translate(deltaPosition, Space.World);
+                    break;
+                }
             default:
                 break;
         }

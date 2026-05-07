@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerModel))]
 public class PlayerController : CharacterControllerBase
 {
     public PlayerActionController action => m_ActionController;
@@ -15,12 +14,13 @@ public class PlayerController : CharacterControllerBase
     {
         base.Init();
 
-        m_Model = GetComponent<PlayerModel>();
+        m_Model = GetComponentInChildren<PlayerModel>();
         m_Model.Init(this);
 
         m_GhostTrail = GetComponent<GhostTrail>();
 
-        m_ActionController = GetComponent<PlayerActionController>();              
+        m_ActionController = GetComponent<PlayerActionController>();
+        m_ActionController.Init(this);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -76,8 +76,6 @@ public class PlayerController : CharacterControllerBase
     #endregion
 
     #region ICharacterBehavior Methods
-    public override bool isLightAttack { get => m_ActionController.isLightAttack; }
-
     public override void OnAttackBegin()
     {
         PlayOneShot(m_AttackComponent.skill.skillReleaseData.audioClip);

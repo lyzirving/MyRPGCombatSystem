@@ -12,9 +12,13 @@ public class CharacterStateBase : AdditiveState
     #endregion
 
     #region Virtual Methods
+    public virtual bool CanExecute(ECharacterAction action) { return true; }
+
+    public virtual void Execute(ECharacterAction action) { }
+
     public virtual void OnContactGround(Collider collider) { }
 
-    public virtual void OnExitGround() { }
+    public virtual void OnExitGround() { }    
     #endregion
 
     #region Main Methods

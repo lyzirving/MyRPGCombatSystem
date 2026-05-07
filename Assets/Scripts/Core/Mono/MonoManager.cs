@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MonoManager : SingletonMono<MonoManager>
 {
+    private Func<bool> m_HandleInputAction;
     private Action m_UpdateAction;
     private Action m_LateUpdateAction;
     private Action m_FixedUpdateAction;
 
+    private Func<bool> m_AdditiveHandleInputAction;
     private Action m_AdditiveUpdateAction;
     private Action m_AdditiveLateUpdateAction;
     private Action m_AdditiveFixedUpdateAction;
@@ -21,6 +23,16 @@ public class MonoManager : SingletonMono<MonoManager>
     {
         if (routine != null)
             instance.StopCoroutine(routine);
+    }
+
+    public void AddHandleInputListener(Func<bool> func)
+    {
+        m_HandleInputAction += func;
+    }
+
+    public void RmoveHandleInputListener(Func<bool> func)
+    {
+        m_HandleInputAction -= func;
     }
 
     public void AddUpdateListener(Action action)
@@ -51,6 +63,16 @@ public class MonoManager : SingletonMono<MonoManager>
     public void RemoveFixedUpdateListener(Action action)
     {
         m_FixedUpdateAction -= action;
+    }
+
+    public void AddAdditiveHandleInputListener(Func<bool> func)
+    {
+        m_AdditiveHandleInputAction += func;
+    }
+
+    public void RmoveAdditiveHandleInputListener(Func<bool> func)
+    {
+        m_AdditiveHandleInputAction -= func;
     }
 
     public void AddAdditiveUpdateListener(Action action)
@@ -85,8 +107,11 @@ public class MonoManager : SingletonMono<MonoManager>
 
     private void Update()
     {
-        m_UpdateAction?.Invoke();
-        m_AdditiveUpdateAction?.Invoke();
+        if(m_HandleInputAction == null || !m_HandleInputAction.Invoke())
+            m_UpdateAction?.Invoke();
+
+        if (m_AdditiveHandleInputAction == null || !m_AdditiveHandleInputAction.Invoke())
+            m_AdditiveUpdateAction?.Invoke();
     }
 
     private void LateUpdate()

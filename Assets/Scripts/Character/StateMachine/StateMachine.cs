@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class StateMachine
 {
@@ -91,6 +90,7 @@ public class StateMachine
         m_AdditiveState.Add(addtive);
         addtive.OnAttach(args);
 
+        MonoManager.instance.AddAdditiveHandleInputListener(addtive.HandleInput);
         MonoManager.instance.AddAdditiveUpdateListener(addtive.Update);
         MonoManager.instance.AddAdditiveLateUpdateListener(addtive.LateUpdate);
         MonoManager.instance.AddAdditiveFixedUpdateListener(addtive.FixedUpdate);
@@ -108,6 +108,7 @@ public class StateMachine
             if (m_AdditiveState[i] == addtive)
             {
                 m_AdditiveState.RemoveAt(i);
+                MonoManager.instance.RmoveAdditiveHandleInputListener(addtive.HandleInput);
                 MonoManager.instance.RemoveAdditiveUpdateListener(addtive.Update);
                 MonoManager.instance.RemoveAdditiveLateUpdateListener(addtive.LateUpdate);
                 MonoManager.instance.RemoveAdditiveFixedUpdateListener(addtive.FixedUpdate);
@@ -137,6 +138,7 @@ public class StateMachine
             //Debug.Log($"[{exitState.GetType()}] exit");
             if (exitState.Exit(newState))
             {
+                MonoManager.instance.RmoveHandleInputListener(exitState.HandleInput);
                 MonoManager.instance.RemoveUpdateListener(exitState.Update);
                 MonoManager.instance.RemoveLateUpdateListener(exitState.LateUpdate);
                 MonoManager.instance.RemoveFixedUpdateListener(exitState.FixedUpdate);
@@ -156,6 +158,7 @@ public class StateMachine
         {
             //Debug.Log($"[{newState.GetType()}] enter");
             newState.Enter(exitState, args);
+            MonoManager.instance.AddHandleInputListener(newState.HandleInput);
             MonoManager.instance.AddUpdateListener(newState.Update);
             MonoManager.instance.AddLateUpdateListener(newState.LateUpdate);
             MonoManager.instance.AddFixedUpdateListener(newState.FixedUpdate);
@@ -169,6 +172,7 @@ public class StateMachine
             var state = m_AdditiveState[i];
             state.OnDetach();
 
+            MonoManager.instance.RmoveAdditiveHandleInputListener(state.HandleInput);
             MonoManager.instance.RemoveAdditiveUpdateListener(state.Update);
             MonoManager.instance.RemoveAdditiveLateUpdateListener(state.LateUpdate);
             MonoManager.instance.RemoveAdditiveFixedUpdateListener(state.FixedUpdate);
