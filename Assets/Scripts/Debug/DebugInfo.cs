@@ -30,7 +30,7 @@ public class DebugInfo : MonoBehaviour
     private void DrawCharacterState()
     {
         m_SbCharacterState.Clear();
-        m_SbCharacterState.Append("Current character state: ")
+        m_SbCharacterState.Append("player state: ")
             .Append(playerControl.currentState.GetType().Name);
         m_TextCharacterState.text = m_SbCharacterState.ToString();
     }

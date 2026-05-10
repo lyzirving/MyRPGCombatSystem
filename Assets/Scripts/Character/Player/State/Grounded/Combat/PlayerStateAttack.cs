@@ -40,10 +40,15 @@ public class PlayerStateAttack : PlayerStateCombat
     {
         m_Player.ResetHorizontalVelocity();
 
-        if (!m_Player.action.isMoving || m_Player.model.GetAnimationBool(AnimationConsts.locked))
-            return;
+        Vector3 targetDir;
+        if (m_Player.lockTarget != null && m_Player.sensor.distZone.IsZone(EDistanceZone.CloseCombatRange))
+        {
+            targetDir = m_Player.lockTarget.transform.position - m_Player.transform.position;
+            targetDir = targetDir.NormalizeIgnoreY();
+        }
+        else
+            targetDir = m_Player.GetTargetDirection();
 
-        Vector3 targetDir = m_Player.GetTargetDirection();
         m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
     }
 

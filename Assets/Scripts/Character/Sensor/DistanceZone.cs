@@ -55,6 +55,8 @@ public class DistanceZone
         }
     }
 
+    public bool IsZone(EDistanceZone zone) => m_Zone == zone;
+
     public void UpdateDistance()
     {
         if (m_Settings == null) throw new Exception("DistanceZoneSettings hasn't been configured!");
