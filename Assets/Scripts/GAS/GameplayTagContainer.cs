@@ -23,6 +23,9 @@ public class GameplayTagContainer
 
     public bool HasTag(GameplayTag tag)
     {
+        if(tag == null || !tag.isValid)
+            return false;
+
         return m_Tags.ContainsKey(tag.name);
     }
 

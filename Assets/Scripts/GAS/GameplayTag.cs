@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System;
 
-[Serializable]
-public struct GameplayTag
+public class GameplayTag
 {
     public string name;
+
+    public bool isValid => !string.IsNullOrEmpty(name);
 
     public GameplayTag(string name)
     {

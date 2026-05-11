@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AbilitySystemComponent : MonoBehaviour
 {
     public List<GameplayAttribute> grantedAttributes = new List<GameplayAttribute>();    
     public List<GameplayAbility> grantedAbilities = new List<GameplayAbility>();
-    public List<GameplayEffect> permanentEffects = new List<GameplayEffect>();
     public GameplayTagContainer activeTags = new GameplayTagContainer();
 
     public event System.Action<GameplayAttribute> onAttributeChanged;
@@ -15,7 +15,7 @@ public class AbilitySystemComponent : MonoBehaviour
     public event System.Action<GameplayEffect> onEffectApplied;
     public event System.Action<GameplayEffect> onEffectRemoved;
     
-    private List<ActiveGameplayEffect> m_ActiveEffects = new List<ActiveGameplayEffect>();
+    private Dictionary<int, ActiveGameplayEffect> m_ActiveEffects = new Dictionary<int, ActiveGameplayEffect>();
     private Dictionary<int, GameplayAbility> m_ActiveAbilities = new Dictionary<int, GameplayAbility>();
 
     private GameplayAttributeSet m_AttributeSet = new GameplayAttributeSet();
@@ -23,7 +23,6 @@ public class AbilitySystemComponent : MonoBehaviour
     private void Awake()
     {
         InitializeAttributes();
-        ApplyPermanentEffects();
         GrantAbilities();
     }
 
@@ -38,17 +37,13 @@ public class AbilitySystemComponent : MonoBehaviour
     #region Main Methods
     public void Reset()
     {
-        foreach (var effect in m_ActiveEffects)
-        {
-            RemoveActiveEffect(effect);
-        }
+        RemoveAllActiveEffects();
 
         m_AttributeSet.ClearAllModifiers();
 
         activeTags.Clear();
 
         InitializeAttributes();
-        ApplyPermanentEffects();
     }
 
     private void InitializeAttributes()
@@ -56,14 +51,6 @@ public class AbilitySystemComponent : MonoBehaviour
         m_AttributeSet.Clear();
         foreach (var attr in grantedAttributes)
             m_AttributeSet.Add(attr);
-    }
-
-    private void ApplyPermanentEffects()
-    {
-        foreach (var effect in permanentEffects)
-        {
-            ApplyEffect(effect, effect.isInstant, this);
-        }
     }
 
     private void GrantAbilities()
@@ -90,7 +77,7 @@ public class AbilitySystemComponent : MonoBehaviour
         if (ability.Activate(this, target))
         {
             if(!ability.isInstant)
-                m_ActiveAbilities[ability.id] = ability;
+                m_ActiveAbilities[ability.GetInstanceID()] = ability;
             return true;
         }
         
@@ -104,7 +91,7 @@ public class AbilitySystemComponent : MonoBehaviour
 
         ability.EndAbility(true);
 
-        return m_ActiveAbilities.Remove(ability.id);
+        return m_ActiveAbilities.Remove(ability.GetInstanceID());
     }
 
     public void CancelAllAbilities()
@@ -122,7 +109,7 @@ public class AbilitySystemComponent : MonoBehaviour
 
         foreach (var item in toBeRemoved)
         {
-            m_ActiveAbilities.Remove(item.id);
+            m_ActiveAbilities.Remove(item.GetInstanceID());
         }
     }
 
@@ -136,6 +123,14 @@ public class AbilitySystemComponent : MonoBehaviour
     #endregion
 
     #region Effect Operations
+    public bool IsEffectActive(GameplayEffect effect)
+    {
+        if (effect == null) 
+            return false;
+
+        return m_ActiveEffects.ContainsKey(effect.GetInstanceID());
+    }
+
     public bool ApplyEffect(GameplayEffect effect, object source = null)
     {
         return ApplyEffect(effect, effect.isInstant, source);
@@ -171,7 +166,7 @@ public class AbilitySystemComponent : MonoBehaviour
             m_AttributeSet.ApplyEffect(effect, onAttributeChanged);
 
             var activeEffect = new ActiveGameplayEffect(effect, Time.time, source, this);
-            m_ActiveEffects.Add(activeEffect);
+            m_ActiveEffects.Add(effect.GetInstanceID(), activeEffect);
 
             if (effect.durationType == EffectDurationType.Duration)
             {
@@ -186,38 +181,28 @@ public class AbilitySystemComponent : MonoBehaviour
         return true;
     }    
 
-    public bool RemoveEffect(GameplayEffect effect)
-    {
-        List<ActiveGameplayEffect> effectsToRemove = new List<ActiveGameplayEffect>();
-        foreach (var activeEffect in m_ActiveEffects)
-        {
-            if(activeEffect.effect == effect)
-                effectsToRemove.Add(activeEffect);
-        }
-
-        foreach (var activeEffect in effectsToRemove)
-        {
-            RemoveActiveEffect(activeEffect);
-        }
-
-        return effectsToRemove.Count > 0;
-    }
-
     public bool RemoveAllEffectsFromSource(object source)
     {
         List<ActiveGameplayEffect> effectsToRemove = new List<ActiveGameplayEffect>();
         foreach (var activeEffect in m_ActiveEffects)
         {
-            if (activeEffect.source == source)
-                effectsToRemove.Add(activeEffect);
+            if (activeEffect.Value.source == source)
+                effectsToRemove.Add(activeEffect.Value);
         }
 
-        foreach (var activeEffect in effectsToRemove)
+        foreach (var itemToBeRemove in effectsToRemove)
         {
-            RemoveActiveEffect(activeEffect);
+            RemoveActiveEffect(itemToBeRemove);
         }
 
         return effectsToRemove.Count > 0;
+    }
+
+    private void RemoveAllActiveEffects()
+    {
+        var affectList = m_ActiveEffects.ToList();
+        foreach (var item in affectList)
+            RemoveActiveEffect(item.Value);
     }
 
     private void RemoveActiveEffect(ActiveGameplayEffect activeEffect)
@@ -230,19 +215,19 @@ public class AbilitySystemComponent : MonoBehaviour
         foreach (var tag in activeEffect.effect.grantedTags)
             RemoveTag(tag);
 
-        m_AttributeSet.RemoveEffectModifiers(activeEffect.effect);        
+        m_AttributeSet.RemoveEffectModifiers(activeEffect.effect);
 
-        if(m_ActiveEffects.Remove(activeEffect))
-            onEffectRemoved?.Invoke(activeEffect.effect);
+        m_ActiveEffects.Remove(activeEffect.effect.GetInstanceID());
+        onEffectRemoved?.Invoke(activeEffect.effect);
     }    
 
-    private IEnumerator RemoveEffectAfterDuration(ActiveGameplayEffect effect, float duration)
+    private IEnumerator RemoveEffectAfterDuration(ActiveGameplayEffect activeEffect, float duration)
     {
-        while (Time.time - effect.startTime < duration)
+        while (Time.time - activeEffect.startTime < duration)
             yield return null;
 
-        if (m_ActiveEffects.Contains(effect))
-            RemoveActiveEffect(effect);
+        if (m_ActiveEffects.TryGetValue(activeEffect.effect.GetInstanceID(), out var effect))
+            RemoveActiveEffect(activeEffect);
     }
     #endregion
 
