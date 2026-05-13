@@ -1,20 +1,22 @@
-using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
-public readonly struct GameplayTag2 : System.IEquatable<GameplayTag2>
+public struct GameplayTag2 : System.IEquatable<GameplayTag2>
 {
     public static readonly GameplayTag2 RootTag = new GameplayTag2("root");
     public static IEqualityComparer<GameplayTag2> EqualityComparer = new TagEqualityCompareImpl();
 
-    public string name { get; }
+    [SerializeField] private string m_Name;
+
+    public string name => m_Name;
     public int hash { get; }
     public bool isValid => !string.IsNullOrEmpty(name);
 
     public GameplayTag2(string tagName)
     {
-        name = tagName?.ToLowerInvariant();
-        hash = name?.GetHashCode() ?? 0;
+        m_Name = tagName?.ToLowerInvariant();
+        hash = m_Name?.GetHashCode() ?? 0;
     }
 
     public bool Equals(GameplayTag2 other) => hash == other.hash && name == other.name;

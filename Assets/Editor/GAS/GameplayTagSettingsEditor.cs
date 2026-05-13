@@ -12,15 +12,8 @@ public class GameplayTagSettingsEditor : Editor
     private void OnEnable()
     {
         m_Target = target as GameplayTagDatabase;
-        if (m_Target.allTags.Count > 0 && !m_Target.allTags[0].isValid)
-        {
-            Debug.LogWarning("GameplayTagSettingsEditor: clear invalid tags");
-            m_Target.allTags.Clear();
-        }
-        Debug.Log("test");
-        GameplayTagManager.instance.Clear();
-        GameplayTagManager.instance.InsertTagsIntoTree(m_Target.allTags);
 
+        CheckTargetTagList();
         BuildEditorTreeFromTarget();
     }    
 
@@ -39,17 +32,7 @@ public class GameplayTagSettingsEditor : Editor
 
             if (GUILayout.Button("Add Root Tag"))
             {
-                if (m_Target.allTags.Count == 0)
-                {
-                    m_Target.allTags.Add(GameplayTag2.RootTag);
-                }
-                else if (m_Target.allTags.Count > 0 && !m_Target.allTags[0].isValid)
-                {
-                    m_Target.allTags.Clear();
-                    m_Target.allTags.Add(GameplayTag2.RootTag);
-                }
-                GameplayTagManager.instance.Clear();
-                GameplayTagManager.instance.InsertTagsIntoTree(m_Target.allTags);
+                CheckTargetTagList();
                 BuildEditorTreeFromTarget();
             }
         }
@@ -131,12 +114,14 @@ public class GameplayTagSettingsEditor : Editor
 
     private void BuildEditorTreeFromTarget()
     {
-        if (m_Target.allTags.Count > 0)
+        if (m_Target.allTags.Count > 0 && m_Target.allTags[0].isValid)
         {
             var rootTag = m_Target.allTags[0];
             m_TagRootNode = new TagEditorNode();
             BuildEditorTree(m_TagRootNode, null, ref rootTag);
-        }        
+        }
+        else
+            Debug.Log($"GameplayTagSettingsEditor: tag count[{m_Target.allTags.Count}] is invalid or first tag is invalid");
     }
 
     private void BuildEditorTree(TagEditorNode node, TagEditorNode parent, ref GameplayTag2 tag)
@@ -180,6 +165,23 @@ public class GameplayTagSettingsEditor : Editor
         }
     }
 
+    private void CheckTargetTagList()
+    {
+        if (m_Target.allTags.Count == 0)
+        {
+            Debug.Log("GameplayTagSettingsEditor: add root tag");
+            m_Target.allTags.Add(GameplayTag2.RootTag);
+        }
+        else if (m_Target.allTags.Count > 0 && !m_Target.allTags[0].isValid)
+        {
+            Debug.Log("GameplayTagSettingsEditor: clear invalid tags and add root tag");
+            m_Target.allTags.Clear();
+            m_Target.allTags.Add(GameplayTag2.RootTag);
+        }
+        GameplayTagManager.instance.Clear();
+        GameplayTagManager.instance.InsertTagsIntoTree(m_Target.allTags);
+    }
+
     private class TagEditorNode
     {
         public string fullName;
@@ -210,7 +212,7 @@ public class GameplayTagSettingsEditor : Editor
             int lastDot = name.LastIndexOf('.');
             if (lastDot == -1)
                 shortName = name;
-            else if(lastDot < name.Length - 2)
+            else if(lastDot <= name.Length - 2)
                 shortName = name.Substring(lastDot + 1);
         }
 

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af2a42fd2c1cc840a3904eca40b2f26, type: 3}
   m_Name: NewGameplayTagDatabase
   m_EditorClassIdentifier: 
-  allTags: []
+  allTags:
+  - m_Name: root
