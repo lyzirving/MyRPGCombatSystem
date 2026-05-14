@@ -18,11 +18,10 @@ public class GameplayEffect : ScriptableObject
     public EffectDurationType durationType = EffectDurationType.Instant;
     public float duration = 0f;
        
-    [Header("Tags")]
-    public List<GameplayTag> grantedTags = new List<GameplayTag>();
-    public List<GameplayTag> removedTags = new List<GameplayTag>();
-    public List<GameplayTag> requiredTags = new List<GameplayTag>();
-    public List<GameplayTag> blockedTags = new List<GameplayTag>();
+    [HideInInspector] public List<GameplayTag> grantedTags = new List<GameplayTag>();
+    [HideInInspector] public List<GameplayTag> removedTags = new List<GameplayTag>();
+    [HideInInspector] public List<GameplayTag> requiredTags = new List<GameplayTag>();
+    [HideInInspector] public List<GameplayTag> blockedTags = new List<GameplayTag>();
 
     public bool isInstant => durationType == EffectDurationType.Instant;
 

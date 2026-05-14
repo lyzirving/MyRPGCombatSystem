@@ -6,29 +6,42 @@ using UnityEngine.AddressableAssets;
 /// </summary>
 public class GameplayTagManager : Singleton<GameplayTagManager>
 {
-    public const string path = "Settings/GameplayTag/Database";
-
-    private List<GameplayTag> m_AllTags= new List<GameplayTag>();
-
+    public const string path = "GAS/GameplayTagDatabase";
+    public IReadOnlyList<GameplayTag> tags => m_AllTags;
+    
+    private bool m_IsLoaded = false;
     // All tags' node relationship
     private Dictionary<GameplayTag, TagNode> m_TagNodeMap = new Dictionary<GameplayTag, TagNode>(GameplayTag.EqualityComparer);
     // Dictionary for quick search
     private Dictionary<string, GameplayTag> m_TagsByName = new Dictionary<string, GameplayTag>();
+    private List<GameplayTag> m_AllTags = new List<GameplayTag>();
 
     public override void OnInit()
     {
+        LoadDatabase();
+    }
+
+    public void LoadDatabase()
+    {
+        if(m_IsLoaded)
+            return;
+
         var handle = Addressables.LoadAssetAsync<GameplayTagDatabase>(path);
         var database = handle.WaitForCompletion();
         if (database == null)
             throw new System.Exception($"Fail to find GameplayTagDatabase at: {path}");
 
+        Clear();
         InsertTagsIntoTree(database.allTags);
 
         handle.Release();
+
+        m_IsLoaded = true;
     }
 
     public void Clear()
     {
+        m_IsLoaded = false;
         m_TagNodeMap.Clear();
         m_TagsByName.Clear();
         m_AllTags.Clear();

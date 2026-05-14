@@ -174,6 +174,8 @@ public class GameplayTagSettingsEditor : Editor
     {
         m_Target.allTags.Clear();
         ApplyNodeToTarget(m_TagRootNode, m_Target.allTags);
+
+        EditorUtility.SetDirty(target);
     }
 
     private void ApplyNodeToTarget(TagEditorNode node, List<GameplayTag> tagList)
