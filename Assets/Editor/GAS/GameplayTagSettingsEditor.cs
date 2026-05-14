@@ -6,6 +6,8 @@ using UnityEngine;
 [CustomEditor(typeof(GameplayTagDatabase))]
 public class GameplayTagSettingsEditor : Editor
 {
+    private GUIStyle m_RichBoxStyle = null;
+
     private TagEditorNode m_TagRootNode = null;
     private GameplayTagDatabase m_Target = null;
 
@@ -63,18 +65,9 @@ public class GameplayTagSettingsEditor : Editor
         if (GUILayout.Button(node.expand ? "▼" : "▶", GUILayout.Width(22)))
         {
             node.expand = !node.expand;
-        }
+        }        
 
-        if (node.isRoot) EditorGUI.BeginDisabledGroup(true);        
-
-        EditorGUI.BeginChangeCheck();
-        node.shortName = GUILayout.TextField(node.shortName);
-        if (EditorGUI.EndChangeCheck())
-        {
-            node.ApplyShortNameChange();
-            hierarchyChange = true;
-        }
-        if (node.isRoot) EditorGUI.EndDisabledGroup();        
+        DrawNodeShortName(node, ref hierarchyChange);               
 
         // Add button
         if (GUILayout.Button("+", GUILayout.Width(22)))
@@ -103,6 +96,38 @@ public class GameplayTagSettingsEditor : Editor
         }        
     }
 
+    private void DrawNodeShortName(TagEditorNode node, ref bool hierarchyChange)
+    {
+        CreateRichBoxStyle();
+
+        if (node.isRoot) EditorGUI.BeginDisabledGroup(true);
+
+        EditorGUI.BeginChangeCheck();
+        node.shortName = GUILayout.TextField(node.shortName);
+        if (EditorGUI.EndChangeCheck())
+        {
+            node.ApplyShortNameChange();
+            hierarchyChange = true;
+        }
+
+        var lastRect = GUILayoutUtility.GetLastRect();
+        bool showTooltip = lastRect.Contains(Event.current.mousePosition);
+        if (showTooltip && Event.current.type == EventType.Repaint)
+        {
+            string text = $"tag: <b>{node.fullName}</b>, depth: {node.depth}";
+            float paddingX = 10f;
+            float paddingY = 5f;
+            var textSize = m_RichBoxStyle.CalcSize(new GUIContent(text));
+            var finalSize = new Vector2(textSize.x + m_RichBoxStyle.border.horizontal + paddingX, 
+                textSize.y + m_RichBoxStyle.border.vertical + paddingY);
+            Vector2 mousePos = Event.current.mousePosition;
+            Rect tipRect = new Rect(mousePos.x + 15, mousePos.y - 20, finalSize.x, finalSize.y);                        
+            GUI.Box(tipRect, text, m_RichBoxStyle);
+        }        
+
+        if (node.isRoot) EditorGUI.EndDisabledGroup();
+    }
+
     private void InsertChildNode(TagEditorNode node)
     {
         var child = new TagEditorNode();
@@ -124,7 +149,7 @@ public class GameplayTagSettingsEditor : Editor
             Debug.Log($"GameplayTagSettingsEditor: tag count[{m_Target.allTags.Count}] is invalid or first tag is invalid");
     }
 
-    private void BuildEditorTree(TagEditorNode node, TagEditorNode parent, ref GameplayTag2 tag)
+    private void BuildEditorTree(TagEditorNode node, TagEditorNode parent, ref GameplayTag tag)
     {
         node.parent = parent;
         node.fullName = tag.name;
@@ -151,12 +176,12 @@ public class GameplayTagSettingsEditor : Editor
         ApplyNodeToTarget(m_TagRootNode, m_Target.allTags);
     }
 
-    private void ApplyNodeToTarget(TagEditorNode node, List<GameplayTag2> tagList)
+    private void ApplyNodeToTarget(TagEditorNode node, List<GameplayTag> tagList)
     {
         if (node == null || string.IsNullOrEmpty(node.fullName))
             return;
 
-        tagList.Add(new GameplayTag2(node.fullName));
+        tagList.Add(new GameplayTag(node.fullName));
 
         for (int i = 0; i < node.children.Count; ++i)
         {
@@ -170,16 +195,25 @@ public class GameplayTagSettingsEditor : Editor
         if (m_Target.allTags.Count == 0)
         {
             Debug.Log("GameplayTagSettingsEditor: add root tag");
-            m_Target.allTags.Add(GameplayTag2.RootTag);
+            m_Target.allTags.Add(GameplayTag.RootTag);
         }
         else if (m_Target.allTags.Count > 0 && !m_Target.allTags[0].isValid)
         {
             Debug.Log("GameplayTagSettingsEditor: clear invalid tags and add root tag");
             m_Target.allTags.Clear();
-            m_Target.allTags.Add(GameplayTag2.RootTag);
+            m_Target.allTags.Add(GameplayTag.RootTag);
         }
         GameplayTagManager.instance.Clear();
         GameplayTagManager.instance.InsertTagsIntoTree(m_Target.allTags);
+    }
+
+    private void CreateRichBoxStyle()
+    {
+        if (m_RichBoxStyle == null)
+        {
+            m_RichBoxStyle = new GUIStyle(GUI.skin.box);
+            m_RichBoxStyle.richText = true;
+        }
     }
 
     private class TagEditorNode

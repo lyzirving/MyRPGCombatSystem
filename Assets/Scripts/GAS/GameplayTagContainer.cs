@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class GameplayTagContainer
@@ -8,48 +8,45 @@ public class GameplayTagContainer
 
     public IReadOnlyDictionary<string, GameplayTag> tags => m_Tags;
 
-    public void AddTag(GameplayTag tag)
+    public void Add(GameplayTag tag)
     {
-        if (!HasTag(tag))
-        {
-            m_Tags.Add(tag.name, tag);
-        }
+        if (!tag.isValid)
+            return;
+
+        m_Tags[tag.name] = tag;
     }
 
-    public bool RemoveTag(GameplayTag tag)
+    public bool Remove(GameplayTag tag)
     {
         return m_Tags.Remove(tag.name);
     }
 
-    public bool HasTag(GameplayTag tag)
+    public bool Has(GameplayTag tag)
     {
-        if(tag == null || !tag.isValid)
-            return false;
-
         return m_Tags.ContainsKey(tag.name);
     }
 
-    public bool HasAllTags(IEnumerable<GameplayTag> tags)
+    public bool HasAll(IEnumerable<GameplayTag> tags)
     {
         if (tags == null) return false;
 
         var it = tags.GetEnumerator();
         while (it.MoveNext())
         {
-            if(!HasTag(it.Current))
+            if(!Has(it.Current))
                 return false;
         }
         return true;
     }
 
-    public bool HasAnyTag(IEnumerable<GameplayTag> tags)
+    public bool HasAny(IEnumerable<GameplayTag> tags)
     {
         if (tags == null) return false;
 
         var it = tags.GetEnumerator();
         while (it.MoveNext())
         {
-            if (HasTag(it.Current))
+            if (Has(it.Current))
                 return true;
         }
         return false;

@@ -234,31 +234,31 @@ public class AbilitySystemComponent : MonoBehaviour
     #region Tag Operations
     public bool HasTag(GameplayTag tag)
     {
-        return activeTags.HasTag(tag);
+        return activeTags.Has(tag);
     }
 
     public bool HasAllTags(IEnumerable<GameplayTag> tags)
     {
-        return activeTags.HasAllTags(tags);
+        return activeTags.HasAll(tags);
     }
 
     public bool HasAnyTag(IEnumerable<GameplayTag> tags)
     {
-        return activeTags.HasAnyTag(tags);
+        return activeTags.HasAny(tags);
     }
 
     public void AddTag(GameplayTag tag)
     {
         if (!HasTag(tag))
         {
-            activeTags.AddTag(tag);
+            activeTags.Add(tag);
             onTagAdded?.Invoke(tag);
         }
     }
 
     public bool RemoveTag(GameplayTag tag)
     {
-        bool removed = activeTags.RemoveTag(tag);
+        bool removed = activeTags.Remove(tag);
         if (removed)
         {
             onTagRemoved?.Invoke(tag);

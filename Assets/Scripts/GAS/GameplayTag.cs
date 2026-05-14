@@ -1,39 +1,57 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-public class GameplayTag
+[System.Serializable]
+public struct GameplayTag : System.IEquatable<GameplayTag>
 {
-    public string name;
+    public static readonly GameplayTag RootTag = new GameplayTag("root");
+    public static IEqualityComparer<GameplayTag> EqualityComparer = new TagEqualityCompareImpl();
 
+    [SerializeField] private string m_Name;
+
+    public string name => m_Name;
+    public int hash { get; }
     public bool isValid => !string.IsNullOrEmpty(name);
 
-    public GameplayTag(string name)
+    public GameplayTag(string tagName)
     {
-        this.name = name.ToLower();
+        m_Name = tagName?.ToLowerInvariant();
+        hash = m_Name?.GetHashCode() ?? 0;
     }
 
-    public bool Matches(GameplayTag other)
+    public bool Equals(GameplayTag other) => hash == other.hash && name == other.name;
+    public override bool Equals(object obj) => obj is GameplayTag other && Equals(other);
+    public override int GetHashCode() => hash;
+    public override string ToString() => name ?? "Invalid Tag";
+    public static bool operator ==(GameplayTag left, GameplayTag right) => left.Equals(right);
+    public static bool operator !=(GameplayTag left, GameplayTag right) => !left.Equals(right);
+
+
+    public bool MatchesTag(GameplayTag other)
     {
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(other.name))
-            return false;
-
-        return name == other.name;
-    }
-
-    public bool MatchesAny(IEnumerable<GameplayTag> tags)
-    {    
-        if (tags == null)
-            return false;
-
-        var it = tags.GetEnumerator();
-        while (it.MoveNext())
+        if (!isValid || !other.isValid) return false;
+        if (this == other) return true;
+        
+        var parents = GameplayTagManager.instance.GetParentTags(this);
+        foreach (var parent in parents)
         {
-            if(Matches(it.Current))
-                return true;
+            if (parent == other) return true;
         }
-        it.Dispose();
-
         return false;
     }
 
-    public override string ToString() => name;       
+    public bool MatchesAny(GameplayTagContainer container)
+    {
+        foreach (var kvp in container.tags)
+        {
+            if (MatchesTag(kvp.Value)) return true;
+        }
+        return false;
+    }
+
+    private class TagEqualityCompareImpl : IEqualityComparer<GameplayTag>
+    {
+        public bool Equals(GameplayTag x, GameplayTag y) => x.Equals(y);
+        public int GetHashCode(GameplayTag obj) => obj.hash;
+    }
 }

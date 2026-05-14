@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 /// <summary>
@@ -10,12 +8,12 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
 {
     public const string path = "Settings/GameplayTag/Database";
 
-    private List<GameplayTag2> m_AllTags= new List<GameplayTag2>();
+    private List<GameplayTag> m_AllTags= new List<GameplayTag>();
 
     // All tags' node relationship
-    private Dictionary<GameplayTag2, TagNode> m_TagNodeMap = new Dictionary<GameplayTag2, TagNode>(GameplayTag2.EqualityComparer);
+    private Dictionary<GameplayTag, TagNode> m_TagNodeMap = new Dictionary<GameplayTag, TagNode>(GameplayTag.EqualityComparer);
     // Dictionary for quick search
-    private Dictionary<string, GameplayTag2> m_TagsByName = new Dictionary<string, GameplayTag2>();
+    private Dictionary<string, GameplayTag> m_TagsByName = new Dictionary<string, GameplayTag>();
 
     public override void OnInit()
     {
@@ -36,7 +34,7 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         m_AllTags.Clear();
     }
 
-    public void InsertTagsIntoTree(List<GameplayTag2> gameplayTags)
+    public void InsertTagsIntoTree(List<GameplayTag> gameplayTags)
     {
         if (gameplayTags == null || gameplayTags.Count == 0)
             return;
@@ -53,7 +51,7 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         CalculateNodeParents();
     }
 
-    public void InsertTagIntoTree(GameplayTag2 gameplayTag)
+    public void InsertTagIntoTree(GameplayTag gameplayTag)
     {
         if (!gameplayTag.isValid)
             return;
@@ -62,55 +60,55 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         CalculateNodeParents();
     }
 
-    public bool HasTag(GameplayTag2 gameplayTag)
+    public bool HasTag(GameplayTag gameplayTag)
     {
         if (!gameplayTag.isValid)
             throw new System.Exception("input tag is invalid");
         return m_TagsByName.ContainsKey(gameplayTag.name);
     }
 
-    public GameplayTag2[] GetParentTags(GameplayTag2 gameplayTag)
+    public GameplayTag[] GetParentTags(GameplayTag gameplayTag)
     {
         if (m_TagNodeMap.TryGetValue(gameplayTag, out var node))
         {
             return node.parentTags.ToArray();
         }
-        return new GameplayTag2[0];
+        return new GameplayTag[0];
     }
 
-    public GameplayTag2 RequestDirectParent(GameplayTag2 gameplayTag)
+    public GameplayTag RequestDirectParent(GameplayTag gameplayTag)
     {
         if (m_TagNodeMap.TryGetValue(gameplayTag, out var node) && node.parent != null)
             return node.parent.tag;
-        return GameplayTag2.RootTag;
+        return GameplayTag.RootTag;
     }
 
-    public GameplayTag2[] RequestAllChildren(GameplayTag2 gameplayTag)
+    public GameplayTag[] RequestAllChildren(GameplayTag gameplayTag)
     {
         if (m_TagNodeMap.TryGetValue(gameplayTag, out var node))
         {
-            var children = new List<GameplayTag2>();
+            var children = new List<GameplayTag>();
             CollectChildren(node, children);
             return children.ToArray();
         }
-        return new GameplayTag2[0];
+        return new GameplayTag[0];
     }
 
-    public GameplayTag2[] RequestDirectChildren(GameplayTag2 gameplayTag)
+    public GameplayTag[] RequestDirectChildren(GameplayTag gameplayTag)
     {
         if (m_TagNodeMap.TryGetValue(gameplayTag, out var node))
         {
-            var children = new List<GameplayTag2>();
+            var children = new List<GameplayTag>();
             foreach (var child in node.children)
             {
                 children.Add(child.tag);
             }
             return children.ToArray();
         }
-        return new GameplayTag2[0];
+        return new GameplayTag[0];
     }
 
-    private void DoInsertTag(GameplayTag2 gameplayTag)
+    private void DoInsertTag(GameplayTag gameplayTag)
     {
         if (HasTag(gameplayTag))
             return;
@@ -121,7 +119,7 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         m_AllTags.Add(gameplayTag);
     }
 
-    private TagNode DoInsertTagNode(GameplayTag2 tag)
+    private TagNode DoInsertTagNode(GameplayTag tag)
     {
         string[] parts = tag.name.Split('.');
         TagNode currentNode = null;
@@ -130,7 +128,7 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         for (int i = 0; i < parts.Length; i++)
         {
             currentPath = (i == 0) ? parts[i] : currentPath + "." + parts[i];
-            var partTag = new GameplayTag2(currentPath);
+            var partTag = new GameplayTag(currentPath);
 
             if (!m_TagNodeMap.TryGetValue(partTag, out var existingNode))
             {
@@ -157,7 +155,7 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         }
     }
 
-    private void CollectChildren(TagNode node, List<GameplayTag2> list)
+    private void CollectChildren(TagNode node, List<GameplayTag> list)
     {
         foreach (var child in node.children)
         {
@@ -168,16 +166,16 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
 
     public class TagNode
     {
-        public GameplayTag2 tag { get; }
+        public GameplayTag tag { get; }
         public TagNode parent { get; set; }
         public List<TagNode> children { get; } = new List<TagNode>();
 
         /// <summary>
         /// parentTags[parentTags.Count - 1] is the root parent
         /// </summary>
-        public List<GameplayTag2> parentTags { get; private set; } = new List<GameplayTag2>();
+        public List<GameplayTag> parentTags { get; private set; } = new List<GameplayTag>();
 
-        public TagNode(GameplayTag2 gameplayTag)
+        public TagNode(GameplayTag gameplayTag)
         {
             tag = gameplayTag;
         }
