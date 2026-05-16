@@ -8,14 +8,21 @@ public struct GameplayTag : System.IEquatable<GameplayTag>
     public static IEqualityComparer<GameplayTag> EqualityComparer = new TagEqualityCompareImpl();
 
     [SerializeField] private string m_Name;
+    // symbol without root
+    [SerializeField] private string m_SimpleName;
+    [SerializeField] private string m_ShortName;
 
     public string name => m_Name;
+    public string simpleName => m_SimpleName;
+    public string shortName => m_ShortName;
     public int hash { get; }
     public bool isValid => !string.IsNullOrEmpty(name);
 
     public GameplayTag(string tagName)
     {
         m_Name = tagName?.ToLowerInvariant();
+        m_SimpleName = string.IsNullOrEmpty(m_Name) ? "" : m_Name.Substring(m_Name.IndexOf(".") + 1);
+        m_ShortName = string.IsNullOrEmpty(m_Name) ? "" : m_Name.Substring(m_Name.LastIndexOf(".") + 1);
         hash = m_Name?.GetHashCode() ?? 0;
     }
 

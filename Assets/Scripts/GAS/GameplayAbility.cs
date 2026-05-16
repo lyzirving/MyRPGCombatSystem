@@ -10,6 +10,7 @@ public enum AbilityActivationPolicy
     Passive 
 }
 
+[Serializable]
 public class AbilityCost
 {
     public EGameplayAttributeType attribute;
@@ -27,25 +28,24 @@ public class GameplayAbility : ScriptableObject
     [Header("Activation Strategy")]
     public AbilityActivationPolicy activationPolicy = AbilityActivationPolicy.OnInput;
     public float abilityDuration = 0f;
-    public bool canBeCanceled = true;
-
-    [Header("Cooldown Settings")]
-    public GameplayTag cooldownTag;
-    public float cooldownDuration = 0f;
-    public GameplayEffect cooldownEffect;
-    public event Action<float> onCooldownProgressChange;
-    public event Action onCooldownStart;
-    public event Action onCooldownEnd;
-
-    [Header("Tags")]
-    public List<GameplayTag> requiredTags = new List<GameplayTag>();
-    public List<GameplayTag> blockedTags = new List<GameplayTag>();
+    public bool canBeCanceled = true;    
 
     [Header("Cost Settings")]
     public List<AbilityCost> costs = new List<AbilityCost>();
 
     [Header("Effect List")]
     public List<GameplayEffect> effects = new List<GameplayEffect>();
+   
+    public event Action<float> onCooldownProgressChange;
+    public event Action onCooldownStart;
+    public event Action onCooldownEnd;
+
+    [HideInInspector] public GameplayTag cooldownTag;
+    [HideInInspector] public float cooldownDuration = 0f;
+    [HideInInspector] public GameplayEffect cooldownEffect;
+
+    [HideInInspector] public List<GameplayTag> requiredTags = new List<GameplayTag>();
+    [HideInInspector] public List<GameplayTag> blockedTags = new List<GameplayTag>();
 
     private Coroutine m_CooldownHandle;
     private float m_CooldownDuration;

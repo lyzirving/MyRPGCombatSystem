@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
+using UnityEngine;
 
 /// <summary>
 /// Global GameplayTag manager, which is responsible for tag registration, node building, and parent-child relationship building
@@ -18,10 +19,10 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
 
     public override void OnInit()
     {
-        LoadDatabase();
+        LoadTagDatabase();
     }
 
-    public void LoadDatabase()
+    public void LoadTagDatabase()
     {
         if(m_IsLoaded)
             return;
@@ -31,12 +32,29 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         if (database == null)
             throw new System.Exception($"Fail to find GameplayTagDatabase at: {path}");
 
-        Clear();
-        InsertTagsIntoTree(database.allTags);
+        PrepareTagNodeTree(database);
 
         handle.Release();
 
         m_IsLoaded = true;
+    }    
+
+    public void PrepareTagNodeTree(GameplayTagDatabase database)
+    {
+        if (database.allTags.Count == 0)
+        {
+            Debug.Log("GameplayTagManager: add root tag");
+            database.allTags.Add(GameplayTag.RootTag);
+        }
+        else if (database.allTags.Count > 0 && !database.allTags[0].isValid)
+        {
+            Debug.Log("GameplayTagManager: clear invalid tags and add root tag");
+            database.allTags.Clear();
+            database.allTags.Add(GameplayTag.RootTag);
+        }
+
+        Clear();
+        InsertTagsIntoTree(database.allTags);
     }
 
     public void Clear()
@@ -71,6 +89,14 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
 
         DoInsertTag(gameplayTag);
         CalculateNodeParents();
+    }
+
+    public GameplayTag GetTag(string name)
+    {
+        if(m_TagsByName.TryGetValue(name, out var tag))
+            return tag;
+        else
+            return GameplayTag.RootTag;
     }
 
     public bool HasTag(GameplayTag gameplayTag)
