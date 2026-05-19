@@ -1,28 +1,36 @@
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
-using UnityEngine;
+using System;
 
 /// <summary>
 /// Global GameplayTag manager, which is responsible for tag registration, node building, and parent-child relationship building
 /// </summary>
 public class GameplayTagManager : Singleton<GameplayTagManager>
 {
-    public const string path = "GAS/GameplayTagDatabase";
+    public const string path = "GAS/GlobalGameplayTagDatabase";
     public IReadOnlyList<GameplayTag> tags => m_AllTags;
     
     private bool m_IsLoaded = false;
-    // All tags' node relationship
-    private Dictionary<GameplayTag, TagNode> m_TagNodeMap = new Dictionary<GameplayTag, TagNode>(GameplayTag.EqualityComparer);
-    // Dictionary for quick search
-    private Dictionary<string, GameplayTag> m_TagsByName = new Dictionary<string, GameplayTag>();
     private List<GameplayTag> m_AllTags = new List<GameplayTag>();
 
+    // Index 0 is always for root tag.
+    private int m_CurrentIndex = 0;
+    private Dictionary<string, int> m_NameToIndex = new Dictionary<string, int>();
+    private Dictionary<int, string> m_IndexToName = new Dictionary<int, string>();
+    private Dictionary<int, int> m_IndexToParent = new Dictionary<int, int>();
+    private Dictionary<int, List<int>> m_IndexToChildren = new Dictionary<int, List<int>>();
+    // int[] stores parent index, the first should always be self, and then direct parent, the last should be root.
+    private Dictionary<int, int[]> m_IndexToParentChain = new Dictionary<int, int[]>();
+
+    public bool isLoaded => m_IsLoaded;
+
+    #region Main Methods
     public override void OnInit()
     {
-        LoadTagDatabase();
+        LoadGameplayTags();
     }
 
-    public void LoadTagDatabase()
+    public void LoadGameplayTags()
     {
         if(m_IsLoaded)
             return;
@@ -30,211 +38,254 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
         var handle = Addressables.LoadAssetAsync<GameplayTagDatabase>(path);
         var database = handle.WaitForCompletion();
         if (database == null)
-            throw new System.Exception($"Fail to find GameplayTagDatabase at: {path}");
+            throw new Exception($"Fail to find GameplayTagDatabase at: {path}");
 
-        PrepareTagNodeTree(database);
+        CreateTagIndex(database.tags);
 
         handle.Release();
+    }
+
+    public void CreateTagIndex(List<GameplayTag> tags)
+    {
+        Clear();
+
+        m_IndexToName[0] = GameplayTag.RootTag.name;
+        m_NameToIndex[GameplayTag.RootTag.name] = 0;
+        m_CurrentIndex = 1;
+
+        AddTagIndex(tags);
 
         m_IsLoaded = true;
-    }    
-
-    public void PrepareTagNodeTree(GameplayTagDatabase database)
-    {
-        if (database.allTags.Count == 0)
-        {
-            Debug.Log("GameplayTagManager: add root tag");
-            database.allTags.Add(GameplayTag.RootTag);
-        }
-        else if (database.allTags.Count > 0 && !database.allTags[0].isValid)
-        {
-            Debug.Log("GameplayTagManager: clear invalid tags and add root tag");
-            database.allTags.Clear();
-            database.allTags.Add(GameplayTag.RootTag);
-        }
-
-        Clear();
-        InsertTagsIntoTree(database.allTags);
     }
+
+    public void AddTagIndex(List<GameplayTag> tags)
+    {
+        if (tags == null || tags.Count == 0)
+            return;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            GameplayTag t = tags[i];
+            var name = t.name;
+            if (string.IsNullOrEmpty(name))
+                continue;
+
+            name = name.Trim();
+            if (m_NameToIndex.ContainsKey(name))
+                continue;
+
+            m_IndexToName[m_CurrentIndex] = name;
+            m_NameToIndex[name] = m_CurrentIndex;
+            ++m_CurrentIndex;
+
+            m_AllTags.Add(t);
+        }        
+
+        BuildHierarchy();
+    }    
 
     public void Clear()
     {
         m_IsLoaded = false;
-        m_TagNodeMap.Clear();
-        m_TagsByName.Clear();
         m_AllTags.Clear();
+        m_IndexToName.Clear();
+        m_IndexToParent.Clear();
+        m_NameToIndex.Clear();
+        m_IndexToChildren.Clear();
+        m_IndexToParentChain.Clear();
     }
+    #endregion
 
-    public void InsertTagsIntoTree(List<GameplayTag> gameplayTags)
+    #region Build Index Methods
+    private void BuildHierarchy()
     {
-        if (gameplayTags == null || gameplayTags.Count == 0)
-            return;
-
-        // Build tag tree
-        foreach (var tag in gameplayTags)
+        foreach (var kvp in m_NameToIndex)
         {
-            if (!tag.isValid)
+            string tagName = kvp.Key;
+            int index = kvp.Value;
+
+            if (index == 0) 
                 continue;
 
-            DoInsertTag(tag);
+            int lastDot = tagName.LastIndexOf('.');
+            string parentName = lastDot > 0 ? tagName.Substring(0, lastDot) : GameplayTag.RootName;
+            int parentIndex = GetIndex(parentName);
+
+            m_IndexToParent[index] = parentIndex;
+            if (!m_IndexToChildren.ContainsKey(parentIndex))
+                m_IndexToChildren[parentIndex] = new List<int>();
+
+            int ret = m_IndexToChildren[parentIndex].FindIndex(i => i == index);
+            if(ret == -1)
+                m_IndexToChildren[parentIndex].Add(index);
         }
 
-        CalculateNodeParents();
+        foreach (int index in m_IndexToName.Keys)
+        {
+            m_IndexToParentChain[index] = BuildParentChain(index);
+        }
     }
 
-    public void InsertTagIntoTree(GameplayTag gameplayTag)
+    private int[] BuildParentChain(int index)
     {
-        if (!gameplayTag.isValid)
-            return;
+        List<int> chain = new List<int>();
+        int current = index;
+        while (true)
+        {
+            chain.Add(current);
+            if (current == 0)
+                break;
+            current = m_IndexToParent.TryGetValue(current, out int parent) ? parent : 0;                       
+        }
+        return chain.ToArray();
+    }
+    #endregion
 
-        DoInsertTag(gameplayTag);
-        CalculateNodeParents();
+    #region Index Query
+    public int GetIndex(string name)
+    {
+        if (string.IsNullOrEmpty(name)) 
+            return 0;
+
+        return m_NameToIndex.TryGetValue(name.Trim(), out int index) ? index : 0;
+    }
+
+    public string GetName(int index)
+    {
+        return m_IndexToName.TryGetValue(index, out string name) ? name : GameplayTag.RootName;
+    }
+
+    public int GetParent(int index)
+    {
+        return m_IndexToParent.TryGetValue(index, out int parent) ? parent : 0;
+    }
+
+    public int[] GetParentChain(int index)
+    {
+        return m_IndexToParentChain.TryGetValue(index, out int[] chain) ? chain : new int[] { 0 };
+    }
+
+    public int[] GetChildIndices(int index)
+    {
+        return m_IndexToChildren.TryGetValue(index, out var list) ? list.ToArray() : new int[0];
+    }
+    #endregion
+
+    #region Tag Query
+    public bool Matches(int source, int target)
+    {
+        if (source == 0 || target == 0) 
+            return false;
+
+        int[] chain = GetParentChain(source);
+        for (int i = 0; i < chain.Length; i++)
+        {
+            if (chain[i] == target)
+                return true;
+        }
+        return false;
     }
 
     public GameplayTag GetTag(string name)
     {
-        if(m_TagsByName.TryGetValue(name, out var tag))
-            return tag;
-        else
+        if(string.IsNullOrEmpty(name))
             return GameplayTag.RootTag;
+
+        if (!m_NameToIndex.TryGetValue(name.Trim(), out int idx))
+            return GameplayTag.RootTag;
+        return GameplayTag.CreateTag(idx);
     }
 
     public bool HasTag(GameplayTag gameplayTag)
     {
-        if (!gameplayTag.isValid)
-            throw new System.Exception("input tag is invalid");
-        return m_TagsByName.ContainsKey(gameplayTag.name);
+        return gameplayTag.isValid;
+    }
+    #endregion
+
+    #region Tag Operation
+    public bool AddTag(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return false;
+
+        var normalized = name.Trim();
+        if (m_NameToIndex.ContainsKey(normalized))
+            return false;
+
+        int idx = m_CurrentIndex++;
+        m_IndexToName[idx] = normalized;
+        m_NameToIndex[normalized] = idx;
+
+        GameplayTag tag = new GameplayTag(normalized);
+        m_AllTags.Add(tag);
+
+        int lastDot = normalized.LastIndexOf('.');
+        string parentName = lastDot > 0 ? normalized.Substring(0, lastDot) : GameplayTag.RootName;
+        int parentIndex = GetIndex(parentName);
+
+        m_IndexToParent[idx] = parentIndex;
+        if (!m_IndexToChildren.ContainsKey(parentIndex))
+            m_IndexToChildren[parentIndex] = new List<int>();
+
+        int ret = m_IndexToChildren[parentIndex].FindIndex(i => i == idx);
+        if (ret == -1)
+            m_IndexToChildren[parentIndex].Add(idx);
+
+        m_IndexToParentChain.Add(idx, BuildParentChain(idx));
+
+        return true;
     }
 
-    public GameplayTag[] GetParentTags(GameplayTag gameplayTag)
-    {
-        if (m_TagNodeMap.TryGetValue(gameplayTag, out var node))
+    public bool RemoveTag(string name)
+    { 
+        if(string.IsNullOrEmpty(name))
+            return false;
+
+        if (m_NameToIndex.TryGetValue(name, out int idx))
         {
-            return node.parentTags.ToArray();
-        }
-        return new GameplayTag[0];
-    }
-
-    public GameplayTag RequestDirectParent(GameplayTag gameplayTag)
-    {
-        if (m_TagNodeMap.TryGetValue(gameplayTag, out var node) && node.parent != null)
-            return node.parent.tag;
-        return GameplayTag.RootTag;
-    }
-
-    public GameplayTag[] RequestAllChildren(GameplayTag gameplayTag)
-    {
-        if (m_TagNodeMap.TryGetValue(gameplayTag, out var node))
-        {
-            var children = new List<GameplayTag>();
-            CollectChildren(node, children);
-            return children.ToArray();
-        }
-        return new GameplayTag[0];
-    }
-
-    public GameplayTag[] RequestDirectChildren(GameplayTag gameplayTag)
-    {
-        if (m_TagNodeMap.TryGetValue(gameplayTag, out var node))
-        {
-            var children = new List<GameplayTag>();
-            foreach (var child in node.children)
-            {
-                children.Add(child.tag);
-            }
-            return children.ToArray();
-        }
-        return new GameplayTag[0];
-    }
-
-    private void DoInsertTag(GameplayTag gameplayTag)
-    {
-        if (HasTag(gameplayTag))
-            return;
-
-        var node = DoInsertTagNode(gameplayTag);
-        m_TagNodeMap[gameplayTag] = node;
-        m_TagsByName[gameplayTag.name] = gameplayTag;
-        m_AllTags.Add(gameplayTag);
-    }
-
-    private TagNode DoInsertTagNode(GameplayTag tag)
-    {
-        string[] parts = tag.name.Split('.');
-        TagNode currentNode = null;
-        string currentPath = "";
-
-        for (int i = 0; i < parts.Length; i++)
-        {
-            currentPath = (i == 0) ? parts[i] : currentPath + "." + parts[i];
-            var partTag = new GameplayTag(currentPath);
-
-            if (!m_TagNodeMap.TryGetValue(partTag, out var existingNode))
-            {
-                existingNode = new TagNode(partTag);
-                m_TagNodeMap[partTag] = existingNode;
-            }
-
-            if (currentNode != null)
-            {
-                existingNode.parent = currentNode;
-                currentNode.AddChild(existingNode);
-            }
-            currentNode = existingNode;
+            RemoveTag(idx);
+            return true;
         }
 
-        return currentNode;
+        return false;
     }
 
-    private void CalculateNodeParents()
-    {
-        foreach (var kvp in m_TagNodeMap)
-        {
-            kvp.Value.CacheParentTags();
+    public void RemoveTag(int index)
+    {        
+        if (m_IndexToChildren.TryGetValue(index, out var children))
+        { 
+            for (int i = 0; i < children.Count; ++i)
+                RemoveTag(children[i]);
         }
+
+        if (m_IndexToParent.TryGetValue(index, out int parent) && 
+            m_IndexToChildren.TryGetValue(parent, out var parentChildList))
+        {
+            parentChildList.Remove(index);
+        }
+
+        if (m_IndexToName.TryGetValue(index, out var name))
+            m_NameToIndex.Remove(name);
+
+        m_IndexToName.Remove(index);
+        m_IndexToParentChain.Remove(index);
+        m_IndexToParent.Remove(index);
+        m_IndexToChildren.Remove(index);
     }
 
-    private void CollectChildren(TagNode node, List<GameplayTag> list)
-    {
-        foreach (var child in node.children)
+    public bool ChangeTagName(string oldName, string newName)
+    {        
+        if (m_NameToIndex.TryGetValue(oldName, out int idx))
         {
-            list.Add(child.tag);
-            CollectChildren(child, list);
+            m_NameToIndex.Remove(oldName);
+            if (m_NameToIndex.ContainsKey(newName))
+                m_NameToIndex[newName] = idx;
+            else
+                m_NameToIndex.Add(newName, idx);
+            m_IndexToName[idx] = newName;
+            return true;
         }
+        return false;
     }
-
-    public class TagNode
-    {
-        public GameplayTag tag { get; }
-        public TagNode parent { get; set; }
-        public List<TagNode> children { get; } = new List<TagNode>();
-
-        /// <summary>
-        /// parentTags[parentTags.Count - 1] is the root parent
-        /// </summary>
-        public List<GameplayTag> parentTags { get; private set; } = new List<GameplayTag>();
-
-        public TagNode(GameplayTag gameplayTag)
-        {
-            tag = gameplayTag;
-        }
-
-        public void AddChild(TagNode node)
-        {
-            var result = children.Find(i => i.tag == node.tag);
-            if (result == null)
-                children.Add(node);
-        }
-
-        public void CacheParentTags()
-        {
-            parentTags.Clear();
-            TagNode current = parent;
-            while (current != null)
-            {
-                parentTags.Add(current.tag);
-                current = current.parent;
-            }
-        }
-    }
+    #endregion
 }

@@ -12,19 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af2a42fd2c1cc840a3904eca40b2f26, type: 3}
   m_Name: GlobalGameplayTags
   m_EditorClassIdentifier: 
-  allTags:
-  - m_Name: root
-    m_SimpleName: root
-    m_ShortName: root
-  - m_Name: root.combat
-    m_SimpleName: combat
-    m_ShortName: combat
-  - m_Name: root.combat.attack
-    m_SimpleName: combat.attack
-    m_ShortName: attack
-  - m_Name: root.combat.health
-    m_SimpleName: combat.health
-    m_ShortName: health
-  - m_Name: root.ui
-    m_SimpleName: ui
-    m_ShortName: ui
+  m_Tags:
+  - m_TagName: Root.Combat
+  - m_TagName: Root.Combat.Attack
+  - m_TagName: Root.Combat.Health
+  - m_TagName: Root.Event

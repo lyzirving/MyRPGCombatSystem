@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
 
 internal class TagEditorNode
 {
+    private static TagEditorNode k_RootNode = null;
+
     public string fullName;
     public string shortName;
     public TagEditorNode parent = null;
@@ -17,63 +18,41 @@ internal class TagEditorNode
     public bool isValid => depth != 0;
 
     #region Static Methods
-    public static TagEditorNode BuildEditorTreeFromDatabase(GameplayTagDatabase database)
+    public static TagEditorNode GetRootNode()
     {
-        return BuildEditorTreeFromTagList(database.allTags);
+        if (k_RootNode == null)
+        {
+            k_RootNode = new TagEditorNode();
+            k_RootNode.fullName = k_RootNode.shortName = GameplayTag.RootName;
+        }
+        return k_RootNode;
     }
 
-    public static TagEditorNode BuildEditorTreeFromTagList(List<GameplayTag> tags)
+    public static void BuildEditorTree(TagEditorNode root)
     {
-        if (tags.Count > 0)
-        {
-            var rootTag = tags[0];
-            var root = new TagEditorNode();
-            BuildEditorTree(root, null, ref rootTag);
-            return root;
-        }
-        else
-        {
-            Debug.Log($"TagEditorNode: tag count[{tags.Count}] is invalid");
-            return null;
-        }
-    }
-
-    public static TagEditorNode BuildEditorTreeFromTagList(IReadOnlyList<GameplayTag> tags)
-    {
-        if (tags.Count > 0)
-        {
-            var rootTag = tags[0];
-            var root = new TagEditorNode();
-            BuildEditorTree(root, null, ref rootTag);
-            return root;
-        }
-        else
-        {
-            Debug.Log($"TagEditorNode: tag count[{tags.Count}] is invalid");
-            return null;
-        }
-    }
-
-    private static void BuildEditorTree(TagEditorNode node, TagEditorNode parent, ref GameplayTag tag)
-    {
-        node.parent = parent;
-        node.fullName = tag.name;
-        node.MakeShortName(tag.name);
-
-        var childTagList = GameplayTagManager.instance.RequestDirectChildren(tag);
-        if (childTagList == null || childTagList.Length <= 0)
+        if(root == null)
             return;
 
-        for (int i = 0; i < childTagList.Length; ++i)
-        {
-            var childTag = childTagList[i];
-            var childNode = new TagEditorNode();
-
-            BuildEditorTree(childNode, node, ref childTag);
-
-            node.children.Add(childNode);
-        }
+        BuildEditorTree(0, root);
     }
+
+    public static void BuildEditorTree(int index, TagEditorNode node)
+    {
+        var indices = GameplayTagManager.instance.GetChildIndices(index);
+        if (indices == null || indices.Length == 0)
+            return;
+
+        for (int i = 0; i < indices.Length; ++i)
+        {
+            TagEditorNode current = new TagEditorNode();
+            current.parent = node;
+            current.fullName = GameplayTagManager.instance.GetName(indices[i]);
+            current.MakeShortName(current.fullName);
+            node.children.Add(current);
+
+            BuildEditorTree(indices[i], current);
+        }
+    }    
     #endregion
 
     #region Filed Methods

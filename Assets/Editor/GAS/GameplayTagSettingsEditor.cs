@@ -13,14 +13,24 @@ public class GameplayTagSettingsEditor : Editor
     private GameplayTagDatabase m_Target = null;
     private bool m_FirstEnter = true;
 
+    private Vector2 m_LastMousePos = Vector2.zero;
+    private float m_MouseFloatingTime = 0f;
+    private float m_MouseFloatingStartTime = 0f;
+    private bool m_MouseFloating = false;
+
     private void OnEnable()
     {
         m_Target = target as GameplayTagDatabase;
         m_Script = MonoScript.FromScriptableObject(m_Target);
         m_FirstEnter = true;
 
-        GameplayTagManager.instance.PrepareTagNodeTree(m_Target);
-        m_TagRootNode = TagEditorNode.BuildEditorTreeFromDatabase(m_Target);
+        m_TagRootNode = TagEditorNode.GetRootNode();
+        if (!GameplayTagManager.instance.isLoaded)
+        {
+            GameplayTagManager.instance.CreateTagIndex(m_Target.tags);
+            m_TagRootNode.children.Clear();
+            TagEditorNode.BuildEditorTree(m_TagRootNode);
+        }
     }    
 
     public override void OnInspectorGUI()
@@ -28,24 +38,14 @@ public class GameplayTagSettingsEditor : Editor
         if (EditorApplication.isCompiling)
             return;
 
+        OnRecordMouseFloatingStart();
+
         EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.ObjectField("Script", m_Script, typeof(MonoScript), false);
         EditorGUI.EndDisabledGroup();
 
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Gameplay Tags", EditorStyles.boldLabel);        
-
-        if (m_TagRootNode == null)
-        {
-            EditorGUILayout.HelpBox("No tags defined. Use the button below to add root tags.", MessageType.Info);
-            EditorGUILayout.Space();
-
-            if (GUILayout.Button("Add Root Tag"))
-            {
-                GameplayTagManager.instance.PrepareTagNodeTree(m_Target);
-                m_TagRootNode = TagEditorNode.BuildEditorTreeFromDatabase(m_Target);
-            }
-        }
+        EditorGUILayout.LabelField("Gameplay Tags", EditorStyles.boldLabel);
 
         if (m_TagRootNode != null)
         {
@@ -55,17 +55,20 @@ public class GameplayTagSettingsEditor : Editor
                 m_TagRootNode.expand = m_TagRootNode.children.Count != 0;
             }
 
-            bool hierarchyChange = false;
-            DrawTagNode(m_TagRootNode, ref hierarchyChange);
+            DrawTagNode(m_TagRootNode);
 
-            if (hierarchyChange)
-                ApplyChangeToTarget();
+            DrawSaveButton();
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("Editor root node is null!", MessageType.Warning);
         }
 
-        DrawSaveButton();
+        OnRecordMouseFloatingEnd();
+        Repaint();
     }    
 
-    private void DrawTagNode(TagEditorNode node, ref bool hierarchyChange)
+    private void DrawTagNode(TagEditorNode node)
     {
         if(node == null)
             return;
@@ -81,14 +84,15 @@ public class GameplayTagSettingsEditor : Editor
             node.expand = !node.expand;
         }        
 
-        DrawNodeShortName(node, ref hierarchyChange);               
+        DrawNodeShortName(node);               
 
         // Add button
         if (GUILayout.Button("+", GUILayout.Width(22)))
         {
-            InsertChildNode(node);
             node.expand = true;
-            hierarchyChange = true;
+            var child = InsertChildNode(node);
+            if(m_Target.AddTag(child.fullName))
+                EditorUtility.SetDirty(target);
         }
 
         if (node.isRoot) EditorGUI.BeginDisabledGroup(true);
@@ -97,7 +101,8 @@ public class GameplayTagSettingsEditor : Editor
         {
             node.expand = false;
             node.parent.DeleteChild(node);
-            hierarchyChange = true;
+            if(m_Target.RemoveTag(node.fullName))
+                EditorUtility.SetDirty(target);
         }
         if (node.isRoot) EditorGUI.EndDisabledGroup();
 
@@ -106,27 +111,29 @@ public class GameplayTagSettingsEditor : Editor
         if (node.expand)
         {
             for (int i = 0; i < node.children.Count; ++i)
-                DrawTagNode(node.children[i], ref hierarchyChange);
+                DrawTagNode(node.children[i]);
         }        
     }
 
-    private void DrawNodeShortName(TagEditorNode node, ref bool hierarchyChange)
+    private void DrawNodeShortName(TagEditorNode node)
     {
         CreateRichBoxStyle();
 
         if (node.isRoot) EditorGUI.BeginDisabledGroup(true);
 
         EditorGUI.BeginChangeCheck();
-        node.shortName = GUILayout.TextField(node.shortName);
+        var oldFullName = node.fullName;
+        var oldName = node.shortName;
+        node.shortName = GUILayout.TextField(oldName).Trim();
         if (EditorGUI.EndChangeCheck())
         {
             node.ApplyShortNameChange();
-            hierarchyChange = true;
+            if (m_Target.ChangeTagName(oldFullName, node.fullName))
+                EditorUtility.SetDirty(target);
         }
 
         var lastRect = GUILayoutUtility.GetLastRect();
-        bool showTooltip = lastRect.Contains(Event.current.mousePosition);
-        if (showTooltip && Event.current.type == EventType.Repaint)
+        if (m_MouseFloating && lastRect.Contains(Event.current.mousePosition))
         {
             string text = $"tag: <b>{node.fullName}</b>, depth: {node.depth}";
             float paddingX = 10f;
@@ -150,22 +157,16 @@ public class GameplayTagSettingsEditor : Editor
         if (!EditorUtility.IsDirty(target)) EditorGUI.EndDisabledGroup();
     }
 
-    private void InsertChildNode(TagEditorNode node)
+    private TagEditorNode InsertChildNode(TagEditorNode node)
     {
         var child = new TagEditorNode();
         child.parent = node;
-        child.fullName = new StringBuilder(node.fullName.ToString()).Append(".").ToString();
-
+        child.fullName = new StringBuilder(node.fullName.ToString()).Append(".")
+            .Append($"tag{node.children.Count}").ToString().Trim();
+        child.shortName = $"tag{node.children.Count}";
         node.children.Add(child);
+        return child;
     }    
-
-    private void ApplyChangeToTarget()
-    {
-        m_Target.allTags.Clear();
-        ApplyNodeToTarget(m_TagRootNode, m_Target.allTags);
-
-        EditorUtility.SetDirty(target);
-    }
 
     private void ApplyNodeToTarget(TagEditorNode node, List<GameplayTag> tagList)
     {
@@ -179,6 +180,29 @@ public class GameplayTagSettingsEditor : Editor
             var child = node.children[i];
             ApplyNodeToTarget(child, tagList);
         }
+    }
+
+    private void OnRecordMouseFloatingStart()
+    {
+        if (m_LastMousePos == Event.current.mousePosition)
+        {
+            if (Mathf.Approximately(m_MouseFloatingStartTime, 0f))
+                m_MouseFloatingStartTime = (float)EditorApplication.timeSinceStartup;
+            else
+                m_MouseFloatingTime = (float)EditorApplication.timeSinceStartup - m_MouseFloatingStartTime;
+            m_MouseFloating = (m_MouseFloatingTime >= 0.5f);
+        }
+        else
+        {
+            m_MouseFloatingTime = 0f;
+            m_MouseFloatingStartTime = 0f;
+            m_MouseFloating = false;
+        }
+    }
+
+    private void OnRecordMouseFloatingEnd()
+    {
+        m_LastMousePos = Event.current.mousePosition;
     }
 
     private void CreateRichBoxStyle()

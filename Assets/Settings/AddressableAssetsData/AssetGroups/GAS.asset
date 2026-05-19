@@ -15,8 +15,8 @@ MonoBehaviour:
   m_GroupName: GAS
   m_GUID: 18cbd34426b933b468056e00ae3e7d16
   m_SerializeEntries:
-  - m_GUID: 5955d63bfae58fe49ba810c35c3a933a
-    m_Address: GAS/GameplayTagDatabase
+  - m_GUID: 87f8d54a0f921544794bc63e2f32d333
+    m_Address: GAS/GlobalGameplayTagDatabase
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

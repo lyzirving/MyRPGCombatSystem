@@ -18,6 +18,11 @@ public class GameplayTagSelectorWindow : EditorWindow
     private TagEditorNode m_TagRootNode = null;
     private TagEditorNode m_SelectedNode = null;
 
+    private Vector2 m_LastMousePos = Vector2.zero;
+    private float m_MouseFloatingTime = 0f;
+    private float m_MouseFloatingStartTime = 0f;
+    private bool m_MouseFloating = false;
+
     public static void ShowWindow(IGameplayTagSelection callback)
     {
         // GetWindow is a factory method, and it will create a new instance every time.
@@ -29,9 +34,14 @@ public class GameplayTagSelectorWindow : EditorWindow
     }
 
     private void Initialize(IGameplayTagSelection callback)
-    {
-        GameplayTagManager.instance.LoadTagDatabase();
-        m_TagRootNode = TagEditorNode.BuildEditorTreeFromTagList(GameplayTagManager.instance.tags);
+    {        
+        m_TagRootNode = TagEditorNode.GetRootNode();
+        if (!GameplayTagManager.instance.isLoaded)
+        {
+            GameplayTagManager.instance.LoadGameplayTags();
+            m_TagRootNode.children.Clear();
+            TagEditorNode.BuildEditorTree(m_TagRootNode);
+        }
         m_SelectedNode = null;
         m_Callback = callback;
     }
@@ -43,9 +53,14 @@ public class GameplayTagSelectorWindow : EditorWindow
 
     private void OnGUI()
     {
+        OnRecordMouseFloatingStart();        
+
         var tags = GameplayTagManager.instance.tags;
         DrawTagTree();
         DrawButtons(tags);
+
+        OnRecordMouseFloatingEnd();        
+        Repaint();
     }
 
     private void DrawTagTree()
@@ -103,8 +118,7 @@ public class GameplayTagSelectorWindow : EditorWindow
 
         CreateRichBoxStyle();
         var lastRect = GUILayoutUtility.GetLastRect();
-        bool showTooltip = lastRect.Contains(Event.current.mousePosition);
-        if (showTooltip && Event.current.type == EventType.Repaint)
+        if (m_MouseFloating && lastRect.Contains(Event.current.mousePosition))
         {
             string text = $"tag: <b>{node.fullName}</b>, depth: {node.depth}";
             float paddingX = 10f;
@@ -125,6 +139,29 @@ public class GameplayTagSelectorWindow : EditorWindow
             m_RichBoxStyle = new GUIStyle(GUI.skin.box);
             m_RichBoxStyle.richText = true;
         }
+    }
+
+    private void OnRecordMouseFloatingStart()
+    {
+        if (m_LastMousePos == Event.current.mousePosition)
+        {
+            if (Mathf.Approximately(m_MouseFloatingStartTime, 0f))
+                m_MouseFloatingStartTime = (float)EditorApplication.timeSinceStartup;
+            else
+                m_MouseFloatingTime = (float)EditorApplication.timeSinceStartup - m_MouseFloatingStartTime;
+            m_MouseFloating = (m_MouseFloatingTime >= 0.5f);
+        }
+        else
+        {
+            m_MouseFloatingTime = 0f;
+            m_MouseFloatingStartTime = 0f;
+            m_MouseFloating = false;
+        }
+    }
+
+    private void OnRecordMouseFloatingEnd()
+    {
+        m_LastMousePos = Event.current.mousePosition;
     }
 
     private void DrawButtons(IReadOnlyList<GameplayTag> tags)

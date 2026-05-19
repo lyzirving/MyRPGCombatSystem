@@ -102,7 +102,7 @@ public class GameplayEffectEditor : Editor, IGameplayTagSelection
         for (int i = 0; i < tagList.Count; ++i)
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(tagList[i].simpleName, "TextField", GUILayout.ExpandWidth(true));
+            GUILayout.Label(tagList[i].name, "TextField", GUILayout.ExpandWidth(true));
             if (GUILayout.Button("×", GUILayout.Width(22)))
             {
                 m_EditingRemoveList.Add(tagList[i]);
