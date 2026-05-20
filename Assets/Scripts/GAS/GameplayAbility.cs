@@ -46,10 +46,26 @@ public class GameplayAbility : ScriptableObject
 
     [HideInInspector] public List<GameplayTag> requiredTags = new List<GameplayTag>();
     [HideInInspector] public List<GameplayTag> blockedTags = new List<GameplayTag>();
-
+    
     private Coroutine m_CooldownHandle;
     private float m_CooldownDuration;
     private float m_CooldownStartTime;
+
+    public int classHash
+    {
+        get
+        {
+            if (m_ClassHash == null)
+            {
+                var type = GetType();
+                var hashField = typeof(AbilityHash<>).MakeGenericType(type)
+                    .GetField(nameof(AbilityHash<GameplayAbility>.classHash), 
+                    System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                m_ClassHash = (int)hashField.GetValue(null);
+            }
+            return m_ClassHash.Value;
+        }
+    }
 
     public bool isInstant => Mathf.Abs(m_EndTime - m_ActiveTime) < Mathf.Epsilon;
     public bool isActive => m_IsActive;
@@ -59,6 +75,7 @@ public class GameplayAbility : ScriptableObject
     private float m_ActiveTime;
     private float m_EndTime;
     private object m_Target;
+    private int? m_ClassHash;
 
     /// <summary>
     /// Called every frame when the ability is a continuous ability

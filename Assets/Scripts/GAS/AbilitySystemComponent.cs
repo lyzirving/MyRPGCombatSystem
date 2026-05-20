@@ -23,7 +23,7 @@ public class AbilitySystemComponent : MonoBehaviour
     private void Awake()
     {
         InitializeAttributes();
-        GrantAbilities();
+        GrantAbilitiesOnSpawn();
     }
 
     private void Update()
@@ -53,7 +53,7 @@ public class AbilitySystemComponent : MonoBehaviour
             m_AttributeSet.Add(attr);
     }
 
-    private void GrantAbilities()
+    private void GrantAbilitiesOnSpawn()
     {
         foreach (var ability in grantedAbilities)
         {
