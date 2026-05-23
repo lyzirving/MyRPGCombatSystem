@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 
 public enum AbilityActivationPolicy
@@ -17,9 +18,16 @@ public class AbilityCost
     public float value;
 }
 
-[CreateAssetMenu(fileName = "NewGameplayAbility", menuName = "GAS/GameplayAbility")]
 public class GameplayAbility : ScriptableObject
 {
+    [HideInInspector][SerializeField] private string m_UniqueID;
+
+#if UNITY_EDITOR
+    public void SetUniqueID(string id) => m_UniqueID = id;
+#endif
+
+    public string guid => m_UniqueID;
+
     [Header("Basic")]
     public string abilityName;
     [TextArea] public string description;
