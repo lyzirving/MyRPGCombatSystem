@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 067744f5007a30f41a148573ac4cac3f, type: 3}
+  m_Script: {fileID: 11500000, guid: 07fd3f829663449499eacf4abca2200e, type: 3}
   m_Name: LightAttackGameplayAbility
   m_EditorClassIdentifier: 
-  m_UniqueID: ee47c5d5-7044-49d8-883e-2433828d13c5
-  abilityName: LightAttackGameplayAbility
+  m_UniqueID: 954a7466-e8f7-481e-a9cb-1a78a838a89e
+  abilityName: LightAttack
   description: 
   icon: {fileID: 0}
   activationPolicy: 1

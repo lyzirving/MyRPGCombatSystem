@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(GameplayAbility))]
+[CustomEditor(typeof(GameplayAbility), true)]
 public class GameplayAbilityEditor : Editor, IGameplayTagSelection
 {
     private enum EEditingSection

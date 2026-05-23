@@ -7,7 +7,6 @@ using UnityEngine;
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
     [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();
-    [SerializeField] protected GameplayAbilitySet m_AbilitySet = null;
 
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
@@ -153,7 +152,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_AttackComponent = GetComponent<AttackComponent>();
         m_AttackComponent?.Init(this);
 
-        m_AudioPool = GetComponent<AudioPool>();        
+        m_AudioPool = GetComponent<AudioPool>();
     }
     #endregion
 

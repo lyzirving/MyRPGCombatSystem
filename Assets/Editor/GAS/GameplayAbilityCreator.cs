@@ -4,19 +4,20 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
-public class GameplayAbilityCreator
+internal static class GameplayAbilityCreator
 {
-    [MenuItem("Assets/Create/GAS/GameplayAbility", priority = 10)]
-    private static void CreateGameplayAbility()
+    public static void CreateGameplayAbility<T>(string defaultName = "") where T : GameplayAbility
     {
         // 1. create instance
-        var data = ScriptableObject.CreateInstance<GameplayAbility>();
+        var data = ScriptableObject.CreateInstance<T>();
         // 2. generate guid
         data.SetUniqueID(System.Guid.NewGuid().ToString());
 
         // 3. confirm the save path
         string path = GetSelectedPathOrFallback();
-        string assetPath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(path, "NewGameplayAbility.asset"));
+        if (string.IsNullOrEmpty(defaultName))
+            defaultName = $"New{typeof(T).Name}";
+        string assetPath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(path, $"{defaultName}.asset"));
 
         // 4. create asset
         AssetDatabase.CreateAsset(data, assetPath);

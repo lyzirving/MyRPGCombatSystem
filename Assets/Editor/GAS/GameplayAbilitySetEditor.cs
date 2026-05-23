@@ -14,8 +14,8 @@ public class GameplayAbilitySetEditor : Editor
     {
         m_Target = (GameplayAbilitySet)target;
         m_Abilities.Clear();
-        for (int i = 0; i < m_Target.abilities.Count; i++)
-            m_Abilities.Add(m_Target.abilities[i]);
+        foreach (var ability in m_Target)
+            m_Abilities.Add(ability);
 
         m_ReorderableList = new ReorderableList(m_Abilities, typeof(GameplayAbility), true, true, true, true);
         m_ReorderableList.drawHeaderCallback = (Rect rect) => EditorGUI.LabelField(rect, "Ability List");

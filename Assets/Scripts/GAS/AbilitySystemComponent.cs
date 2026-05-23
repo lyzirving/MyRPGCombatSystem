@@ -1,29 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using UnityEngine;
 
 public class AbilitySystemComponent : MonoBehaviour
 {
-    public List<GameplayAttribute> grantedAttributes = new List<GameplayAttribute>();    
-    public List<GameplayAbility> grantedAbilities = new List<GameplayAbility>();
-    public GameplayTagContainer activeTags = new GameplayTagContainer();
+    public event Action<GameplayAttribute> onAttributeChanged;
+    public event Action<GameplayTag> onTagAdded;
+    public event Action<GameplayTag> onTagRemoved;
+    public event Action<GameplayEffect> onEffectApplied;
+    public event Action<GameplayEffect> onEffectRemoved;
 
-    public event System.Action<GameplayAttribute> onAttributeChanged;
-    public event System.Action<GameplayTag> onTagAdded;
-    public event System.Action<GameplayTag> onTagRemoved;
-    public event System.Action<GameplayEffect> onEffectApplied;
-    public event System.Action<GameplayEffect> onEffectRemoved;
-    
+    [SerializeField] private List<GameplayAttribute> m_GrantedAttributes = new List<GameplayAttribute>();  
+    [SerializeField] private GameplayAbilitySet m_GrantedAbility;
+    [SerializeField] private CharacterControllerBase m_Character;        
+
     private Dictionary<int, ActiveGameplayEffect> m_ActiveEffects = new Dictionary<int, ActiveGameplayEffect>();
     private Dictionary<int, GameplayAbility> m_ActiveAbilities = new Dictionary<int, GameplayAbility>();
 
     private GameplayAttributeSet m_AttributeSet = new GameplayAttributeSet();
+    private GameplayTagContainer m_ActiveTags = new GameplayTagContainer();
 
     private void Awake()
     {
         InitializeAttributes();
-        GrantAbilitiesOnSpawn();
+        InitializeAbilities();
     }
 
     private void Update()
@@ -41,7 +43,7 @@ public class AbilitySystemComponent : MonoBehaviour
 
         m_AttributeSet.ClearAllModifiers();
 
-        activeTags.Clear();
+        m_ActiveTags.Clear();
 
         InitializeAttributes();
     }
@@ -49,23 +51,36 @@ public class AbilitySystemComponent : MonoBehaviour
     private void InitializeAttributes()
     {
         m_AttributeSet.Clear();
-        foreach (var attr in grantedAttributes)
+        foreach (var attr in m_GrantedAttributes)
             m_AttributeSet.Add(attr);
     }
 
-    private void GrantAbilitiesOnSpawn()
+    private void InitializeAbilities()
     {
-        foreach (var ability in grantedAbilities)
+        if (m_GrantedAbility == null)
+            throw new System.Exception("GameplayAbilitySet hasn't been set yet.");
+
+        foreach (var ability in m_GrantedAbility)
         {
+            ability.Attach(m_Character);
             if (ability.activationPolicy == AbilityActivationPolicy.OnSpawn)
-            {
                 TryActivateAbility(ability);
-            }
         }
     }
     #endregion    
 
     #region Ability Operations
+    public bool HasAbility<T>() where T : GameplayAbility => m_GrantedAbility?.Has<T>() ?? false;
+
+    public bool TryActivateAbility<T>(object target = null) where T : GameplayAbility
+    { 
+        if(!HasAbility<T>())
+            return false;
+
+        var ability = m_GrantedAbility.Get<T>();
+        return TryActivateAbility(ability, target);
+    }
+
     public bool TryActivateAbility(GameplayAbility ability, object target = null)
     {
         if (ability == null)
@@ -234,31 +249,31 @@ public class AbilitySystemComponent : MonoBehaviour
     #region Tag Operations
     public bool HasTag(GameplayTag tag)
     {
-        return activeTags.Has(tag);
+        return m_ActiveTags.Has(tag);
     }
 
     public bool HasAllTags(IEnumerable<GameplayTag> tags)
     {
-        return activeTags.HasAll(tags);
+        return m_ActiveTags.HasAll(tags);
     }
 
     public bool HasAnyTag(IEnumerable<GameplayTag> tags)
     {
-        return activeTags.HasAny(tags);
+        return m_ActiveTags.HasAny(tags);
     }
 
     public void AddTag(GameplayTag tag)
     {
         if (!HasTag(tag))
         {
-            activeTags.Add(tag);
+            m_ActiveTags.Add(tag);
             onTagAdded?.Invoke(tag);
         }
     }
 
     public bool RemoveTag(GameplayTag tag)
     {
-        bool removed = activeTags.Remove(tag);
+        bool removed = m_ActiveTags.Remove(tag);
         if (removed)
         {
             onTagRemoved?.Invoke(tag);

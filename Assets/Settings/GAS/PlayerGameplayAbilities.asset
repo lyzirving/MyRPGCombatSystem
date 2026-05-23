@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PlayerGameplayAbilities
   m_EditorClassIdentifier: 
   m_AbilityList:
-  - {fileID: 11400000, guid: 5f435b7b7d048164ea37544439f409a2, type: 2}
+  - {fileID: 11400000, guid: 72ff18c6aca2a3c43aecd18895c8606d, type: 2}

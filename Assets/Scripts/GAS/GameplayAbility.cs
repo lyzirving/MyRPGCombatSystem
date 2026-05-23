@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using UnityEngine;
 
 public enum AbilityActivationPolicy
@@ -18,8 +17,12 @@ public class AbilityCost
     public float value;
 }
 
-public class GameplayAbility : ScriptableObject
-{
+/// <summary>
+/// Gameplay ability class
+/// Instant Gameplay ability should end itself mannually
+/// </summary>
+public abstract class GameplayAbility : ScriptableObject
+{        
     [HideInInspector][SerializeField] private string m_UniqueID;
 
 #if UNITY_EDITOR
@@ -67,14 +70,13 @@ public class GameplayAbility : ScriptableObject
             {
                 var type = GetType();
                 var hashField = typeof(AbilityHash<>).MakeGenericType(type)
-                    .GetField(nameof(AbilityHash<GameplayAbility>.classHash), 
+                    .GetField(nameof(AbilityHash<GameplayAbility>.classHash),
                     System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
                 m_ClassHash = (int)hashField.GetValue(null);
             }
             return m_ClassHash.Value;
         }
     }
-
     public bool isInstant => Mathf.Abs(m_EndTime - m_ActiveTime) < Mathf.Epsilon;
     public bool isActive => m_IsActive;
 
@@ -83,7 +85,15 @@ public class GameplayAbility : ScriptableObject
     private float m_ActiveTime;
     private float m_EndTime;
     private object m_Target;
+
     private int? m_ClassHash;
+
+    protected CharacterControllerBase m_Character;
+
+    public void Attach(CharacterControllerBase character)
+    {
+        m_Character = character;
+    }
 
     /// <summary>
     /// Called every frame when the ability is a continuous ability
@@ -96,7 +106,7 @@ public class GameplayAbility : ScriptableObject
 
         OnAbilityUpdate(deltaTime);
 
-        if (Time.time >= m_EndTime)
+        if (!isInstant && Time.time >= m_EndTime)
         {
             EndAbility(false);
         }       
@@ -124,11 +134,6 @@ public class GameplayAbility : ScriptableObject
         OnAbilityActivated();
 
         OnAbilityPerformed();
-
-        if (isInstant)
-        {
-            EndAbility(false);
-        }
 
         return true;
     }
@@ -256,24 +261,14 @@ public class GameplayAbility : ScriptableObject
     }
 
     #region Callback Methods
-    protected virtual void OnAbilityActivated()
-    {
-    }
+    protected abstract void OnAbilityActivated();
 
-    protected virtual void OnAbilityPerformed()
-    {
-    }
+    protected abstract void OnAbilityPerformed();
 
-    protected virtual void OnAbilityEnded()
-    {
-    }
+    protected abstract void OnAbilityEnded();
 
-    protected virtual void OnAbilityCanceled()
-    {
-    }
+    protected abstract void OnAbilityCanceled();
 
-    protected virtual void OnAbilityUpdate(float deltaTime)
-    { 
-    }
+    protected abstract void OnAbilityUpdate(float deltaTime);
     #endregion
 }
