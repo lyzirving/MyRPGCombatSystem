@@ -35,13 +35,12 @@ public class GameplayTagSelectorWindow : EditorWindow
 
     private void Initialize(IGameplayTagSelection callback)
     {        
-        m_TagRootNode = TagEditorNode.GetRootNode();
+        
         if (!GameplayTagManager.instance.isLoaded)
-        {
             GameplayTagManager.instance.LoadGameplayTags();
-            m_TagRootNode.children.Clear();
-            TagEditorNode.BuildEditorTree(m_TagRootNode);
-        }
+        m_TagRootNode = TagEditorNode.GetRootNode();
+        m_TagRootNode.children.Clear();
+        TagEditorNode.BuildEditorTree(m_TagRootNode);
         m_SelectedNode = null;
         m_Callback = callback;
     }

@@ -9,6 +9,7 @@ public class GameplayAbilityEditor : Editor, IGameplayTagSelection
     {
         None = 0,
         CoolDown,
+        GrantedTagList,
         RequeiredTagList,
         BlockedTagList
     }
@@ -16,6 +17,7 @@ public class GameplayAbilityEditor : Editor, IGameplayTagSelection
     private bool m_Enabled;
     private EEditingSection m_Editing = EEditingSection.None;
     private GameplayAbility m_Ability = null;
+    private bool m_GrantedTagExpand = false;
     private bool m_RequeiredTagExpand = false;
     private bool m_BlockedTagExpand = false;
     private List<GameplayTag> m_RemoveList = new List<GameplayTag>();
@@ -24,6 +26,7 @@ public class GameplayAbilityEditor : Editor, IGameplayTagSelection
     {
         m_Enabled = true;
         m_Ability = target as GameplayAbility;
+        m_GrantedTagExpand = false;
         m_RequeiredTagExpand = false;
         m_BlockedTagExpand = false;
     }
@@ -41,6 +44,7 @@ public class GameplayAbilityEditor : Editor, IGameplayTagSelection
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Gameplay Tag Settings", EditorStyles.boldLabel);
+        DrawGrantedTagsSection(m_Ability);
         DrawRequiredTagsSection(m_Ability);
         DrawBlockedTagsSection(m_Ability);
 
@@ -81,6 +85,33 @@ public class GameplayAbilityEditor : Editor, IGameplayTagSelection
         {
             ability.cooldownEffect = (obj as GameplayEffect);
             EditorUtility.SetDirty(target);
+        }
+    }
+
+    private void DrawGrantedTagsSection(GameplayAbility ability)
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        GUILayout.Label("GrantedTags", GUILayout.ExpandWidth(true));
+
+        GUILayout.Label($"{ability.grantedTags.Count}", "TextField", GUILayout.ExpandWidth(false));
+
+        if (GUILayout.Button(m_GrantedTagExpand ? "▼" : "▶", GUILayout.Width(22)))
+        {
+            m_GrantedTagExpand = !m_GrantedTagExpand;
+        }
+
+        if (GUILayout.Button("+", GUILayout.Width(22)))
+        {
+            m_Editing = EEditingSection.GrantedTagList;
+            GameplayTagSelectorWindow.ShowWindow(this);
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        if (m_GrantedTagExpand)
+        {
+            DrawTagList(ability.grantedTags);
         }
     }
 
@@ -191,6 +222,17 @@ public class GameplayAbilityEditor : Editor, IGameplayTagSelection
                     EditorUtility.SetDirty(target);
                 }  
                 break;
+            case EEditingSection.GrantedTagList:
+                {
+                    var found = m_Ability.grantedTags.Find(item => item.Equals(tag));
+                    if (!found.isValid)
+                    {
+                        m_Ability.grantedTags.Add(tag);
+                        m_GrantedTagExpand = true;
+                        EditorUtility.SetDirty(target);
+                    }
+                    break;
+                }
             case EEditingSection.RequeiredTagList:
                 {
                     var found = m_Ability.requiredTags.Find(item => item.Equals(tag));

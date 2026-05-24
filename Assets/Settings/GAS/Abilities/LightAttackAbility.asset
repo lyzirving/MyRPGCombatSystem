@@ -25,5 +25,7 @@ MonoBehaviour:
     m_TagName: 
   cooldownDuration: 0
   cooldownEffect: {fileID: 0}
+  grantedTags:
+  - m_TagName: Root.Combat.LightAttack
   requiredTags: []
   blockedTags: []

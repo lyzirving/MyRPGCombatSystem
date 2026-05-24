@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 [Serializable]
 public class GameplayTagContainer
-{
+{    
     private List<string> m_Tags = new List<string>();
     private int[] m_Indices = new int[0];
     private bool m_Dirty = true;

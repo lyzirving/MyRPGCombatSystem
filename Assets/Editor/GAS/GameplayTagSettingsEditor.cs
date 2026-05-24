@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,13 +26,13 @@ public class GameplayTagSettingsEditor : Editor
         m_Script = MonoScript.FromScriptableObject(m_Target);
         m_FirstEnter = true;
 
-        m_TagRootNode = TagEditorNode.GetRootNode();
+
+        
         if (!GameplayTagManager.instance.isLoaded)
-        {
-            GameplayTagManager.instance.CreateTagIndex(m_Target.tags);
-            m_TagRootNode.children.Clear();
-            TagEditorNode.BuildEditorTree(m_TagRootNode);
-        }
+            GameplayTagManager.instance.LoadGameplayTags();
+        m_TagRootNode = TagEditorNode.GetRootNode();
+        m_TagRootNode.children.Clear();
+        TagEditorNode.BuildEditorTree(m_TagRootNode);
     }    
 
     public override void OnInspectorGUI()
@@ -57,7 +59,9 @@ public class GameplayTagSettingsEditor : Editor
 
             DrawTagNode(m_TagRootNode);
 
+            EditorGUILayout.Space();
             DrawSaveButton();
+            DrawGenerateCodeButton();
         }
         else
         {
@@ -152,9 +156,20 @@ public class GameplayTagSettingsEditor : Editor
     private void DrawSaveButton()
     {
         if (!EditorUtility.IsDirty(target)) EditorGUI.BeginDisabledGroup(true);
-        if (GUILayout.Button("Apply", GUILayout.Width(60)))
+        if (GUILayout.Button("Apply", GUILayout.ExpandWidth(true)))
             AssetDatabase.SaveAssetIfDirty(target);
         if (!EditorUtility.IsDirty(target)) EditorGUI.EndDisabledGroup();
+    }
+
+    private void DrawGenerateCodeButton()
+    {
+        if (GUILayout.Button("Generate Code", GUILayout.ExpandWidth(true)))
+        {
+            if (EditorUtility.DisplayDialog("Confirm to Generate Code", "Are you sure to generate code for GameplayTag?", "Yes", "No"))
+            {
+                GameplayTagCodeGenerator.GenerateCodeFile();
+            }
+        }    
     }
 
     private TagEditorNode InsertChildNode(TagEditorNode node)

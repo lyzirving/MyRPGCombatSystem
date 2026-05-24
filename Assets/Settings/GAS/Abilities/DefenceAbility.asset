@@ -25,5 +25,6 @@ MonoBehaviour:
     m_TagName: 
   cooldownDuration: 0
   cooldownEffect: {fileID: 0}
+  grantedTags: []
   requiredTags: []
   blockedTags: []

@@ -25,6 +25,7 @@ public class AbilitySystemComponent : MonoBehaviour
     private GameplayTagContainer m_ActiveTags = new GameplayTagContainer();
 
     public IReadOnlyDictionary<int, GameplayAbility> activeAbilities => m_ActiveAbilities;
+    public int[] activeTagIndice => m_ActiveTags.indices;
 
     private void Awake()
     {
@@ -34,20 +35,8 @@ public class AbilitySystemComponent : MonoBehaviour
 
     private void Update()
     {
-        m_AbilitiesToBeRemove.Clear();
-        foreach (var ability in m_ActiveAbilities.Values)
-        {
-            if(ability.isActive)
-                ability.OnUpdate(Time.deltaTime);
-            else
-                m_AbilitiesToBeRemove.Add(ability);
-        }
-
-        foreach (var remove in m_AbilitiesToBeRemove)
-        {
-            m_ActiveAbilities.Remove(remove.GetInstanceID());
-        }
-    }
+        UpdateAbilities();        
+    }    
 
     #region Main Methods
     public void Reset()
@@ -145,6 +134,23 @@ public class AbilitySystemComponent : MonoBehaviour
 
     public void OnAbilityCanceled(GameplayAbility ability)
     {
+    }
+
+    private void UpdateAbilities()
+    {
+        m_AbilitiesToBeRemove.Clear();
+        foreach (var ability in m_ActiveAbilities.Values)
+        {
+            if (ability.isActive)
+                ability.OnUpdate(Time.deltaTime);
+            else
+                m_AbilitiesToBeRemove.Add(ability);
+        }
+
+        foreach (var remove in m_AbilitiesToBeRemove)
+        {
+            m_ActiveAbilities.Remove(remove.GetInstanceID());
+        }
     }
     #endregion
 
@@ -290,6 +296,15 @@ public class AbilitySystemComponent : MonoBehaviour
             onTagRemoved?.Invoke(tag);
         }
         return removed;
+    }
+
+    public void RemoveAllGrantedTags(GameplayAbility ability)
+    {
+        if (ability == null || ability.grantedTags == null || ability.grantedTags.Count == 0)
+            return;
+
+        for (int i = 0; i < ability.grantedTags.Count; i++)
+            RemoveTag(ability.grantedTags[i]);
     }
     #endregion
 

@@ -11,6 +11,7 @@ public class Entry : MonoBehaviour
         InputManager.Init();
         AnimationConsts.Init();
         AnimationEventReceiver.Init();
+        GameplayTagManager.Init();
         VFXManager.Init();
         AIManager.Init();
         GhostPool.Init();

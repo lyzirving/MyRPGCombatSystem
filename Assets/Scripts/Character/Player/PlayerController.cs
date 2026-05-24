@@ -112,7 +112,7 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnTargetLost(Transform target)
     {
-        lockTarget = null;
+        lockTarget = null;        
         m_Model.SetAnimationBool(AnimationConsts.locked, false);
         if (IsCurrentState<PlayerStateStrafeMove>())
             ChangeState(ECharacterState.Move);

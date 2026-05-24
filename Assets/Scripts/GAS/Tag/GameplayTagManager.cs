@@ -27,12 +27,12 @@ public class GameplayTagManager : Singleton<GameplayTagManager>
     #region Main Methods
     public override void OnInit()
     {
-        LoadGameplayTags();
+        LoadGameplayTags(true);
     }
 
-    public void LoadGameplayTags()
+    public void LoadGameplayTags(bool force = false)
     {
-        if(m_IsLoaded)
+        if(m_IsLoaded && !force)
             return;
 
         var handle = Addressables.LoadAssetAsync<GameplayTagDatabase>(path);

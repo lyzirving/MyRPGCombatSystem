@@ -55,6 +55,7 @@ public abstract class GameplayAbility : ScriptableObject
     [HideInInspector] public float cooldownDuration = 0f;
     [HideInInspector] public GameplayEffect cooldownEffect;
 
+    [HideInInspector] public List<GameplayTag> grantedTags = new List<GameplayTag>();
     [HideInInspector] public List<GameplayTag> requiredTags = new List<GameplayTag>();
     [HideInInspector] public List<GameplayTag> blockedTags = new List<GameplayTag>();
     
@@ -124,6 +125,9 @@ public abstract class GameplayAbility : ScriptableObject
         m_ActiveTime = Time.time;
         m_EndTime = m_ActiveTime + abilityDuration;
 
+        for (int i = 0; i < grantedTags.Count; ++i)
+            owner.AddTag(grantedTags[i]);
+
         PayCost();
 
         foreach (var effect in effects)
@@ -157,6 +161,7 @@ public abstract class GameplayAbility : ScriptableObject
             m_ASC?.OnAbilityEnded(this);
         }
 
+        m_ASC?.RemoveAllGrantedTags(this);
         m_ASC?.RemoveAllEffectsFromSource(this);
 
         StartCooldown();

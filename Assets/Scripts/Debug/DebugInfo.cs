@@ -9,14 +9,17 @@ public class DebugInfo : MonoBehaviour
 
     private StringBuilder m_SbCharacterState = new StringBuilder();
     private StringBuilder m_SbAbilityInfo = new StringBuilder();
+    private StringBuilder m_SbTagsInfo = new StringBuilder();
 
     private TextMeshProUGUI m_TextCharacterState;
     private TextMeshProUGUI m_TextActiveAbilityInfo;
+    private TextMeshProUGUI m_TextActiveTagsInfo;
 
     private void Awake()
     {
         m_TextCharacterState = transform.Find("CharacterStateInfo").GetComponent<TextMeshProUGUI>();
         m_TextActiveAbilityInfo = transform.Find("ActiveAbilityInfo").GetComponent<TextMeshProUGUI>();
+        m_TextActiveTagsInfo = transform.Find("ActiveTagsInfo").GetComponent<TextMeshProUGUI>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -31,6 +34,7 @@ public class DebugInfo : MonoBehaviour
     {
         DrawCharacterState();
         DrawActiveAbilityInfo();
+        DrawActiveTagsInfo();
     }    
 
     private void DrawCharacterState()
@@ -54,5 +58,25 @@ public class DebugInfo : MonoBehaviour
             hasValue = true;
         }
         m_TextActiveAbilityInfo.text = m_SbAbilityInfo.ToString();
+    }
+
+    private void DrawActiveTagsInfo()
+    {
+        bool hasValue = false;
+        m_SbTagsInfo.Clear();
+        m_SbTagsInfo.Append("active tags: ");
+        var indices = playerControl.abilitySystemComp.activeTagIndice;
+        if (indices != null)
+        {
+            foreach (var tagIdx in indices)
+            {
+                if(hasValue)
+                    m_SbTagsInfo.Append("\n");
+                var name = GameplayTagManager.instance.GetName(tagIdx);
+                m_SbTagsInfo.Append($"{name}");
+                hasValue = true;
+            }
+        }
+        m_TextActiveTagsInfo.text = m_SbTagsInfo.ToString();
     }
 }

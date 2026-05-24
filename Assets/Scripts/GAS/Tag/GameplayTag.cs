@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct GameplayTag : IEquatable<GameplayTag>
+public partial struct GameplayTag : IEquatable<GameplayTag>
 {
     public static readonly string RootName = "Root";
     public static readonly GameplayTag RootTag = new GameplayTag(RootName);
@@ -60,16 +60,6 @@ public struct GameplayTag : IEquatable<GameplayTag>
     public int hash => index;
 
     public string name => m_TagName;
-
-    public string normalizedName
-    {
-        get
-        {
-            if(index > 0)
-                GameplayTagManager.instance.GetName(index);
-            return string.IsNullOrEmpty(m_TagName) ? string.Empty : m_TagName;
-        }
-    }
 
     public GameplayTag parent
     {
