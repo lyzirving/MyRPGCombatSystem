@@ -11,6 +11,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
     protected CharacterModel m_Model;
+    protected AbilitySystemComponent m_AbilitySystemComp;
 
     protected int m_CharacterGUID = GUIDConsts.PlayerAnimation;
     protected ECharacterDodgeAction m_DodgeAction = ECharacterDodgeAction.None;
@@ -153,6 +154,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_AttackComponent?.Init(this);
 
         m_AudioPool = GetComponent<AudioPool>();
+
+        m_AbilitySystemComp = GetComponent<AbilitySystemComponent>();
     }
     #endregion
 
@@ -178,7 +181,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #region ICharacterBehavior Methods
     public int GUID => m_CharacterGUID;
     public Transform modelTransform => m_Model.transform;
-    public StateMachine stateMachine => m_StateMachine;
+    public StateMachine stateMachine => m_StateMachine;    
+    public AbilitySystemComponent abilitySystemComp => m_AbilitySystemComp;
 
     public virtual void OnAttackBegin() 
     {

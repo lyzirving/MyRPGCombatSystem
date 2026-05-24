@@ -80,15 +80,13 @@ public abstract class GameplayAbility : ScriptableObject
     public bool isInstant => Mathf.Abs(m_EndTime - m_ActiveTime) < Mathf.Epsilon;
     public bool isActive => m_IsActive;
 
-    private AbilitySystemComponent m_ASC;
-    private bool m_IsActive = false;
-    private float m_ActiveTime;
-    private float m_EndTime;
-    private object m_Target;
-
-    private int? m_ClassHash;
-
-    protected CharacterControllerBase m_Character;
+    [NonSerialized] private AbilitySystemComponent m_ASC;
+    [NonSerialized] private bool m_IsActive = false;
+    [NonSerialized] private float m_ActiveTime;
+    [NonSerialized] private float m_EndTime;
+    [NonSerialized] private object m_Target;
+    [NonSerialized] protected CharacterControllerBase m_Character;
+    [NonSerialized] private int? m_ClassHash;    
 
     public void Attach(CharacterControllerBase character)
     {
@@ -101,7 +99,7 @@ public abstract class GameplayAbility : ScriptableObject
     /// <param name="deltaTime"></param>
     public virtual void OnUpdate(float deltaTime)
     {
-        if (!m_IsActive || isInstant)
+        if (!m_IsActive)
             return;
 
         OnAbilityUpdate(deltaTime);
@@ -136,6 +134,11 @@ public abstract class GameplayAbility : ScriptableObject
         OnAbilityPerformed();
 
         return true;
+    }
+
+    public virtual void ReActivate(AbilitySystemComponent owner, object target = null)
+    {
+        OnAbilityReEnter();
     }
 
     public virtual void EndAbility(bool isCanceled = false)
@@ -261,7 +264,7 @@ public abstract class GameplayAbility : ScriptableObject
     }
 
     #region Callback Methods
-    protected abstract void OnAbilityActivated();
+    protected abstract void OnAbilityActivated();    
 
     protected abstract void OnAbilityPerformed();
 
@@ -270,5 +273,7 @@ public abstract class GameplayAbility : ScriptableObject
     protected abstract void OnAbilityCanceled();
 
     protected abstract void OnAbilityUpdate(float deltaTime);
+
+    protected abstract void OnAbilityReEnter();
     #endregion
 }

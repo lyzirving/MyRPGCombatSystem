@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52adad5c02fe2a74fbb8c75d089d6709, type: 3}
+  m_Name: DodgeAbility
+  m_EditorClassIdentifier: 
+  m_UniqueID: d324343b-0e7b-45fa-aeb4-fc909932704e
+  abilityName: DodgeAbility
+  description: 
+  icon: {fileID: 0}
+  activationPolicy: 1
+  abilityDuration: 0
+  canBeCanceled: 1
+  costs: []
+  effects: []
+  cooldownTag:
+    m_TagName: 
+  cooldownDuration: 0
+  cooldownEffect: {fileID: 0}
+  requiredTags: []
+  blockedTags: []

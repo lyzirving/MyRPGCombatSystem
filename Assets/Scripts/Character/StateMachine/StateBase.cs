@@ -29,7 +29,9 @@ public abstract class StateBase
 
     public virtual void LateUpdate() { }
 
-    public virtual void FixedUpdate() { }    
+    public virtual void FixedUpdate() { }
+
+    public virtual bool IsExpired() { return false; }
 
     public virtual ECharacterAction GetCurrentAction() { return ECharacterAction.None; }
 }

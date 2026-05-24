@@ -133,20 +133,7 @@ public class PlayerActionController : MonoBehaviour
         // Only one cmd a frame. Note do not use while, it may cause infinite loop
         if (m_BufferedCommand.count > 0)
         {
-            var cmd = m_BufferedCommand.Peek();
-            if (cmd.IsValid())
-            {
-                var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
-                if (state != null && state.CanExecute(cmd.action))
-                {
-                    state.Execute(cmd.action);
-                    m_BufferedCommand.Dequeue();
-                }
-            }
-            else
-            {
-                m_BufferedCommand.Dequeue();
-            }
+            //Todo
         }
     }
     #endregion
@@ -160,12 +147,7 @@ public class PlayerActionController : MonoBehaviour
     private void OnDefenceHold(InputAction.CallbackContext context)
     {
         m_IsDefenceHold = true;
-
-        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
-        if (state?.CanExecute(ECharacterAction.Defence) ?? false)
-            state.Execute(ECharacterAction.Defence);
-        else
-            EnqueueBufferedCommand(ECharacterAction.Defence);
+        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<DefenceAbility>();
     }
 
     private void OnDefenceCancel(InputAction.CallbackContext context)
@@ -174,30 +156,18 @@ public class PlayerActionController : MonoBehaviour
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
-    {       
-        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
-        if (state?.CanExecute(ECharacterAction.Jump) ?? false)
-            state.Execute(ECharacterAction.Jump);
-        else
-            EnqueueBufferedCommand(ECharacterAction.Jump);
+    {
+        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<JumpAbility>();
     }
 
     private void OnLightAttackPerformed(InputAction.CallbackContext context)
     {
-        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
-        if (state?.CanExecute(ECharacterAction.LightAttack) ?? false)
-            state.Execute(ECharacterAction.LightAttack);
-        else
-            EnqueueBufferedCommand(ECharacterAction.LightAttack);    
+        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<LightAttackAbility>();  
     }    
 
     private void OnDodgePerformed(InputAction.CallbackContext context)
     {
-        var state = m_CharacterBehavior.stateMachine.currentState as CharacterStateBase;
-        if (state?.CanExecute(ECharacterAction.Dodge) ?? false)
-            state.Execute(ECharacterAction.Dodge);
-        else
-            EnqueueBufferedCommand(ECharacterAction.Dodge);
+        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<DodgeAbility>();
     }
     #endregion
 }

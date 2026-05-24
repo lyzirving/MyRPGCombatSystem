@@ -52,11 +52,6 @@ public class PlayerStateDodge : PlayerStateLocomotion
         return true;
     }
 
-    public override bool HandleInput()
-    {
-        return false;
-    }
-
     public override void Update()
     {
         m_Player.model.animator.GetTargetAnimationTime("Dodge", AnimationConsts.BASE_LAYER, out float time);
@@ -69,17 +64,9 @@ public class PlayerStateDodge : PlayerStateLocomotion
             OnRadialBlurEffectEnter();
             m_Player.PlayOneShot(m_Player.config.dodge.audio);
         }
-        else if (m_State == EDodgeState.Stop)
+        else if (m_State == EDodgeState.Floating && time >= 0.9f)
         {
-            if (m_Player.lockTarget != null)
-                m_Player.ChangeState(ECharacterState.StrafeMove);
-            else
-                m_Player.ChangeState(ECharacterState.Idle);
-        }
-        else if (m_State == EDodgeState.Floating)
-        {            
-            if (time >= 0.9f)
-                m_State = EDodgeState.Stop;
+            m_State = EDodgeState.Stop;
         }
     }
 
@@ -95,9 +82,9 @@ public class PlayerStateDodge : PlayerStateLocomotion
         }
     }
 
-    public override bool CanExecute(ECharacterAction action)
+    public override bool IsExpired()
     {
-        return false;
+        return m_State == EDodgeState.Stop;
     }
 
     public override ECharacterAction GetCurrentAction()

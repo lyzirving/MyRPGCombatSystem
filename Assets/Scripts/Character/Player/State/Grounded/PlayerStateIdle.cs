@@ -42,37 +42,4 @@ public class PlayerStateIdle : PlayerStateLocomotion
     {
         return ECharacterAction.Idle;
     }
-
-    public override bool CanExecute(ECharacterAction action)
-    {
-        switch (action)
-        {
-            case ECharacterAction.Dodge:
-                return m_Player.lockTarget != null;
-            default:
-                return true;
-        }
-    }
-
-    public override void Execute(ECharacterAction action)
-    {
-        switch (action)
-        {
-            case ECharacterAction.Defence:
-                m_Player.ChangeState(ECharacterState.Defence);
-                return;
-            case ECharacterAction.Jump:
-                m_Player.ChangeState(ECharacterState.Jump);
-                return;
-            case ECharacterAction.LightAttack:
-                m_Player.ChangeState(ECharacterState.Attack);
-                return;               
-            case ECharacterAction.Dodge:
-                m_Player.MakeDodgeAction(m_Player.action.playerMovement);
-                m_Player.ChangeState(ECharacterState.Dodge);
-                return;
-            default:
-                break;
-        }
-    }
 }

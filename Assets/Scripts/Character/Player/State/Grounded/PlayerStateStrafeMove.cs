@@ -53,24 +53,6 @@ public class PlayerStateStrafeMove : PlayerStateMove
         MoveImmediately(moveDir * m_Player.speedScaler);
     }
 
-    public override bool CanExecute(ECharacterAction action)
-    {
-        return true;
-    }
-
-    public override void Execute(ECharacterAction action)
-    {
-        if (action == ECharacterAction.Dodge)
-        {
-            m_Player.MakeDodgeAction(m_Player.action.playerMovement);
-            m_Player.ChangeState(ECharacterState.Dodge);
-        }
-        else
-        {
-            base.Execute(action);
-        }
-    }
-
     protected override void UpdateAnimationValue()
     {
         Vector2 input = m_Player.action.playerMovement;

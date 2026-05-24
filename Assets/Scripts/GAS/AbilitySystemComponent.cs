@@ -16,11 +16,15 @@ public class AbilitySystemComponent : MonoBehaviour
     [SerializeField] private GameplayAbilitySet m_GrantedAbility;
     [SerializeField] private CharacterControllerBase m_Character;        
 
+    // Index by instance id
     private Dictionary<int, ActiveGameplayEffect> m_ActiveEffects = new Dictionary<int, ActiveGameplayEffect>();
     private Dictionary<int, GameplayAbility> m_ActiveAbilities = new Dictionary<int, GameplayAbility>();
+    private List<GameplayAbility> m_AbilitiesToBeRemove = new List<GameplayAbility>();
 
     private GameplayAttributeSet m_AttributeSet = new GameplayAttributeSet();
     private GameplayTagContainer m_ActiveTags = new GameplayTagContainer();
+
+    public IReadOnlyDictionary<int, GameplayAbility> activeAbilities => m_ActiveAbilities;
 
     private void Awake()
     {
@@ -30,9 +34,18 @@ public class AbilitySystemComponent : MonoBehaviour
 
     private void Update()
     {
-        foreach (var item in m_ActiveAbilities)
+        m_AbilitiesToBeRemove.Clear();
+        foreach (var ability in m_ActiveAbilities.Values)
         {
-            item.Value.OnUpdate(Time.deltaTime);
+            if(ability.isActive)
+                ability.OnUpdate(Time.deltaTime);
+            else
+                m_AbilitiesToBeRemove.Add(ability);
+        }
+
+        foreach (var remove in m_AbilitiesToBeRemove)
+        {
+            m_ActiveAbilities.Remove(remove.GetInstanceID());
         }
     }
 
@@ -58,7 +71,7 @@ public class AbilitySystemComponent : MonoBehaviour
     private void InitializeAbilities()
     {
         if (m_GrantedAbility == null)
-            throw new System.Exception("GameplayAbilitySet hasn't been set yet.");
+            throw new Exception("GameplayAbilitySet hasn't been set yet.");
 
         foreach (var ability in m_GrantedAbility)
         {
@@ -87,15 +100,16 @@ public class AbilitySystemComponent : MonoBehaviour
             return false;
 
         if (ability.isActive)
+        {
+            ability.ReActivate(this, target);
             return true;
+        }
 
         if (ability.Activate(this, target))
         {
-            if(!ability.isInstant)
-                m_ActiveAbilities[ability.GetInstanceID()] = ability;
+            m_ActiveAbilities[ability.GetInstanceID()] = ability;
             return true;
-        }
-        
+        }        
         return false;
     }
 
@@ -105,27 +119,24 @@ public class AbilitySystemComponent : MonoBehaviour
             return false;
 
         ability.EndAbility(true);
-
-        return m_ActiveAbilities.Remove(ability.GetInstanceID());
+        return true;
     }
 
     public void CancelAllAbilities()
     { 
-        List<GameplayAbility> toBeRemoved = new List<GameplayAbility>();
+        m_AbilitiesToBeRemove.Clear();
         foreach (var item in m_ActiveAbilities)
         {
             var ability = item.Value;
             if (ability.canBeCanceled)
             {
-                toBeRemoved.Add(ability);
+                m_AbilitiesToBeRemove.Add(ability);
                 ability.EndAbility(true);
             }
         }
 
-        foreach (var item in toBeRemoved)
-        {
+        foreach (var item in m_AbilitiesToBeRemove)
             m_ActiveAbilities.Remove(item.GetInstanceID());
-        }
     }
 
     public void OnAbilityEnded(GameplayAbility ability)

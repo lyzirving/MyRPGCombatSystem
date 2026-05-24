@@ -5,6 +5,7 @@ public interface ICharacterBehavior
     public int GUID { get; }
     public Transform modelTransform { get; }    
     public StateMachine stateMachine { get; }
+    public AbilitySystemComponent abilitySystemComp { get; }
     public void OnAttackBegin();
     public void OnAttackEnd();
     public void OnAttackHit(ICharacterBehavior target, Vector3 hitPos);

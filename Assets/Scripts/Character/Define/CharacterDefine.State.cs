@@ -28,7 +28,8 @@ public enum EDefenceState : UInt16
     CounterAttackPerform,
     CounterAttackRunOut,
     Exiting,
-    End
+    End,
+    EndAndTransit
 }
 
 public enum EAttackState : UInt16

@@ -62,11 +62,14 @@ public class GameplayAbilitySet : ScriptableObject, IReadOnlyList<GameplayAbilit
     private void SyncAbilityMap()
     {
         m_AbilityMap.Clear();
-        for (int i = 0; i < m_AbilityList.Count; ++i)
+        for (int i = m_AbilityList.Count - 1; i >= 0; --i)
         {
             var ability = m_AbilityList[i];
             if (ability == null)
+            {
+                m_AbilityList.RemoveAt(i);
                 continue;
+            }
 
             if (m_AbilityMap.ContainsKey(ability.classHash))
             {

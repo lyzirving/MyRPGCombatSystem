@@ -62,26 +62,6 @@ public class PlayerStateMove : PlayerStateLocomotion
         MoveImmediately(targetDir * m_Player.speedScaler);
     }
 
-    public override bool CanExecute(ECharacterAction action)
-    {
-        return true;
-    }
-
-    public override void Execute(ECharacterAction action)
-    {
-        switch (action)
-        {
-            case ECharacterAction.Jump:
-                m_Player.ChangeState(ECharacterState.Jump, new ChangeStateArgs(m_CurrentTime < 0.5f ? EFootstep.LeftFootstep : EFootstep.RightFootstep));
-                return;
-            case ECharacterAction.LightAttack:
-                m_Player.ChangeState(ECharacterState.Attack);
-                return;
-            default:
-                break;
-        }
-    }
-
     public override ECharacterAction GetCurrentAction()
     {
         return ECharacterAction.Move;

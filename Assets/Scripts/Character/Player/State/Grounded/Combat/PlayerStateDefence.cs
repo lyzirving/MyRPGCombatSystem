@@ -29,11 +29,6 @@ public class PlayerStateDefence : PlayerStateCombat
         return true;
     }
 
-    public override bool HandleInput()
-    {
-        return false;
-    }
-
     public override void Update()
     {
         if (m_Player.action.isDefenceHolding && m_SubState == EDefenceState.Enter && m_Player.model.animator.IsTransitToState("DefenceHold", AnimationConsts.BASE_LAYER))
@@ -58,26 +53,9 @@ public class PlayerStateDefence : PlayerStateCombat
         m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
     }
 
-    public override bool CanExecute(ECharacterAction action)
+    public override bool IsExpired()
     {
-        if (action == ECharacterAction.LightAttack)
-            return m_SubState == EDefenceState.CounterAttackAWait;
-
-        return true;
-    }
-
-    public override void Execute(ECharacterAction action)
-    {
-        switch (action)
-        {
-            case ECharacterAction.LightAttack:
-                MonoManager.Stop(m_RestoreAttackCoroutine);
-                m_SubState = EDefenceState.CounterAttackPerform;
-                m_Player.ChangeState(ECharacterState.Attack);
-                return;
-            default:
-                break;
-        }
+        return m_SubState == EDefenceState.EndAndTransit;
     }
 
     public override ECharacterAction GetCurrentAction()
@@ -86,10 +64,11 @@ public class PlayerStateDefence : PlayerStateCombat
     }
     #endregion    
 
+
     #region Animation Event Handle
     private void OnDefenceEndTransition(in AnimationEventInfo info)
     {
-        m_Player.ChangeState(ECharacterState.Idle);
+        m_SubState = EDefenceState.EndAndTransit;
     }
     #endregion
 

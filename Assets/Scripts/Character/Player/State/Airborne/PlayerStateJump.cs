@@ -105,7 +105,12 @@ public class PlayerStateJump : PlayerStateAirborne
     public override void OnContactGround(Collider collider)
     {
         m_State = EJumpState.Landed;
-        base.OnContactGround(collider);
+        m_Player.OnFootStep(EFootstep.None);
+    }
+
+    public override bool IsExpired()
+    {
+        return m_State == EJumpState.Landed;
     }
     #endregion
 
