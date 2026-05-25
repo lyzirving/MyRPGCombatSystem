@@ -16,7 +16,6 @@ public class AbilitySystemComponent : MonoBehaviour
     [SerializeField] private GameplayAbilitySet m_GrantedAbility;
     [SerializeField] private CharacterControllerBase m_Character;        
 
-    // Index by instance id
     private Dictionary<int, ActiveGameplayEffect> m_ActiveEffects = new Dictionary<int, ActiveGameplayEffect>();
     private Dictionary<int, GameplayAbility> m_ActiveAbilities = new Dictionary<int, GameplayAbility>();
     private List<GameplayAbility> m_AbilitiesToBeRemove = new List<GameplayAbility>();
@@ -96,9 +95,16 @@ public class AbilitySystemComponent : MonoBehaviour
 
         if (ability.Activate(this, target))
         {
-            m_ActiveAbilities[ability.GetInstanceID()] = ability;
+            m_ActiveAbilities[ability.classHash] = ability;
             return true;
         }        
+        return false;
+    }
+
+    public bool CancelAbility<T>() where T : GameplayAbility
+    {
+        if (m_ActiveAbilities.TryGetValue(AbilityHash<T>.classHash, out var ability))
+            return CancelAbility(ability);
         return false;
     }
 
@@ -125,7 +131,7 @@ public class AbilitySystemComponent : MonoBehaviour
         }
 
         foreach (var item in m_AbilitiesToBeRemove)
-            m_ActiveAbilities.Remove(item.GetInstanceID());
+            m_ActiveAbilities.Remove(item.classHash);
     }
 
     public void OnAbilityEnded(GameplayAbility ability)
@@ -149,7 +155,7 @@ public class AbilitySystemComponent : MonoBehaviour
 
         foreach (var remove in m_AbilitiesToBeRemove)
         {
-            m_ActiveAbilities.Remove(remove.GetInstanceID());
+            m_ActiveAbilities.Remove(remove.classHash);
         }
     }
     #endregion

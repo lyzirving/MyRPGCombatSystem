@@ -13,4 +13,7 @@ public class GameplayAbilityMenuItems
 
     [MenuItem("Assets/Create/GAS/Ability/DefenceAbility", priority = 10)]
     private static void CreateDefenceAbility() => GameplayAbilityCreator.CreateGameplayAbility<DefenceAbility>();
+
+    [MenuItem("Assets/Create/GAS/Ability/LockTargetAbility", priority = 10)]
+    private static void CreateLockTargetAbility() => GameplayAbilityCreator.CreateGameplayAbility<LockTargetAbility>();
 }

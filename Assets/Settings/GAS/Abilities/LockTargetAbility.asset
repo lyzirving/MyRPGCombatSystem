@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52adad5c02fe2a74fbb8c75d089d6709, type: 3}
-  m_Name: DodgeAbility
+  m_Script: {fileID: 11500000, guid: 990b4e3e13b93bc4d844ad5348f0c336, type: 3}
+  m_Name: LockTargetAbility
   m_EditorClassIdentifier: 
-  m_UniqueID: d324343b-0e7b-45fa-aeb4-fc909932704e
-  abilityName: DodgeAbility
+  m_UniqueID: 3a1213da-691d-457e-bddb-515d586bceba
+  abilityName: LockTarget
   description: 
   icon: {fileID: 0}
   activationPolicy: 1
@@ -25,7 +25,7 @@ MonoBehaviour:
     m_TagName: 
   cooldownDuration: 0
   cooldownEffect: {fileID: 0}
-  grantedTags: []
-  requiredTags:
+  grantedTags:
   - m_TagName: Root.Combat.Locked
+  requiredTags: []
   blockedTags: []

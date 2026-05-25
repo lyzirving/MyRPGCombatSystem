@@ -107,22 +107,19 @@ public class PlayerController : CharacterControllerBase
     public override void OnTargetFind(Transform target)
     {
         lockTarget = target;
-        m_Model.SetAnimationBool(AnimationConsts.locked, true);
+        m_AbilitySystemComp.TryActivateAbility<LockTargetAbility>();        
     }
 
     public override void OnTargetLost(Transform target)
     {
-        lockTarget = null;        
-        m_Model.SetAnimationBool(AnimationConsts.locked, false);
-        if (IsCurrentState<PlayerStateStrafeMove>())
-            ChangeState(ECharacterState.Move);
+        lockTarget = null;
+        m_AbilitySystemComp.CancelAbility<LockTargetAbility>();
     }
 
     public override void OnTargetChange(Transform current, Transform last)
     {
         lockTarget = current;
-        if (lockTarget != null)
-            m_Model.SetAnimationBool(AnimationConsts.locked, true);
+        m_AbilitySystemComp.TryActivateAbility<LockTargetAbility>(); 
     }
     #endregion
 }
