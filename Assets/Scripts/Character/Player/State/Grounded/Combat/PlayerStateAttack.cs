@@ -9,7 +9,8 @@ public class PlayerStateAttack : PlayerStateCombat
         base.Enter(exitState, args);
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);
         m_NormalizedTime = 0f;
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);        
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfx, HandleAttackVfx);
     }
 
     public override void ReEnter(ChangeStateArgs args)
@@ -21,6 +22,7 @@ public class PlayerStateAttack : PlayerStateCombat
     public override bool Exit(StateBase newState)
     {
         m_Player.attackComponent.EndCombo();
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfx, HandleAttackVfx);
         AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
         base.Exit(newState);
         return true;
@@ -65,5 +67,14 @@ public class PlayerStateAttack : PlayerStateCombat
             return;
 
         m_Player.attackComponent.BeginCombo();
+    }
+
+    private void HandleAttackVfx(in AnimationEventInfo info)
+    {
+        //[BugFix] fix animator graph doesn't sync with logic state
+        if (info.animatorState != m_Player.attackComponent.skill.animatorState)
+            return;
+
+
     }
 }
