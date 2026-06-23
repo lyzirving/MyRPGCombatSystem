@@ -89,6 +89,14 @@ public class PlayerController : CharacterControllerBase
         VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnPrefab, hitPos, Quaternion.identity);
     }
 
+    public override void OnAttackVfxBegin() 
+    {
+    }
+
+    public override void OnAttackVfxEnd() 
+    {
+    }
+
     public override void OnFootStep(EFootstep footStep)
     {
         PlayOneShot(config.footstep.runningAudio);

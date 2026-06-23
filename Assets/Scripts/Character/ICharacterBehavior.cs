@@ -9,6 +9,8 @@ public interface ICharacterBehavior
     public void OnAttackBegin();
     public void OnAttackEnd();
     public void OnAttackHit(ICharacterBehavior target, Vector3 hitPos);
+    public void OnAttackVfxBegin();
+    public void OnAttackVfxEnd();
     public void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData);
     public void OnFootStep(EFootstep footStep);
     public void OnContactGround(Collider collider);

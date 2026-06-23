@@ -85,7 +85,7 @@ public class TrackTrailRenderer : MonoBehaviour
         m_TrailLength = 0f;
         
         m_TrailPoints.Clear();
-        m_Mesh.Clear();
+        m_Mesh?.Clear();
 
         m_Translation = Vector3.zero;
     }
@@ -165,8 +165,8 @@ public class TrackTrailRenderer : MonoBehaviour
             vertices[i * 2] = m_TrailPoints[i].position - normal * currentWidth;
             vertices[i * 2 + 1] = m_TrailPoints[i].position + normal * currentWidth;            
 
-            // UV£ºU goes along with the path(tail = 0, head = 1)            
-            float u = 1f - progress;
+            // UV: U goes along with the path(head = 0, tail = 1)            
+            float u = progress;
             uvs[i * 2] = new Vector2(u, 0);
             uvs[i * 2 + 1] = new Vector2(u, 1);
 

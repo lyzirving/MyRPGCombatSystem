@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(AudioPool))]
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
-    [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();
+    [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();    
 
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
@@ -195,6 +195,9 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     }
 
     public virtual void OnAttackHit(ICharacterBehavior target, Vector3 hitPos) { }
+
+    public virtual void OnAttackVfxBegin() { }
+    public virtual void OnAttackVfxEnd() { }
 
     public virtual void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData) { }
 

@@ -10,7 +10,8 @@ public class PlayerStateAttack : PlayerStateCombat
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);
         m_NormalizedTime = 0f;
         AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfx, HandleAttackVfx);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, HandleAttackVfxBegin);
+        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, HandleAttackVfxEnd);
     }
 
     public override void ReEnter(ChangeStateArgs args)
@@ -22,8 +23,9 @@ public class PlayerStateAttack : PlayerStateCombat
     public override bool Exit(StateBase newState)
     {
         m_Player.attackComponent.EndCombo();
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfx, HandleAttackVfx);
         AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, HandleAttackVfxBegin);
+        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, HandleAttackVfxEnd);
         base.Exit(newState);
         return true;
     }
@@ -69,12 +71,21 @@ public class PlayerStateAttack : PlayerStateCombat
         m_Player.attackComponent.BeginCombo();
     }
 
-    private void HandleAttackVfx(in AnimationEventInfo info)
+    private void HandleAttackVfxBegin(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state
         if (info.animatorState != m_Player.attackComponent.skill.animatorState)
             return;
 
+        m_Player.OnAttackVfxBegin();
+    }
 
+    private void HandleAttackVfxEnd(in AnimationEventInfo info)
+    {
+        //[BugFix] fix animator graph doesn't sync with logic state
+        if (info.animatorState != m_Player.attackComponent.skill.animatorState)
+            return;
+
+        m_Player.OnAttackVfxEnd();
     }
 }
