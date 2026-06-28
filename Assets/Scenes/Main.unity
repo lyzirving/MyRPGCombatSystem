@@ -1438,12 +1438,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   referencePos: {fileID: 427709380}
-  referenceFwd: {fileID: 496888497}
+  heightFilter: 0.25
+  angleInterval: 80
+  maxDropHeight: 0.05
+  minimumInterval: 0.08
+  smoothPoints: 1
+  smoothWindowSize: 3
+  miterLimit: 2
   material: {fileID: 2100000, guid: 25e9eeec412f67142bd4696d23e7f33d, type: 2}
-  width: 0.15
-  minimumWidthRatio: 0.3
-  minimumInterval: 0.1
-  gizmoWidth: 0.05
+  width: 0.05
+  scaleRatio: 1
+  gizmoWidth: 0.01
 --- !u!1 &507923619
 GameObject:
   m_ObjectHideFlags: 0

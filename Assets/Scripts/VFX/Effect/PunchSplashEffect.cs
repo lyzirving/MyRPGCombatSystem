@@ -1,42 +1,56 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Pool;
+using static LineBuilder;
 
 public class PunchSplashEffect : MonoBehaviour
 {
     [Header("Tracking")]
     public Transform referencePos;
-    public Transform referenceFwd;
+    [Range(0f, 1f)] public float heightFilter = 0.25f;
+    [Range(0f, 90f)] public float angleInterval = 80f;
+    public float maxDropHeight = 0.05f;
+    public float minimumInterval = 0.08f;
+    public bool smoothPoints = true;
+    public int smoothWindowSize = 3;
+    public float miterLimit = 2f;
 
     [Header("Renderering")]
     public Material material;
-    public float width = 1f;
-    public bool graduallyDecrease = false;
-    public float minimumWidthRatio = 0.4f;
-    public float minimumInterval = 0.2f;
-    public int maxActiveMeshCount = 5;
+    public float width = 1f;   
+    public float scaleRatio = 1f;
 
     [Header("Debug")]
     public float gizmoWidth = 0.05f;
 
-    private ObjectPool<Mesh> m_MeshPool = null;
-    private List<Mesh> m_ActiveMesh = new List<Mesh>();
+    public bool canMakeMesh => m_Path != null && m_Path.Count >= 2;
+
     private List<Vector3> m_Path = new List<Vector3>();
+    private List<Vector3> m_SmoothedPath = new List<Vector3>();
     private bool m_IsRecording = false;
+
+    private Mesh m_Mesh = null;
+    private float m_FilteredHeight = 0f;
+    private Matrix4x4 m_ScaleMatrix = Matrix4x4.identity;
+    private float m_LastScaleRatio = 1f;
 
     #region Lifecycle
     private void Awake()
     {
-        m_MeshPool = new ObjectPool<Mesh>( 
-            createFunc: () => new Mesh(),                      
-            actionOnGet: (mesh) => mesh.Clear(),               
-            actionOnRelease: (mesh) => mesh.Clear(),           
-            actionOnDestroy: (mesh) => mesh.Clear(),                    
-            collectionCheck: true,                  
-            defaultCapacity: 5,                  
-            maxSize: 10                                   
-        );
+        m_Mesh = new Mesh();
+        m_Mesh.MarkDynamic();
     }
+
+    private void Start()
+    {
+        m_ScaleMatrix = Matrix4x4.identity;
+        m_LastScaleRatio = 1f;
+    }
+
+    private void Update()
+    {
+        //TODO: how to scale along the path?
+        CalcScaleMatrix();
+    }    
 
     private void LateUpdate()
     {
@@ -63,104 +77,152 @@ public class PunchSplashEffect : MonoBehaviour
             return;
         }
 
-        if (referenceFwd == null)
-        {
-            Debug.LogWarning("referenceFwd is null while recording");
-            return;
-        }
-
-        if (m_Path.Count == 0)
+        int count = m_Path.Count;
+        if (count == 0)
         {
             m_Path.Add(referencePos.position);
+            m_FilteredHeight = referencePos.position.y;
             return;
         }
 
-        int lastIdx = m_Path.Count - 1;
-        float interval = Vector3.Distance(referencePos.position, m_Path[lastIdx]);
-        if (interval >= minimumInterval)
+        Vector3 current = referencePos.position;        
+        if (!IsDistanceExceed(current, m_Path))
         {
-            var dir = referencePos.position - m_Path[lastIdx];
-            var dist = dir.magnitude;
-            dir = dir.normalized;
+            if (count == 1)
+            {
+                current.y = CalcFilteredHeight(m_FilteredHeight, current.y);
+                m_FilteredHeight = current.y;
+                m_Path.Add(current);
+                return;
+            }
 
-            var angle = Vector3.Angle(referenceFwd.forward, dir);
-            if (angle > 90)
+            if (IsAngleExceed(current, m_Path))
                 return;
 
-            m_Path.Add(m_Path[lastIdx] + referenceFwd.forward * Vector3.Dot(referenceFwd.forward, dir) * dist);
-        }
-    }
+            if (IsHeightDropExceed(current, m_Path))
+                current.y = m_Path[count - 1].y;
 
-    private Mesh BuildMesh()
-    {
-        int pointCount = m_Path.Count;
-        if (pointCount < 2)
-            return null;
-
-        Vector3[] vertices = new Vector3[pointCount * 2];
-        Vector2[] uvs = new Vector2[pointCount * 2];
-
-        for (int i = 0; i < pointCount; i++)
-        {
-            Vector3 dir;
-            if (i == pointCount - 1)
-                dir = (m_Path[i] - m_Path[i - 1]).normalized;
-            else
-                dir = (m_Path[i + 1] - m_Path[i]).normalized;
-
-            Vector3 up = Vector3.up;
-            if (Mathf.Abs(Vector3.Dot(dir, up)) > 0.99f)
-                up = Vector3.forward;
-            Vector3 left = Vector3.Cross(dir, up).normalized;
-            Vector3 normal = Vector3.Cross(left, dir).normalized;
-
-            // tail: i = 0; head: i = n - 1
-            float progress = (float)i / (float)(pointCount - 1);
-            float currentWidth = graduallyDecrease ? Mathf.Lerp(width * minimumWidthRatio, width, progress) : width;
-
-            // top && bottom
-            vertices[i * 2] = m_Path[i] + normal * currentWidth;
-            vertices[i * 2 + 1] = m_Path[i] - normal * currentWidth;
-
-            // UV: U goes along with the path        
-            float u = 1f - progress;
-            uvs[i * 2] = new Vector2(u, 1);
-            uvs[i * 2 + 1] = new Vector2(u, 0);
-        }
-
-        int[] triangles = new int[(pointCount - 1) * 6];
-        for (int i = 0; i < pointCount - 1; i++)
-        {
-            int i0 = i * 2;
-            int i1 = i * 2 + 1;
-            int i2 = (i + 1) * 2;
-            int i3 = (i + 1) * 2 + 1;
-
-            // triangle1: 0-1-2
-            triangles[i * 6] = i0;
-            triangles[i * 6 + 1] = i2;
-            triangles[i * 6 + 2] = i1;
-
-            // triangle2: 2-1-3
-            triangles[i * 6 + 3] = i2;
-            triangles[i * 6 + 4] = i3;
-            triangles[i * 6 + 5] = i1;
-        }
-
-        var mesh = m_MeshPool.Get();
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-        mesh.triangles = triangles;
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-
-        return mesh;
-    }
+            current.y = CalcFilteredHeight(m_FilteredHeight, current.y);
+            m_FilteredHeight = current.y;
+            m_Path.Add(current);
+        }        
+    }    
 
     private void RenderMesh()
     {
-        foreach (var mesh in m_ActiveMesh)
-            Graphics.DrawMesh(mesh, Matrix4x4.identity, material, gameObject.layer);
+        if (m_Mesh == null || m_Mesh.vertexCount == 0)
+            return;
+
+        Graphics.DrawMesh(m_Mesh, m_ScaleMatrix, material, gameObject.layer);
+    }
+
+    private bool IsDistanceExceed(Vector3 pt, List<Vector3> points)
+    {
+        if (points.Count == 0)
+            return true;
+
+        return Vector3.Distance(pt, points[points.Count - 1]) < minimumInterval;
+    }
+
+    private bool IsAngleExceed(Vector3 pt, List<Vector3> points)
+    {
+        var count = points.Count;
+        if (count < 3)
+            return false;
+        Vector3 dir0 = (pt - points[count - 1]).normalized;
+        Vector3 dir1 = (points[count - 1] - points[count - 2]).normalized;
+        return Vector3.Angle(dir0, dir1) > angleInterval;
+    }
+
+    private bool IsHeightDropExceed(Vector3 pt, List<Vector3> points)
+    {
+        var count = points.Count;
+        if (count == 0)
+            return false;
+        float drop = pt.y - points[count - 1].y;        
+        return drop < 0 && Mathf.Abs(drop) >= maxDropHeight;
+    }
+
+    private float CalcFilteredHeight(float filteredHeight, float currentHeight)
+    {
+        return Mathf.Lerp(filteredHeight, currentHeight, heightFilter);
+    }
+
+    private void CalcScaleMatrix()
+    {
+        //if(m_Mesh.vertexCount == 0)
+        //    return;
+        //
+        //if (Mathf.Approximately(scaleRatio, m_LastScaleRatio))
+        //    return;
+        //
+        //if (scaleRatio > 0f && scaleRatio < Mathf.Epsilon)
+        //    scaleRatio = 0.01f;
+        //
+        //var center = m_Mesh.bounds.center;
+        //
+        //m_ScaleMatrix = Matrix4x4.Translate(center) *
+        //                ScaleAlongAxis(referenceFwd.forward, scaleRatio) *
+        //                Matrix4x4.Translate(-center);
+        //
+        //m_LastScaleRatio = scaleRatio;
+    }
+
+    /// <summary>
+    /// Scale along any specific axis at the center of (0, 0, 0)
+    /// </summary>
+    /// <param name="normalizedAxis"></param>
+    /// <param name="k"></param>
+    /// <returns></returns>
+    private Matrix4x4 ScaleAlongAxis(Vector3 normalizedAxis, float k)
+    {
+        float x = normalizedAxis.x;
+        float y = normalizedAxis.y;
+        float z = normalizedAxis.z;
+        float k1 = k - 1.0f;
+
+        Matrix4x4 s = Matrix4x4.identity;
+        s.m00 = 1.0f + k1 * x * x;
+        s.m01 = k1 * x * y;
+        s.m02 = k1 * x * z;
+
+        s.m10 = k1 * y * x;
+        s.m11 = 1.0f + k1 * y * y;
+        s.m12 = k1 * y * z;
+
+        s.m20 = k1 * z * x;
+        s.m21 = k1 * z * y;
+        s.m22 = 1.0f + k1 * z * z;
+
+        return s;
+    }
+
+    private void SmoothPoints(List<Vector3> points, List<Vector3> smoothed, int windowSize = 3)
+    {
+        if(smoothed == null)
+            smoothed = new List<Vector3>();
+
+        smoothed.Clear();
+
+        for (int i = 0; i < points.Count; i++)
+        {
+            // NOTE£ºwindowSize should be odd number(3, 5, 7 ......),
+            //       it can make current point be the center of window.
+            int half = windowSize / 2;
+            int start = Mathf.Max(0, i - half);
+            int end = Mathf.Min(points.Count - 1, i + half);
+
+            Vector3 sum = Vector3.zero;
+            int count = 0;
+            for (int j = start; j <= end; j++)
+            {
+                sum += points[j];
+                count++;
+            }
+
+            Vector3 average = sum / count;
+            smoothed.Add(average);
+        }
     }
     #endregion
 
@@ -178,17 +240,13 @@ public class PunchSplashEffect : MonoBehaviour
 
     public void PlayEffect()
     {
-        Mesh mesh = BuildMesh();
-        if (mesh != null)
-        {
-            m_ActiveMesh.Add(mesh);
-            if (m_ActiveMesh.Count > maxActiveMeshCount)
-            {
-                Mesh removed = m_ActiveMesh[0];
-                m_ActiveMesh.RemoveAt(0);
-                m_MeshPool.Release(removed);
-            }
-        }
+        if (!canMakeMesh)
+            return;
+
+        if (smoothPoints)
+            SmoothPoints(m_Path, m_SmoothedPath, smoothWindowSize);
+
+        LineBuilder.BuildLineMesh(m_Path.ToArray(), width, miterLimit, UVExtend.ExtendAlongU, m_Mesh);
     }
     #endregion
 }
