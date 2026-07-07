@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AttackBox : MonoBehaviour
 {
@@ -56,6 +58,18 @@ public class AttackBox : MonoBehaviour
     public void Init(ICharacterBehavior playerBehavior)
     {
         m_PlayerBehavior = playerBehavior;
+        if (skillConfig != null && !string.IsNullOrEmpty(skillConfig.skillReleaseData.spawnPrefab))
+        {
+            AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(skillConfig.skillReleaseData.spawnPrefab);
+            handle.WaitForCompletion();
+            var vfxEffect = GameObject.Instantiate(handle.Result, m_PlayerBehavior.vfxRoot);
+            vfxEffect.SetActive(false);
+            skillConfig.skillReleaseData.effectInst = vfxEffect.GetComponent<VFXEffect>();
+            if (skillConfig.skillReleaseData.effectInst != null)
+            {
+                skillConfig.skillReleaseData.effectInst.duration = skillConfig.skillReleaseData.vfxTime;
+            }
+        }
     }
 
     public void OnAttackBegin()

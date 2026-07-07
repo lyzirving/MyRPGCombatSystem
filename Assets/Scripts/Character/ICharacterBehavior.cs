@@ -3,7 +3,8 @@ using UnityEngine;
 public interface ICharacterBehavior
 {
     public int GUID { get; }
-    public Transform modelTransform { get; }    
+    public Transform modelTransform { get; }
+    public Transform vfxRoot { get; }
     public StateMachine stateMachine { get; }
     public AbilitySystemComponent abilitySystemComp { get; }
     public void OnAttackBegin();

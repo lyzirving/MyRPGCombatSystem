@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: VFX_Prefab
   m_GUID: 52006016f54890e4ea3e0a5d0b5b7ef9
   m_SerializeEntries:
+  - m_GUID: 575b00f843a53f24ca7e32dcd7a5fdef
+    m_Address: VFX/Attack/PunchLeft
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91d57adbe8d31ab4787575db24d0d039
+    m_Address: VFX/Attack/PunchRight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e8ae6236a07007a49b77218e3e2451f9
     m_Address: VFX/Classic/18
     m_ReadOnly: 0

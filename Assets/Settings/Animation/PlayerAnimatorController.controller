@@ -1133,12 +1133,12 @@ MonoBehaviour:
     launchTime: 0.25
     triggerTime: 0
     animatorState: LightPunchRight
-  - type: 103
-    launchTime: 0.33
-    triggerTime: 0
-    animatorState: LightPunchRight
   - type: 105
     launchTime: 0.266
+    triggerTime: 0
+    animatorState: LightPunchRight
+  - type: 103
+    launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchRight
   animatorState: LightPunchRight
@@ -1183,12 +1183,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
+  - type: 104
+    launchTime: 0.16
+    triggerTime: 0
+    animatorState: LightPunchLeft
   - type: 101
     launchTime: 0.195
     triggerTime: 0
     animatorState: LightPunchLeft
   - type: 102
     launchTime: 0.25
+    triggerTime: 0
+    animatorState: LightPunchLeft
+  - type: 105
+    launchTime: 0.266
     triggerTime: 0
     animatorState: LightPunchLeft
   - type: 103

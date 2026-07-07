@@ -8,7 +8,6 @@ public class PlayerController : CharacterControllerBase
     // -------- Component in current node start --------
     private PlayerActionController m_ActionController;
     private GhostTrail m_GhostTrail;
-    private PunchSplashEffect m_SplashEffect;
     // -------- Component in current node end --------
     #region State Methods
     private void Awake()
@@ -19,8 +18,6 @@ public class PlayerController : CharacterControllerBase
         m_Model.Init(this);
 
         m_GhostTrail = GetComponent<GhostTrail>();
-
-        m_SplashEffect = GetComponent<PunchSplashEffect>();
 
         m_ActionController = GetComponent<PlayerActionController>();
         m_ActionController.Init(this);
@@ -94,13 +91,11 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackVfxBegin() 
     {
-        m_SplashEffect.StartRecord();
+        m_AttackComponent.skill.skillReleaseData.effectInst?.StartPlay();
     }
 
     public override void OnAttackVfxEnd() 
     {
-        m_SplashEffect.StopRecord();
-        m_SplashEffect.PlayEffect();
     }
 
     public override void OnFootStep(EFootstep footStep)

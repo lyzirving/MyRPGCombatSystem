@@ -6,8 +6,9 @@ using UnityEngine;
 [RequireComponent(typeof(AudioPool))]
 public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, ICharacterBehavior
 {
-    [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();    
+    [SerializeField] protected CharacterConfig m_Config = new CharacterConfig();
 
+    protected Transform m_VFXRoot;
     protected CharacterAttrs m_Attrs = new CharacterAttrs();
     protected StateMachine m_StateMachine;
     protected CharacterModel m_Model;
@@ -141,6 +142,10 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
 
     protected void Init()
     {
+        m_VFXRoot = this.transform.Find("VFXRoot");
+        if(m_VFXRoot == null)
+            m_VFXRoot = this.transform;
+
         m_Rigidbody = GetComponent<Rigidbody>();
         m_CapsuleCollider = GetComponent<CapsuleCollider>();
 
@@ -181,6 +186,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #region ICharacterBehavior Methods
     public int GUID => m_CharacterGUID;
     public Transform modelTransform => m_Model.transform;
+    public Transform vfxRoot => m_VFXRoot;
     public StateMachine stateMachine => m_StateMachine;    
     public AbilitySystemComponent abilitySystemComp => m_AbilitySystemComp;
 

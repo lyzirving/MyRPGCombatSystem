@@ -43,7 +43,9 @@ public class SkillData : ScriptableObject
 public class SkillReleaseData
 {
     public string spawnPrefab;
+    public float vfxTime;
     public AudioClip audioClip;
+    [NonSerialized] public VFXEffect effectInst;
 }
 
 /// <summary>
