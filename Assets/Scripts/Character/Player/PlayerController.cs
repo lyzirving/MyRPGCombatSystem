@@ -91,6 +91,7 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackVfxBegin() 
     {
+        // TODO: Build GameplayCue to release vfx?
         m_AttackComponent.skill.skillReleaseData.effectInst?.StartPlay();
     }
 
