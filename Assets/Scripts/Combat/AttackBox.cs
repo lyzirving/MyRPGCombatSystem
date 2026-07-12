@@ -113,11 +113,5 @@ public class AttackBox : MonoBehaviour
             m_TagHashSet.Add(m_ColliderTags[i]);
         }
     }
-
-    // 重新初始化矩阵
-    [ContextMenu("重新初始化矩阵")]
-    public void ReinitializeMatrix()
-    {
-    }
 #endif
 }

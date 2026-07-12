@@ -51,9 +51,15 @@ public class GhostTrail : MonoBehaviour
             return;
         }
 
-        if (materials == null || materials.Count < meshRenderer.sharedMesh.subMeshCount)
+        if (materials == null)
         {
-            Debug.LogWarning($"Materials hasn't been assgined to GhostTrail[{this.gameObject.name}]");
+            Debug.LogWarning($"GhostTrail: material is null, go[{this.gameObject.name}]");            
+            return;
+        }
+
+        if (materials.Count < meshRenderer.sharedMesh.subMeshCount)
+        {
+            Debug.LogWarning($"materials.Count[{materials.Count}] < meshRenderer.sharedMesh.subMeshCount[{meshRenderer.sharedMesh.subMeshCount}], go[{this.gameObject.name}]");
             return;
         }
 
