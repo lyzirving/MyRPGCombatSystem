@@ -4,14 +4,12 @@ using UnityEngine.Rendering;
 
 public class PlayerStateDodge : PlayerStateLocomotion
 {
-    private float RADIAL_BLUR_DURATION = 0.2f;
-    private float RADIAL_BLUR_DEST_INTENSITY = 0.8f;
-
-    private ScreenRadialBlurVolumeComponent m_VolumeComp;
+    private RadialBlurBlitVolumeComponent m_VolumeComp;
     private EDodgeState m_State = EDodgeState.Start;
     private bool m_IsJumpPerformed = false;
-    private Tween m_ScreenRadialBlurTween;
-    private float m_ScreenRadialBlurIntensity;
+
+    private Tween m_RadialBlurTween;
+    private float m_RadialBlurIntensity;
 
     public override void Init(IStateMachineOwner owner)
     {
@@ -34,7 +32,7 @@ public class PlayerStateDodge : PlayerStateLocomotion
         m_Player.model.RegisterRootMotionAction(HandleRootMotion);
         m_State = EDodgeState.Start;
         m_IsJumpPerformed = false;
-        m_ScreenRadialBlurIntensity = 0f;
+        m_RadialBlurIntensity = 0f;
     }
 
     public override bool Exit(StateBase newState)
@@ -160,36 +158,40 @@ public class PlayerStateDodge : PlayerStateLocomotion
     {
         if(m_VolumeComp == null) return;
 
-        m_ScreenRadialBlurTween?.Kill();
-
-        m_ScreenRadialBlurTween = DOTween.To(() => m_ScreenRadialBlurIntensity, (value) => m_ScreenRadialBlurIntensity = value, 
-            RADIAL_BLUR_DEST_INTENSITY, 
-            RADIAL_BLUR_DURATION)
-            .SetLoops(1)
+        m_VolumeComp.UpdateFocusCenter(Camera.main, m_Player.modelTransform.position, GetRadialBlurDirection(m_Player.dodgeAction));
+        m_RadialBlurTween?.Kill();
+        m_RadialBlurTween = DOTween.To(() => m_RadialBlurIntensity,
+            (value) => m_RadialBlurIntensity = value,
+            1f, m_VolumeComp.duration.value)
             .SetEase(Ease.InSine)
-            .OnUpdate(OnScreenRadialUpdate)
-            .OnComplete(OnScreenRadialForwardComplete);
+            .OnUpdate(OnScreenRadialUpdate);
     }
 
     private void OnRadialBlurEffectExit()
     {
         if (m_VolumeComp == null) return;
 
-        m_ScreenRadialBlurTween?.Kill();
-        m_VolumeComp.intensity.value = m_ScreenRadialBlurIntensity = 0f;
+        m_RadialBlurTween?.Kill();
+        m_VolumeComp.intensity.value = m_RadialBlurIntensity = 0f;
     }
 
     private void OnScreenRadialUpdate()
     {        
-        m_VolumeComp.intensity.value = m_ScreenRadialBlurIntensity;
+        m_VolumeComp.intensity.value = m_RadialBlurIntensity;
     }
 
-    private void OnScreenRadialForwardComplete()
+    private Vector2 GetRadialBlurDirection(ECharacterDodgeAction playerAction)
     {
-        m_ScreenRadialBlurTween = DOTween.To(() => m_ScreenRadialBlurIntensity, (value) => m_ScreenRadialBlurIntensity = value,
-            0f, RADIAL_BLUR_DURATION)
-            .SetLoops(1)
-            .SetEase(Ease.InSine)
-            .OnUpdate(OnScreenRadialUpdate);
+        switch (playerAction)
+        {
+            case ECharacterDodgeAction.Left:
+                return Vector2.left;
+            case ECharacterDodgeAction.Forward:
+                return Vector2.up;
+            case ECharacterDodgeAction.Backward:
+                return Vector2.down;
+            default:
+                return Vector2.right;
+        }
     }
 }

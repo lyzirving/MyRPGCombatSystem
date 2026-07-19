@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68d4323a6d6f7af429ab5a6f4dad739d
+    m_Address: Shader/RadialBlurBlit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7d4297270f799e0479953c8a2c49d78b, type: 2}
   m_SchemaSet:

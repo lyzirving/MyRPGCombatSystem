@@ -26,9 +26,9 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
-  - {fileID: 4885563542774279507}
   - {fileID: 5719599961212585994}
-  m_RendererFeatureMap: ad6b866f10d7b46c53eda8462802cd430a086a69dc19604f
+  - {fileID: 1441394849183655924}
+  m_RendererFeatureMap: ad6b866f10d7b46c0a086a69dc19604ff467ab7efadc0014
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -54,7 +54,7 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
---- !u!114 &4885563542774279507
+--- !u!114 &1441394849183655924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,17 +63,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6803c2526f3d2ab44bb775465e0da25e, type: 3}
-  m_Name: ScreenRadialBlurFeature
+  m_Script: {fileID: 11500000, guid: 0f8e477cbb536fc4fa8aee7c75780cf4, type: 3}
+  m_Name: RadialBlurWithFocusFeature
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    renderPassEvent: 600
-    scale: 1
-    intensity: 0
-    pivotX: 0.5
-    pivotY: 0.5
-    denominator: 100
+    renderPassEvent: 450
+    focusRadius: 0.25
+    fade: 0.2
+    blurStrength: 1
+    blurAmount: 5
+    sampleCount: 16
+    directionalBias: 0.3
 --- !u!114 &5719599961212585994
 MonoBehaviour:
   m_ObjectHideFlags: 0
