@@ -1047,8 +1047,16 @@ MonoBehaviour:
     launchTime: 0.21
     triggerTime: 0
     animatorState: LightKickRight
+  - type: 104
+    launchTime: 0.227
+    triggerTime: 0
+    animatorState: LightKickRight
   - type: 102
     launchTime: 0.37
+    triggerTime: 0
+    animatorState: LightKickRight
+  - type: 105
+    launchTime: 0.408
     triggerTime: 0
     animatorState: LightKickRight
   - type: 103

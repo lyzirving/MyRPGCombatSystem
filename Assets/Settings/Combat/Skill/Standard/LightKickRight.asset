@@ -22,11 +22,12 @@ MonoBehaviour:
   hitStunTime: 0.3
   knockbackDistance: 0.3
   skillReleaseData:
-    spawnPrefab: 
+    spawnPrefab: VFX/Attack/VFX_KickRight
+    vfxTime: 0.18
     audioClip: {fileID: 8300000, guid: 48710c9d66597b4408f79bd450d96c22, type: 3}
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
     hitStopTimeScale: 0.18
-  attackBoxIndex: 1
+  attackBoxIndex: 0
   nextSkillIndex: -1
