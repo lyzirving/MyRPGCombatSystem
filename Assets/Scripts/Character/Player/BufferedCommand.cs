@@ -26,17 +26,19 @@ public struct BufferedCommand : IComparable<BufferedCommand>
             return -1;
     }
 
-    public bool IsValid()
+    public bool IsExpired()
     {
-        return Time.time - inputTime <= duration;
+        return Time.time - inputTime > duration;
     }
 
     public static int Priority(ECharacterAction type)
     {
         switch (type)
-        {
+        {            
+            case ECharacterAction.HeavyAttack: return 20;
+            case ECharacterAction.Dodge:       return 15;
             case ECharacterAction.LightAttack: return 10;
-            case ECharacterAction.Defence:     return 5;
+            case ECharacterAction.Defence:     return 5;            
             default: return 0;  
         }
     }

@@ -55,7 +55,8 @@ public class PlayerActionController : MonoBehaviour
 
         // --------------- Event Related Start --------------
         InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
-        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;        
+        InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
+        InputManager.instance.playerActions.HeavyAttack.performed += OnHeavyAttackPerformed;
         InputManager.instance.playerActions.Dodge.performed += OnDodgePerformed;
         // --------------- Event Related End ----------------
     }
@@ -67,7 +68,8 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.HoldDefence.canceled -= OnDefenceCancel;
 
         InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
-        InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;        
+        InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
+        InputManager.instance.playerActions.HeavyAttack.performed -= OnHeavyAttackPerformed;
         InputManager.instance.playerActions.Dodge.performed -= OnDodgePerformed;
     }
 
@@ -130,10 +132,72 @@ public class PlayerActionController : MonoBehaviour
 
     private void CheckBufferedCommand()
     {
-        // Only one cmd a frame. Note do not use while, it may cause infinite loop
-        if (m_BufferedCommand.count > 0)
+        if (m_BufferedCommand.count == 0) return;
+
+        var cmd = m_BufferedCommand.Dequeue(); // 取出优先级最高且未过期的命令
+        if (cmd.IsExpired()) return;
+
+        ExecuteCommand(cmd.action);
+    }
+
+    private void ExecuteCommand(ECharacterAction action)
+    {
+        switch (action)
         {
-            //Todo
+            case ECharacterAction.Jump:
+                m_CharacterBehavior.abilitySystemComp.TryActivateAbility<JumpAbility>();
+                break;
+            case ECharacterAction.LightAttack:
+                ProcessAttackInput(CombatDefine.EAttack.LA);                
+                break;
+            case ECharacterAction.HeavyAttack:
+                ProcessAttackInput(CombatDefine.EAttack.HA);   
+                break;
+            case ECharacterAction.Dodge:
+                m_CharacterBehavior.abilitySystemComp.TryActivateAbility<DodgeAbility>();
+                break;
+            default:
+                Debug.LogWarning($"Unhandled buffered command: {action}");
+                break;
+        }
+    }      
+
+    private void ProcessAttackInput(CombatDefine.EAttack inputType)
+    {
+        var asc = m_CharacterBehavior.abilitySystemComp;
+        var currentAttack = asc.GetActive<AttackAbility>();
+        if (currentAttack != null)
+        {
+            // in the middle of a combo
+
+            // check if we can advance to the next skill
+            if (m_CharacterBehavior.attackComponent.CanAdvanceNextSkill(inputType))
+            {
+                currentAttack.ReActivate(asc);
+                return;
+            }
+
+            var attackState = m_CharacterBehavior.stateMachine.currentState as PlayerStateAttack;
+            float curTime = attackState?.CurrentNormalizedTime ?? 0f; 
+            if(!currentAttack.CanBeInterrupted(curTime))
+            {
+                // if the current attack cannot be interrupted, we ignore the input
+                // Todo: whether we should cache the input for later use, or just ignore it                
+                return;
+            }
+            
+            // break current combo
+            currentAttack.EndAbility();
+        }
+
+        switch (inputType)
+        {
+            case CombatDefine.EAttack.LA:
+                asc.TryActivateAbility<LightAttackAbility>();
+                break;
+            case CombatDefine.EAttack.HA:
+                asc.TryActivateAbility<HeavyAttackAbility>();
+                break;
         }
     }
     #endregion
@@ -157,17 +221,22 @@ public class PlayerActionController : MonoBehaviour
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
-        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<JumpAbility>();
+        EnqueueBufferedCommand(ECharacterAction.Jump); 
     }
 
     private void OnLightAttackPerformed(InputAction.CallbackContext context)
     {
-        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<LightAttackAbility>();  
+        EnqueueBufferedCommand(ECharacterAction.LightAttack);        
+    }  
+
+    private void OnHeavyAttackPerformed(InputAction.CallbackContext context)
+    {
+        EnqueueBufferedCommand(ECharacterAction.HeavyAttack);
     }    
 
     private void OnDodgePerformed(InputAction.CallbackContext context)
     {
-        m_CharacterBehavior.abilitySystemComp.TryActivateAbility<DodgeAbility>();
+        EnqueueBufferedCommand(ECharacterAction.Dodge);
     }
     #endregion
 }

@@ -1,17 +1,30 @@
 using UnityEngine;
 
 public class PlayerStateAttack : PlayerStateCombat
-{
+{    
     private float m_NormalizedTime = 0;
+
+    private AttackAbility CurrentAttack => m_Player.abilitySystemComp.GetActive<AttackAbility>();
+
+    public float CurrentNormalizedTime => m_NormalizedTime;
 
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
-        m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);
         m_NormalizedTime = 0f;
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, HandleAttackVfxBegin);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, HandleAttackVfxEnd);
+        m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);        
+
+        var ability = CurrentAttack;
+        if(ability != null)
+        {
+            AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
+            AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
+            AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
+        }
+        else
+        {
+            Debug.LogError($"PlayerStateAttack::Enter() - no active AttackAbility found on player[{m_Player.name}]");
+        }
     }
 
     public override void ReEnter(ChangeStateArgs args)
@@ -23,9 +36,18 @@ public class PlayerStateAttack : PlayerStateCombat
     public override bool Exit(StateBase newState)
     {
         m_Player.attackComponent.EndCombo();
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, HandleAttackCombo);
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, HandleAttackVfxBegin);
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, HandleAttackVfxEnd);
+
+        var ability = CurrentAttack;
+        if (ability != null)
+        {
+            AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
+            AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
+            AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
+        }
+        else
+        {
+            Debug.LogError($"PlayerStateAttack::Exit() - no active AttackAbility found on player[{m_Player.name}]");
+        }
         base.Exit(newState);
         return true;
     }
@@ -60,32 +82,5 @@ public class PlayerStateAttack : PlayerStateCombat
     public override ECharacterAction GetCurrentAction()
     {
         return ECharacterAction.Attack;
-    }
-
-    private void HandleAttackCombo(in AnimationEventInfo info)
-    {
-        //[BugFix] fix animator graph doesn't sync with logic state
-        if (info.animatorState != m_Player.attackComponent.skill.animatorState)
-            return;
-
-        m_Player.attackComponent.BeginCombo();
-    }
-
-    private void HandleAttackVfxBegin(in AnimationEventInfo info)
-    {
-        //[BugFix] fix animator graph doesn't sync with logic state
-        if (info.animatorState != m_Player.attackComponent.skill.animatorState)
-            return;
-
-        m_Player.OnAttackVfxBegin();
-    }
-
-    private void HandleAttackVfxEnd(in AnimationEventInfo info)
-    {
-        //[BugFix] fix animator graph doesn't sync with logic state
-        if (info.animatorState != m_Player.attackComponent.skill.animatorState)
-            return;
-
-        m_Player.OnAttackVfxEnd();
     }
 }

@@ -12,6 +12,8 @@ public class SkillData : ScriptableObject
     public float inputWindowDuration = 0.2f;
     [Tooltip("Time to end current animation and transfer to another state")]
     public float transitionNormalizedTime = 1f;
+    [Tooltip("The time after the ability is activated, during which the ability cannot be interrupted by other abilities.")]
+    public float minInterruptNormalizedTime = 0.22f;
 
     [Header("Trigger Attributes")]
     [Tooltip("Name of the attack box, which should be mapped to the one on player")]

@@ -7,6 +7,7 @@ public interface ICharacterBehavior
     public Transform vfxRoot { get; }
     public StateMachine stateMachine { get; }
     public AbilitySystemComponent abilitySystemComp { get; }
+    public AttackComponent attackComponent { get; }
     public void OnAttackBegin();
     public void OnAttackEnd();
     public void OnAttackHit(ICharacterBehavior target, Vector3 hitPos);

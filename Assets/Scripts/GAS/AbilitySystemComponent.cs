@@ -71,6 +71,37 @@ public class AbilitySystemComponent : MonoBehaviour
     #endregion    
 
     #region Ability Operations
+    public void RegisterActiveAbility(GameplayAbility ability)
+    {
+        if (ability == null)
+            return;
+
+        m_ActiveAbilities[ability.classHash] = ability;
+    }
+
+    public T GetActiveAccuratly<T>() where T : GameplayAbility
+    {
+        if (m_ActiveAbilities.TryGetValue(AbilityHash<T>.classHash, out var ability))
+            return ability as T;
+        return null;
+    }
+
+    /// <summary>
+    /// Get active ability by iteration. 
+    /// Only a few abilities are active at the same time, so this method is safe to use.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public T GetActive<T>() where T : GameplayAbility
+    {
+        foreach (var ability in m_ActiveAbilities.Values)
+        {
+            if (ability is T tAbility)
+                return tAbility;
+        }
+        return null;
+    }
+
     public bool HasAbility<T>() where T : GameplayAbility => m_GrantedAbility?.Has<T>() ?? false;
 
     public bool TryActivateAbility<T>(object target = null) where T : GameplayAbility
@@ -93,12 +124,7 @@ public class AbilitySystemComponent : MonoBehaviour
             return true;
         }
 
-        if (ability.Activate(this, target))
-        {
-            m_ActiveAbilities[ability.classHash] = ability;
-            return true;
-        }        
-        return false;
+        return ability.Activate(this, target);
     }
 
     public bool CancelAbility<T>() where T : GameplayAbility

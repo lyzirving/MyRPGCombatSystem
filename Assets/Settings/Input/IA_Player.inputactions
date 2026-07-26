@@ -7,6 +7,15 @@
             "id": "1fd70f9a-5707-45b5-b4ff-5272af19fec0",
             "actions": [
                 {
+                    "name": "CameraMove",
+                    "type": "Value",
+                    "id": "065ee8ad-d4f6-4a74-9aa3-b9324e980cc8",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Move",
                     "type": "Value",
                     "id": "b24e593a-63d1-4d88-9c58-ed20db474bf3",
@@ -52,13 +61,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CameraMove",
-                    "type": "Value",
-                    "id": "065ee8ad-d4f6-4a74-9aa3-b9324e980cc8",
-                    "expectedControlType": "Vector2",
+                    "name": "HeavyAttack",
+                    "type": "Button",
+                    "id": "5f83cab7-0451-4059-9aff-75378ae7adbe",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "HoldDefence",
@@ -192,17 +201,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f65bfc8c-923a-4a61-92da-c188240a3510",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LightAttack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "2453a2b9-22a4-4684-9c05-52619775289a",
                     "path": "<Keyboard>/q",
                     "interactions": "Hold(duration=0.15)",
@@ -215,11 +213,22 @@
                 {
                     "name": "",
                     "id": "9a940327-0156-4d4c-a303-d51130fa2a2a",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "Tap",
                     "processors": "",
                     "groups": "",
                     "action": "Dodge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3d79aa3a-810f-446a-b664-793af0e70361",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HeavyAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

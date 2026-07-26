@@ -27,8 +27,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public CharacterModel model => m_Model;
     public Rigidbody rigidBody => m_Rigidbody;
     public CharacterSensor sensor => m_Sensor;
-    public CapsuleCollider capsule => m_CapsuleCollider;
-    public AttackComponent attackComponent { get => m_AttackComponent; }
+    public CapsuleCollider capsule => m_CapsuleCollider;    
     public Transform lockTarget
     {
         get => m_Sensor.distZone.target;
@@ -189,6 +188,7 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public Transform vfxRoot => m_VFXRoot;
     public StateMachine stateMachine => m_StateMachine;    
     public AbilitySystemComponent abilitySystemComp => m_AbilitySystemComp;
+    public AttackComponent attackComponent => m_AttackComponent;
 
     public virtual void OnAttackBegin() 
     {

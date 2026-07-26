@@ -7,7 +7,7 @@ public enum AbilityActivationPolicy
 {
     OnSpawn,
     OnInput,
-    Passive 
+    Passive
 }
 
 [Serializable]
@@ -22,7 +22,7 @@ public class AbilityCost
 /// Instant Gameplay ability should end itself mannually
 /// </summary>
 public abstract class GameplayAbility : ScriptableObject
-{        
+{
     [HideInInspector][SerializeField] private string m_UniqueID;
 
 #if UNITY_EDITOR
@@ -39,14 +39,14 @@ public abstract class GameplayAbility : ScriptableObject
     [Header("Activation Strategy")]
     public AbilityActivationPolicy activationPolicy = AbilityActivationPolicy.OnInput;
     public float abilityDuration = 0f;
-    public bool canBeCanceled = true;    
+    public bool canBeCanceled = true;
 
     [Header("Cost Settings")]
     public List<AbilityCost> costs = new List<AbilityCost>();
 
     [Header("Effect List")]
     public List<GameplayEffect> effects = new List<GameplayEffect>();
-   
+
     public event Action<float> onCooldownProgressChange;
     public event Action onCooldownStart;
     public event Action onCooldownEnd;
@@ -58,7 +58,7 @@ public abstract class GameplayAbility : ScriptableObject
     [HideInInspector] public List<GameplayTag> grantedTags = new List<GameplayTag>();
     [HideInInspector] public List<GameplayTag> requiredTags = new List<GameplayTag>();
     [HideInInspector] public List<GameplayTag> blockedTags = new List<GameplayTag>();
-    
+
     private Coroutine m_CooldownHandle;
     private float m_CooldownDuration;
     private float m_CooldownStartTime;
@@ -87,7 +87,7 @@ public abstract class GameplayAbility : ScriptableObject
     [NonSerialized] private float m_EndTime;
     [NonSerialized] private object m_Target;
     [NonSerialized] protected CharacterControllerBase m_Character;
-    [NonSerialized] private int? m_ClassHash;    
+    [NonSerialized] private int? m_ClassHash;
 
     public void Attach(CharacterControllerBase character)
     {
@@ -108,7 +108,7 @@ public abstract class GameplayAbility : ScriptableObject
         if (!isInstant && Time.time >= m_EndTime)
         {
             EndAbility(false);
-        }       
+        }
     }
 
     public virtual bool Activate(AbilitySystemComponent owner, object target = null)
@@ -118,6 +118,8 @@ public abstract class GameplayAbility : ScriptableObject
             Reset();
             return false;
         }
+
+        owner.RegisterActiveAbility(this);
 
         m_ASC = owner;
         m_Target = target;
@@ -153,7 +155,7 @@ public abstract class GameplayAbility : ScriptableObject
         if (isCanceled)
         {
             OnAbilityCanceled();
-            m_ASC?.OnAbilityCanceled(this);            
+            m_ASC?.OnAbilityCanceled(this);
         }
         else
         {
@@ -189,7 +191,7 @@ public abstract class GameplayAbility : ScriptableObject
             return false;
 
         return true;
-    }    
+    }
 
     protected virtual bool CanPayCost()
     {
@@ -209,7 +211,7 @@ public abstract class GameplayAbility : ScriptableObject
 
     protected virtual void StartCooldown()
     {
-        if(cooldownTag == null || !cooldownTag.isValid || cooldownEffect == null)
+        if (cooldownTag == null || !cooldownTag.isValid || cooldownEffect == null)
             return;
 
         if (cooldownEffect != null && cooldownEffect.durationType != EffectDurationType.Duration)
@@ -224,12 +226,12 @@ public abstract class GameplayAbility : ScriptableObject
             return;
 
         if (cooldownEffect != null)
-            m_ASC.ApplyEffect(cooldownEffect, this);        
+            m_ASC.ApplyEffect(cooldownEffect, this);
 
         m_CooldownDuration = duration;
         m_CooldownStartTime = Time.time;
 
-        if(m_CooldownHandle != null)
+        if (m_CooldownHandle != null)
             m_ASC.StopCoroutine(m_CooldownHandle);
 
         m_CooldownHandle = m_ASC.StartCoroutine(UpdateCooldownRoutine());
@@ -269,7 +271,7 @@ public abstract class GameplayAbility : ScriptableObject
     }
 
     #region Callback Methods
-    protected abstract void OnAbilityActivated();    
+    protected abstract void OnAbilityActivated();
 
     protected abstract void OnAbilityPerformed();
 

@@ -6,13 +6,13 @@ public class AttackComponent : MonoBehaviour
 
     private ComboController m_Controller = new();
     private AttackBox[] m_AttackBox;  
-
-    public bool hasSkill => m_ComboSequences != null && m_ComboSequences.Length > 0;
+    
     public bool hasAttackBox => m_AttackBox != null && m_AttackBox.Length > 0;
+    public bool hasSkill => m_Controller.hasSkill;
     public bool hasNextSkill => m_Controller.hasNextSkill;
 
-    public ComboSequence combo { get => m_ComboSequences[m_Controller.comboIndex]; }
-    public SkillData skill { get => combo.skillConfigs[m_Controller.skillIndex]; }
+    public ComboSequence combo { get => m_Controller.combo; }
+    public SkillData skill { get => m_Controller.skill; }
     public AttackBox attackBox { get => m_AttackBox[skill.attackBoxIndex]; }
 
     #region State Methods
@@ -25,7 +25,7 @@ public class AttackComponent : MonoBehaviour
     #region Main Method
     public void Init(ICharacterBehavior playerBehavior)
     {
-        m_Controller.Init(playerBehavior, m_ComboSequences);
+        m_Controller.Init(m_ComboSequences);
 
         m_AttackBox = GetComponentsInChildren<AttackBox>();
         int len = m_AttackBox == null ? 0 : m_AttackBox.Length;
@@ -85,7 +85,7 @@ public class AttackComponent : MonoBehaviour
         for (int comboIndex = 0; comboIndex < m_ComboSequences.Length; ++comboIndex)
         {
             var combo = m_ComboSequences[comboIndex];
-            if (combo.skillConfigs == null)
+            if (combo == null || combo.skillConfigs == null)
                 continue;
 
             for (int skillIndex = 1; skillIndex < combo.skillConfigs.Length; ++skillIndex)
@@ -98,24 +98,35 @@ public class AttackComponent : MonoBehaviour
     #endregion
 
     #region Combo Method
+    public void SetComboIndex(int index)
+    {
+        m_Controller.SetComboIndex(index);
+    }
+
+    public bool TrySwitchCombo(CombatDefine.EAttack inputAction)
+    {
+        //Todo
+        return false;
+    }
+
     public void BeginCombo()
     {
         m_Controller.BeginCombo();
-    }
-
-    public bool GoNextSkill()
-    {
-        return m_Controller.GoNextSkill();
-    }
-
-    public void NextSkill()
-    {
-        m_Controller.NextSkill();
     }
 
     public void EndCombo()
     {
         m_Controller.EndCombo();
     }
+
+    public bool CanAdvanceNextSkill(CombatDefine.EAttack inputAction)
+    {
+        return m_Controller.CanAdvanceNextSkill(inputAction);
+    }
+
+    public void NextSkill()
+    {
+        m_Controller.NextSkill();
+    }    
     #endregion
 }

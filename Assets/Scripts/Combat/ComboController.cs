@@ -1,31 +1,48 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ComboController
 {
-    private ICharacterBehavior m_PlayerBehavior = null;
-    private ComboSequence[] m_ComboSequence = null;    
+    private ComboSequence[] m_ComboSequences = null; 
+
+    /// <summary>
+    /// Time when the combo starts
+    /// </summary>   
     private float m_StartTime = -1;
 
-    // Index of current combo
-    public int comboIndex = 0;
-    // Index of skill in current combo
-    public int skillIndex = 0;
-    public bool isComboStart { get => m_StartTime > 0f; }
-    public bool hasNextSkill { get => skillIndex < (m_ComboSequence[comboIndex].skillConfigs.Length - 1); }
-    public SkillData currentSkill { get => m_ComboSequence[comboIndex].skillConfigs[skillIndex]; }
-    public SkillData nextSkill { get => m_ComboSequence[comboIndex].skillConfigs[skillIndex + 1]; }
+    /// <summary>
+    /// Index of current combo
+    /// </summary>
+    private int m_ComboIndex = 0;
 
-    public void Init(ICharacterBehavior playerBehavior, ComboSequence[] comboSequences)
+    /// <summary>
+    /// Index of skill in current combo
+    /// </summary>
+    private int m_SkillIndex = 0;
+
+    public bool hasSkill => m_ComboSequences != null && m_ComboSequences.Length > 0;
+    public bool isComboStart { get => m_StartTime > 0f; }
+    public bool hasNextSkill { get => m_SkillIndex < (m_ComboSequences[m_ComboIndex].skillConfigs.Length - 1); }
+
+    public ComboSequence combo { get => m_ComboSequences[m_ComboIndex]; }
+    public SkillData skill { get => m_ComboSequences[m_ComboIndex].skillConfigs[m_SkillIndex]; }    
+    public SkillData currentSkill { get => m_ComboSequences[m_ComboIndex].skillConfigs[m_SkillIndex]; }
+    public SkillData nextSkill { get => m_ComboSequences[m_ComboIndex].skillConfigs[m_SkillIndex + 1]; }
+
+    public void Init(ComboSequence[] comboSequences)
     {
-        m_PlayerBehavior = playerBehavior;
-        m_ComboSequence = comboSequences;
+        m_ComboSequences = comboSequences;
     }
 
     public void DeInit()
     {
-        m_PlayerBehavior = null;
-        m_ComboSequence = null;
+        m_ComboSequences = null;
+    }
+
+    public void SetComboIndex(int index)
+    {
+        m_ComboIndex = index;
+        m_SkillIndex = 0;
+        m_StartTime = -1f;
     }
 
     public void BeginCombo()
@@ -35,11 +52,11 @@ public class ComboController
 
     public void EndCombo()
     {
-        skillIndex = 0;
+        m_SkillIndex = 0;
         m_StartTime = -1f;
     }
 
-    public bool GoNextSkill()
+    public bool CanAdvanceNextSkill(CombatDefine.EAttack inputAction)
     {
         if (!isComboStart || !hasNextSkill)
             return false;
@@ -48,12 +65,12 @@ public class ComboController
         if (Time.time > (m_StartTime + nextSkill.inputWindowDuration))
             return false;
 
-        return true;
+        return nextSkill.action == inputAction;
     }
 
     public void NextSkill()
     { 
-        skillIndex++;
+        m_SkillIndex++;
         m_StartTime = -1f;
     }
 }
