@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_TagName: Root.Combat
-  - m_TagName: Root.Combat.LightAttack
   - m_TagName: Root.Combat.Dodge
   - m_TagName: Root.Combat.Locked
+  - m_TagName: Root.Combat.Attack
+  - m_TagName: Root.Combat.Attack

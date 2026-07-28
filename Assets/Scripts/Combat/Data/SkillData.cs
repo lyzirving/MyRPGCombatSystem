@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 [CreateAssetMenu(fileName = "SkillData", menuName = "Config/SkillData")]
 public class SkillData : ScriptableObject
@@ -35,7 +37,30 @@ public class SkillData : ScriptableObject
     [Tooltip("Index of the attack box, initialized after SkillData is configured on player")]
     public int attackBoxIndex = -1;
     [Tooltip("Index of next skill in combo, initialized after SkillData is configured on player")]
-    public int nextSkillIndex = -1;    
+    public int nextSkillIndex = -1;
+
+    [NonSerialized] public bool isLoaded = false;
+
+    public void Load(Transform root = null)
+    {
+        if (isLoaded)
+            return;
+
+        isLoaded = true;
+
+        if (skillReleaseData != null && !string.IsNullOrEmpty(skillReleaseData.spawnPrefab))
+        {
+            AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(skillReleaseData.spawnPrefab);
+            handle.WaitForCompletion();
+            var vfxEffect = GameObject.Instantiate(handle.Result, root);
+            vfxEffect.SetActive(false);
+            skillReleaseData.effectInst = vfxEffect.GetComponent<VFXEffect>();
+            if (skillReleaseData.effectInst != null)
+            {
+                skillReleaseData.effectInst.duration = skillReleaseData.vfxTime;
+            }
+        }
+    }
 }
 
 /// <summary>

@@ -2,8 +2,8 @@
 
 public class GameplayAbilityMenuItems
 {
-    [MenuItem("Assets/Create/GAS/Ability/LightAttackAbility", priority = 10)]
-    private static void CreateLightAttackAbility() => GameplayAbilityCreator.CreateGameplayAbility<LightAttackAbility>();
+    [MenuItem("Assets/Create/GAS/Ability/AttackAbility", priority = 10)]
+    private static void CreateAttackAbility() => GameplayAbilityCreator.CreateGameplayAbility<AttackAbility>();
 
     [MenuItem("Assets/Create/GAS/Ability/JumpAbility", priority = 10)]
     private static void CreateJumpAbility() => GameplayAbilityCreator.CreateGameplayAbility<JumpAbility>();

@@ -20,6 +20,7 @@ public class PlayerStateAttack : PlayerStateCombat
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
+            m_Player.model.RegisterRootMotionAction(ability.HandleRootMotion);
         }
         else
         {
@@ -43,6 +44,7 @@ public class PlayerStateAttack : PlayerStateCombat
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
+            m_Player.model.RemoveRootMotionAction(ability.HandleRootMotion);
         }
         else
         {
@@ -55,7 +57,9 @@ public class PlayerStateAttack : PlayerStateCombat
     public override void Update()
     {
         if(!IsExpired())
+        {
             m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime);           
+        }
     }
 
     public override void FixedUpdate()
@@ -82,5 +86,5 @@ public class PlayerStateAttack : PlayerStateCombat
     public override ECharacterAction GetCurrentAction()
     {
         return ECharacterAction.Attack;
-    }
+    }    
 }

@@ -32,7 +32,7 @@ public class AttackComponent : MonoBehaviour
         if (len != 0)
         {
             CreateSkillHotspotIndex(playerBehavior);
-            CrateSkillConnection();
+            CrateSkillConnection(playerBehavior);
         }
         else
         {
@@ -74,7 +74,7 @@ public class AttackComponent : MonoBehaviour
         }
     }
 
-    private void CrateSkillConnection()
+    private void CrateSkillConnection(ICharacterBehavior playerBehavior)
     {
         if (m_ComboSequences == null || m_ComboSequences.Length == 0)
         {
@@ -85,11 +85,14 @@ public class AttackComponent : MonoBehaviour
         for (int comboIndex = 0; comboIndex < m_ComboSequences.Length; ++comboIndex)
         {
             var combo = m_ComboSequences[comboIndex];
-            if (combo == null || combo.skillConfigs == null)
+            if (combo == null || combo.skillConfigs == null || combo.skillConfigs.Length == 0)
                 continue;
+            
+            combo.skillConfigs[0].Load(playerBehavior.vfxRoot);
 
             for (int skillIndex = 1; skillIndex < combo.skillConfigs.Length; ++skillIndex)
             {
+                combo.skillConfigs[skillIndex].Load(playerBehavior.vfxRoot);
                 combo.skillConfigs[skillIndex - 1].nextSkillIndex = skillIndex;
             }
             combo.lastSkillConfig.nextSkillIndex = -1;
@@ -103,10 +106,14 @@ public class AttackComponent : MonoBehaviour
         m_Controller.SetComboIndex(index);
     }
 
-    public bool TrySwitchCombo(CombatDefine.EAttack inputAction)
+    public int FindComboIndexByStartAction(CombatDefine.EAttack action)
     {
-        //Todo
-        return false;
+        return m_Controller.FindComboIndexByStartAction(action);
+    }
+
+    public bool TryAdvanceCombo(CombatDefine.EAttack inputAction)
+    {
+        return m_Controller.TryAdvanceCombo(inputAction);
     }
 
     public void BeginCombo()

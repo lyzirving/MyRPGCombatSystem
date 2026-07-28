@@ -164,14 +164,15 @@ public class PlayerActionController : MonoBehaviour
 
     private void ProcessAttackInput(CombatDefine.EAttack inputType)
     {
-        var asc = m_CharacterBehavior.abilitySystemComp;
+        var attackComponent = m_CharacterBehavior.attackComponent;
+        var asc = m_CharacterBehavior.abilitySystemComp;        
         var currentAttack = asc.GetActive<AttackAbility>();
         if (currentAttack != null)
         {
             // in the middle of a combo
 
             // check if we can advance to the next skill
-            if (m_CharacterBehavior.attackComponent.CanAdvanceNextSkill(inputType))
+            if (attackComponent.TryAdvanceCombo(inputType))
             {
                 currentAttack.ReActivate(asc);
                 return;
@@ -190,14 +191,12 @@ public class PlayerActionController : MonoBehaviour
             currentAttack.EndAbility();
         }
 
-        switch (inputType)
+        // start a new combo
+        int comboIndex = attackComponent.FindComboIndexByStartAction(inputType);
+        if (comboIndex >= 0)
         {
-            case CombatDefine.EAttack.LA:
-                asc.TryActivateAbility<LightAttackAbility>();
-                break;
-            case CombatDefine.EAttack.HA:
-                asc.TryActivateAbility<HeavyAttackAbility>();
-                break;
+            attackComponent.SetComboIndex(comboIndex);
+            asc.TryActivateAbility<AttackAbility>();
         }
     }
     #endregion
