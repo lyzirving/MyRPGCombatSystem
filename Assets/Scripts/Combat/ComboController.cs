@@ -66,23 +66,42 @@ public class ComboController
 
     /// <summary>
     /// Try to advance the combo with the given input action.
-    /// First checks if we can advance within the current combo sequence.
-    /// If not, checks if we can switch to a different combo at the same skill position.
-    /// Returns true if advancement was successful (either within combo or cross-combo switch).
+    /// When combo window is open (isComboStart), uses strict BeginCombo time check.
+    /// When combo window is NOT yet open, uses normalized animation time as fallback.
     /// </summary>
-    public bool TryAdvanceCombo(CombatDefine.EAttack inputAction)
+    public bool TryAdvanceCombo(CombatDefine.EAttack inputAction, float currentNormalizedTime = 0f)
     {
-        if (!isComboStart)
+        if (!hasNextSkill)
             return false;
 
-        // 1. Try to advance within current combo
-        if (hasNextSkill && CanAdvanceNextSkill(inputAction))
+        bool inTimeWindow;
+
+        if (isComboStart)
+        {
+            // Combo window opened by BeginCombo animation event
+            // Strict: must be within inputWindowDuration from BeginCombo time
+            inTimeWindow = Time.time <= (m_StartTime + nextSkill.inputWindowDuration);
+        }
+        else
+        {
+            // Combo window not yet opened (animation event hasn't fired)
+            // Fallback: use normalized animation time range
+            var curSkill = currentSkill;
+            inTimeWindow = currentNormalizedTime >= curSkill.minInterruptNormalizedTime
+                        && currentNormalizedTime < curSkill.transitionNormalizedTime;
+        }
+
+        if (!inTimeWindow)
+            return false;
+
+        // Try to advance within current combo
+        if (hasNextSkill && nextSkill.action == inputAction)
         {
             NextSkill();
             return true;
         }
 
-        // 2. Try to switch to a different combo at the same next skill position
+        // Try to switch to a different combo at the same next skill position
         int nextSkillIdx = m_SkillIndex + 1;
         for (int i = 0; i < m_ComboSequences.Length; i++)
         {
@@ -114,18 +133,6 @@ public class ComboController
     {
         m_SkillIndex = 0;
         m_StartTime = -1f;
-    }
-
-    public bool CanAdvanceNextSkill(CombatDefine.EAttack inputAction)
-    {
-        if (!isComboStart || !hasNextSkill)
-            return false;
-
-        // Check whether time exceeds the input floating window
-        if (Time.time > (m_StartTime + nextSkill.inputWindowDuration))
-            return false;
-
-        return nextSkill.action == inputAction;
     }
 
     public void NextSkill()

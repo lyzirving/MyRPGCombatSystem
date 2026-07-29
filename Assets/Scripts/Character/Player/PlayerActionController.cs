@@ -134,8 +134,9 @@ public class PlayerActionController : MonoBehaviour
     {
         if (m_BufferedCommand.count == 0) return;
 
-        var cmd = m_BufferedCommand.Dequeue(); // 取出优先级最高且未过期的命令
-        if (cmd.IsExpired()) return;
+        var cmd = m_BufferedCommand.Dequeue();
+        if (cmd.IsExpired())
+            return;
 
         ExecuteCommand(cmd.action);
     }
@@ -170,20 +171,20 @@ public class PlayerActionController : MonoBehaviour
         if (currentAttack != null)
         {
             // in the middle of a combo
+            var attackState = m_CharacterBehavior.stateMachine.currentState as PlayerStateAttack;
+            float curTime = attackState?.CurrentNormalizedTime ?? 0f; 
 
             // check if we can advance to the next skill
-            if (attackComponent.TryAdvanceCombo(inputType))
+            if (attackComponent.TryAdvanceCombo(inputType, curTime))
             {
                 currentAttack.ReActivate(asc);
                 return;
             }
-
-            var attackState = m_CharacterBehavior.stateMachine.currentState as PlayerStateAttack;
-            float curTime = attackState?.CurrentNormalizedTime ?? 0f; 
+            
             if(!currentAttack.CanBeInterrupted(curTime))
             {
                 // if the current attack cannot be interrupted, we ignore the input
-                // Todo: whether we should cache the input for later use, or just ignore it                
+                currentAttack.CachePendingComboInput(inputType);
                 return;
             }
             

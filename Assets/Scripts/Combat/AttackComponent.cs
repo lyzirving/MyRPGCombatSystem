@@ -111,9 +111,9 @@ public class AttackComponent : MonoBehaviour
         return m_Controller.FindComboIndexByStartAction(action);
     }
 
-    public bool TryAdvanceCombo(CombatDefine.EAttack inputAction)
+    public bool TryAdvanceCombo(CombatDefine.EAttack inputAction, float currentNormalizedTime = 0f)
     {
-        return m_Controller.TryAdvanceCombo(inputAction);
+        return m_Controller.TryAdvanceCombo(inputAction, currentNormalizedTime);
     }
 
     public void BeginCombo()
@@ -124,11 +124,6 @@ public class AttackComponent : MonoBehaviour
     public void EndCombo()
     {
         m_Controller.EndCombo();
-    }
-
-    public bool CanAdvanceNextSkill(CombatDefine.EAttack inputAction)
-    {
-        return m_Controller.CanAdvanceNextSkill(inputAction);
     }
 
     public void NextSkill()
