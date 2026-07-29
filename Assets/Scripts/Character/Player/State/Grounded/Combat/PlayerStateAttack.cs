@@ -20,6 +20,8 @@ public class PlayerStateAttack : PlayerStateCombat
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
+            AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, ability.HandleAttackBegin);
+            AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, ability.HandleAttackEnd); 
             m_Player.model.RegisterRootMotionAction(ability.HandleRootMotion);
         }
         else
@@ -44,6 +46,8 @@ public class PlayerStateAttack : PlayerStateCombat
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
+            AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, ability.HandleAttackBegin);
+            AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackEnd, ability.HandleAttackEnd);            
             m_Player.model.RemoveRootMotionAction(ability.HandleRootMotion);
         }
         else

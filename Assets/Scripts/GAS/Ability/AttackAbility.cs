@@ -56,8 +56,10 @@ public class AttackAbility : GameplayAbility
 
         if (state.IsExpired())
             EndAbility();
-    }
+    }    
+    #endregion
 
+    #region  Pending input
     /// <summary>
     /// Cache a combo input when it can't be processed immediately.
     /// Returns true if the input was cached (not consumed).
@@ -90,6 +92,16 @@ public class AttackAbility : GameplayAbility
     #endregion
     
     #region Attack Event
+    public void HandleAttackBegin(in AnimationEventInfo info)
+    {
+        m_Character?.OnAttackBegin();
+    }
+
+    public void HandleAttackEnd(in AnimationEventInfo info)
+    {
+        m_Character?.OnAttackEnd();
+    }
+
     public void HandleAttackCombo(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state

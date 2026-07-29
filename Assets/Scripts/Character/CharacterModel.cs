@@ -21,18 +21,6 @@ public class CharacterModel : MonoBehaviour
         m_Animator = GetComponentInChildren<Animator>();
     }
 
-    private void Start()
-    {
-        AnimationEventReceiver.instance.RegisterAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackStart, OnAttackStart);
-        AnimationEventReceiver.instance.RegisterAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackEnd, OnAttackEnd);
-    }
-
-    private void OnDisable()
-    {
-        AnimationEventReceiver.instance?.RemoveAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackStart, OnAttackStart);
-        AnimationEventReceiver.instance?.RemoveAction(m_CharacterBehaviour.GUID, AnimationEventType.AttackEnd, OnAttackEnd);
-    }
-
     private void OnAnimatorMove()
     {
         m_RootMotionAc?.Invoke(m_Animator.deltaPosition, m_Animator.deltaRotation);
@@ -141,16 +129,4 @@ public class CharacterModel : MonoBehaviour
         m_RootMotionAc = null;
     }
     #endregion
-
-    #region AnimationEvent Handler
-    private void OnAttackStart(in AnimationEventInfo info)
-    {
-        m_CharacterBehaviour?.OnAttackBegin();
-    }
-
-    private void OnAttackEnd(in AnimationEventInfo info)
-    {
-        m_CharacterBehaviour?.OnAttackEnd();
-    }
-    #endregion AnimationEvent Handler
 }
