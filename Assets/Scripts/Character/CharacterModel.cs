@@ -37,16 +37,27 @@ public class CharacterModel : MonoBehaviour
     }
     #endregion
 
-    #region Animation Methods       
-    public void HitStop(float slowMotionScale = 0.9f)
+    #region Animation Methods  
+    /// <summary>
+    /// Trigger hit stop effect on this character.
+    /// </summary>
+    /// <param name="slowMotionScale">Animator speed during freeze. 0 = total freeze.</param>
+    /// <param name="duration">Freeze duration in real-time seconds.</param>     
+    public void HitStop(float slowMotionScale = 0.1f,  float duration = 0.06f)
     {
         if (m_HitStopRunning && m_HitStopCoroutine != null)
         {
+            // If already in hit stop, take the strongest freeze (lower anim speed = stronger)
+            // and the longer remaining duration.
+            // However, for simplicity and to avoid complex merge logic,
+            // we only restart if the new freeze is stronger.
+            if (slowMotionScale >= m_Animator.speed)
+                return;
+
             MonoManager.Stop(m_HitStopCoroutine);
-            m_HitStopRunning = false;
-            m_Animator.speed = 1f;
+            m_HitStopRunning = false;            
         }
-        m_HitStopCoroutine = MonoManager.Run(HitStopCoroutine(slowMotionScale));
+        m_HitStopCoroutine = MonoManager.Run(HitStopCoroutine(slowMotionScale, duration));
     }
 
     public void TriggerAnimation(int hash)
@@ -99,14 +110,14 @@ public class CharacterModel : MonoBehaviour
         return m_Animator?.GetLayerIndex(layerName) ?? -1;
     }
 
-    private IEnumerator HitStopCoroutine(float slowMotionScale)
+    private IEnumerator HitStopCoroutine(float slowMotionScale, float duration)
     {
         m_HitStopRunning = true;
         float originalSpeed = m_Animator.speed;
 
         m_Animator.speed = slowMotionScale;
 
-        yield return HIT_STOP_WAIT_TIME;
+        yield return new WaitForSecondsRealtime(duration);
 
         m_Animator.speed = originalSpeed;
         m_HitStopRunning = false;

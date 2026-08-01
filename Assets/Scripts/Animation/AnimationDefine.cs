@@ -10,7 +10,6 @@ public enum AnimationEventType : UInt32
     Combat = 100,
     AttackStart,
     AttackEnd,
-    AttackCombo,
     AttackVfxBegin,
     AttackVfxEnd,
     // Events for common animation

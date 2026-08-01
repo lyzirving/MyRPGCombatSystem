@@ -400,7 +400,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
-  - type: 104
+  - type: 103
     launchTime: 0.287
     triggerTime: 0
     animatorState: HeavyPunchRight1
@@ -408,16 +408,12 @@ MonoBehaviour:
     launchTime: 0.34
     triggerTime: 0
     animatorState: HeavyPunchRight1
-  - type: 105
+  - type: 102
     launchTime: 0.411
     triggerTime: 0
     animatorState: HeavyPunchRight1
-  - type: 102
+  - type: 104
     launchTime: 0.45
-    triggerTime: 0
-    animatorState: HeavyPunchRight1
-  - type: 103
-    launchTime: 0.5
     triggerTime: 0
     animatorState: HeavyPunchRight1
   animatorState: HeavyPunchRight1
@@ -504,7 +500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
-  - type: 104
+  - type: 103
     launchTime: 0.38
     triggerTime: 0
     animatorState: HeavyPunchRight0
@@ -516,12 +512,8 @@ MonoBehaviour:
     launchTime: 0.5
     triggerTime: 0
     animatorState: HeavyPunchRight0
-  - type: 105
+  - type: 104
     launchTime: 0.52
-    triggerTime: 0
-    animatorState: HeavyPunchRight0
-  - type: 103
-    launchTime: 0.58
     triggerTime: 0
     animatorState: HeavyPunchRight0
   animatorState: HeavyPunchRight0
@@ -959,27 +951,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
-  - type: 104
+  - type: 103
     launchTime: 0.38
     triggerTime: 0
-    animatorState: HeavyPunchRight0
+    animatorState: RightJab0
   - type: 101
     launchTime: 0.43
     triggerTime: 0
-    animatorState: HeavyPunchRight0
+    animatorState: RightJab0
   - type: 102
     launchTime: 0.5
     triggerTime: 0
-    animatorState: HeavyPunchRight0
-  - type: 105
+    animatorState: RightJab0
+  - type: 104
     launchTime: 0.52
     triggerTime: 0
-    animatorState: HeavyPunchRight0
-  - type: 103
-    launchTime: 0.58
-    triggerTime: 0
-    animatorState: HeavyPunchRight0
-  animatorState: HeavyPunchRight0
+    animatorState: RightJab0
+  animatorState: RightJab0
 --- !u!1102 &1399162264840342163
 AnimatorState:
   serializedVersion: 6
@@ -1289,11 +1277,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
-  - type: 101
+  - type: 103
     launchTime: 0.21
     triggerTime: 0
     animatorState: LightKickRight
-  - type: 104
+  - type: 101
     launchTime: 0.227
     triggerTime: 0
     animatorState: LightKickRight
@@ -1301,12 +1289,8 @@ MonoBehaviour:
     launchTime: 0.37
     triggerTime: 0
     animatorState: LightKickRight
-  - type: 105
+  - type: 104
     launchTime: 0.408
-    triggerTime: 0
-    animatorState: LightKickRight
-  - type: 103
-    launchTime: 0.47
     triggerTime: 0
     animatorState: LightKickRight
   animatorState: LightKickRight
@@ -1375,7 +1359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
-  - type: 104
+  - type: 103
     launchTime: 0.16
     triggerTime: 0
     animatorState: LightPunchRight
@@ -1387,12 +1371,8 @@ MonoBehaviour:
     launchTime: 0.25
     triggerTime: 0
     animatorState: LightPunchRight
-  - type: 105
+  - type: 104
     launchTime: 0.266
-    triggerTime: 0
-    animatorState: LightPunchRight
-  - type: 103
-    launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchRight
   animatorState: LightPunchRight
@@ -1464,24 +1444,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 0
   events:
-  - type: 104
+  - type: 103
     launchTime: 0.16
     triggerTime: 0
     animatorState: LightPunchLeft
   - type: 101
-    launchTime: 0.195
+    launchTime: 0.2
     triggerTime: 0
     animatorState: LightPunchLeft
   - type: 102
     launchTime: 0.25
     triggerTime: 0
     animatorState: LightPunchLeft
-  - type: 105
+  - type: 104
     launchTime: 0.266
-    triggerTime: 0
-    animatorState: LightPunchLeft
-  - type: 103
-    launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchLeft
   animatorState: LightPunchLeft

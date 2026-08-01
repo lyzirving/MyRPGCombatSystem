@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerStateAttack : PlayerStateCombat
 {    
     private float m_NormalizedTime = 0;
+    private bool m_ComboWindowOpened = false;
 
     private AttackAbility CurrentAttack => m_Player.abilitySystemComp.GetActive<AttackAbility>();
 
@@ -12,12 +13,12 @@ public class PlayerStateAttack : PlayerStateCombat
     {
         base.Enter(exitState, args);
         m_NormalizedTime = 0f;
+        m_ComboWindowOpened = false;
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);        
 
         var ability = CurrentAttack;
         if(ability != null)
         {
-            AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
             AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, ability.HandleAttackBegin);
@@ -34,6 +35,7 @@ public class PlayerStateAttack : PlayerStateCombat
     {
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);
         m_NormalizedTime = 0f;
+        m_ComboWindowOpened = false;
     }
 
     public override bool Exit(StateBase newState)
@@ -43,7 +45,6 @@ public class PlayerStateAttack : PlayerStateCombat
         var ability = CurrentAttack;
         if (ability != null)
         {
-            AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackCombo, ability.HandleAttackCombo);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
             AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AttackStart, ability.HandleAttackBegin);
@@ -63,6 +64,19 @@ public class PlayerStateAttack : PlayerStateCombat
         if(!IsExpired())
         {
             m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime);           
+
+            var skill = m_Player.attackComponent.skill;
+            if (!m_ComboWindowOpened && m_NormalizedTime >= skill.comboWindowStartNormalizedTime)
+            {
+                m_ComboWindowOpened = true;
+                m_Player.attackComponent.BeginCombo();
+
+                var ability = CurrentAttack;
+                if (ability != null && ability.HasPendingComboInput())
+                {
+                    ability.HandleComboWindowOpened();
+                }
+            }
         }
     }
 

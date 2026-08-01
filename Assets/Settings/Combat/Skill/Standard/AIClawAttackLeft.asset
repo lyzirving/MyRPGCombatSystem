@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animatorState: LeftClawAttack
   crossFadeInTime: 0.15
-  inputWindowDuration: 0.2
+  minInterruptNormalizedTime: 0.22
+  comboWindowStartNormalizedTime: 0.863
   transitionNormalizedTime: 0.9
+  inputWindowDuration: 0.2
   attackBox: LeftHandAttackBox
   action: 1
   damage: 5
@@ -23,10 +25,12 @@ MonoBehaviour:
   knockbackDistance: 0
   skillReleaseData:
     spawnPrefab: 
+    vfxTime: 0
     audioClip: {fileID: 0}
   skillHitData:
     spawnPrefab: 
     audioClip: {fileID: 0}
     hitStopTimeScale: 0
+    hitStopDuration: 0.06
   attackBoxIndex: 0
   nextSkillIndex: 1

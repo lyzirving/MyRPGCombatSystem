@@ -205,7 +205,15 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     public virtual void OnAttackVfxBegin() { }
     public virtual void OnAttackVfxEnd() { }
 
-    public virtual void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData) { }
+    public virtual void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
+    {
+        // Defender should trigger hit stop effect if the skill has hit stop data.
+        var hitData = skillData.skillHitData;
+        if (hitData != null && hitData.hitStopDuration > 0f)
+        {
+            m_Model.HitStop(hitData.hitStopTimeScale, hitData.hitStopDuration);
+        }
+    }
 
     public virtual void OnFootStep(EFootstep footStep) { }
 

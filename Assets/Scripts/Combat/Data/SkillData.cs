@@ -10,12 +10,27 @@ public class SkillData : ScriptableObject
     [Tooltip("Name of the animator state")]
     public string animatorState;
     public float crossFadeInTime = 0.15f;
+
+    [Header("Combo Attributes")]
+    [Tooltip("The time after the ability is activated, during which the ability cannot be interrupted by other abilities.")]
+    [Range(0f, 1f)] public float minInterruptNormalizedTime = 0.22f;    
+    [Tooltip("Normalized time at which the player can start inputting the next combo attack.")]    
+    [Range(0f, 1f)] public float comboWindowStartNormalizedTime = 0.35f;    
+    [Tooltip("Time to end current animation and transfer to another state")]
+    [Range(0f, 1f)] public float transitionNormalizedTime = 1f;
     [Tooltip("Input floating window duration in seconds")]
     public float inputWindowDuration = 0.2f;
-    [Tooltip("Time to end current animation and transfer to another state")]
-    public float transitionNormalizedTime = 1f;
-    [Tooltip("The time after the ability is activated, during which the ability cannot be interrupted by other abilities.")]
-    public float minInterruptNormalizedTime = 0.22f;
+
+    /// <summary>
+    /// range of one animation normalized time
+    /// 0.0                A (minInterruptNormalizedTime)   B (comboWindowStartNormalizedTime)               C (transitionNormalizedTime)      1.0
+    //├────────────────────┼────────────────────────────────┼────────────────────────────────────────────────┼──────────────────────────────────┤
+    //│ StartUp            │        Can be canceled         │    Combo input window(user input)              │                                  │
+    //│ Can't be canceled  │                                │                                                │                                  │
+    //│                    │                                │                                                │                                  │
+    //|                    │                                │ <----- next skill's inputWindowDuration -----> |                                  |
+    //└────────────────────┴────────────────────────────────┴────────────────────────────────────────────────┴──────────────────────────────────┴
+    /// </summary>
 
     [Header("Trigger Attributes")]
     [Tooltip("Name of the attack box, which should be mapped to the one on player")]
@@ -52,12 +67,21 @@ public class SkillData : ScriptableObject
         {
             AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(skillReleaseData.spawnPrefab);
             handle.WaitForCompletion();
+            if(handle.Result == null)
+            {
+                Debug.LogError($"SkillData Load: fail to load prefab[{skillReleaseData.spawnPrefab}]");
+                return;
+            }
             var vfxEffect = GameObject.Instantiate(handle.Result, root);
             vfxEffect.SetActive(false);
             skillReleaseData.effectInst = vfxEffect.GetComponent<VFXEffect>();
             if (skillReleaseData.effectInst != null)
             {
                 skillReleaseData.effectInst.duration = skillReleaseData.vfxTime;
+            }
+            else
+            {
+                Debug.LogError($"SkillData Load: fail to get VFXEffect from [{skillReleaseData.spawnPrefab}]");
             }
         }
     }
@@ -83,5 +107,8 @@ public class SkillHitData
 {
     public string spawnPrefab;
     public AudioClip audioClip;
-    public float hitStopTimeScale;
+    [Tooltip("Animator speed multiplier during hit stop. 0 = complete freeze, 1 = no effect. Typical value: 0.05~0.2")]
+    [Range(0f, 1f)] public float hitStopTimeScale = 0.1f;
+    [Tooltip("Duration of hit stop in real-time seconds. Typical values: light attack 0.03~0.06s, heavy attack 0.08~0.15s")]
+    [Range(0f, 0.5f)] public float hitStopDuration = 0.06f;
 }

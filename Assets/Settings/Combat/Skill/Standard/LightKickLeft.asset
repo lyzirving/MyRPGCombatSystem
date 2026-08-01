@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animatorState: LightKickLeft
   crossFadeInTime: 0.15
-  inputWindowDuration: 0.3
+  minInterruptNormalizedTime: 0.22
+  comboWindowStartNormalizedTime: 0.47
   transitionNormalizedTime: 0.58
+  inputWindowDuration: 0.3
   attackBox: LeftFootAttackBox
   action: 1
   damage: 10
@@ -23,10 +25,12 @@ MonoBehaviour:
   knockbackDistance: 0.3
   skillReleaseData:
     spawnPrefab: 
+    vfxTime: 0
     audioClip: {fileID: 8300000, guid: 48710c9d66597b4408f79bd450d96c22, type: 3}
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
     hitStopTimeScale: 0.18
+    hitStopDuration: 0.06
   attackBoxIndex: -1
   nextSkillIndex: -1

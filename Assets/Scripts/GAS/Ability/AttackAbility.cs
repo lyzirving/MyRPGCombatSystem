@@ -125,6 +125,11 @@ public class AttackAbility : GameplayAbility
         }
     }
 
+    public void HandleComboWindowOpened()
+    {
+        TryConsumePendingAndAdvance();
+    }
+
     public void HandleAttackVfxBegin(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state
@@ -146,6 +151,21 @@ public class AttackAbility : GameplayAbility
     public void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
     {
         m_Character.transform.Translate(deltaPosition, Space.World);
+    }
+
+    // <summary>
+    /// if there's a pending input, try to advance combo with it.
+    /// </summary>
+    private void TryConsumePendingAndAdvance()
+    {
+        var pendingInput = TryConsumePendingComboInput();
+        if (pendingInput != CombatDefine.EAttack.None)
+        {
+            if (m_Character.attackComponent.TryAdvanceCombo(pendingInput))
+            {
+                ReActivate(m_Character.abilitySystemComp);
+            }
+        }
     }
     #endregion
 }

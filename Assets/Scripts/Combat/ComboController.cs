@@ -74,28 +74,15 @@ public class ComboController
         if (!hasNextSkill)
             return false;
 
-        bool inTimeWindow;
-
-        if (isComboStart)
-        {
-            // Combo window opened by BeginCombo animation event
-            // Strict: must be within inputWindowDuration from BeginCombo time
-            inTimeWindow = Time.time <= (m_StartTime + nextSkill.inputWindowDuration);
-        }
-        else
-        {
-            // Combo window not yet opened (animation event hasn't fired)
-            // Fallback: use normalized animation time range
-            var curSkill = currentSkill;
-            inTimeWindow = currentNormalizedTime >= curSkill.minInterruptNormalizedTime
-                        && currentNormalizedTime < curSkill.transitionNormalizedTime;
-        }
-
-        if (!inTimeWindow)
+        if(!isComboStart)
             return false;
 
+        // Unified strict check: must be within inputWindowDuration from BeginCombo time
+        if (Time.time > (m_StartTime + nextSkill.inputWindowDuration))
+            return false;       
+
         // Try to advance within current combo
-        if (hasNextSkill && nextSkill.action == inputAction)
+        if (nextSkill.action == inputAction)
         {
             NextSkill();
             return true;

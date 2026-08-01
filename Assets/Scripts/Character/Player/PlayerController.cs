@@ -84,7 +84,11 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnAttackHit(ICharacterBehavior target, Vector3 hitPos)
     {
-        m_Model.HitStop(m_AttackComponent.skill.skillHitData.hitStopTimeScale);
+        var hitData = m_AttackComponent.skill.skillHitData;
+        if (hitData != null && hitData.hitStopDuration > 0f)
+        {
+            m_Model.HitStop(hitData.hitStopTimeScale, hitData.hitStopDuration);
+        }
         target?.OnHit(hitPos, this, m_AttackComponent.skill);
         VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnPrefab, hitPos, Quaternion.identity);
     }

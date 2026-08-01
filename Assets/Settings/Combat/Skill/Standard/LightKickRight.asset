@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animatorState: LightKickRight
   crossFadeInTime: 0.15
-  inputWindowDuration: 0.3
+  minInterruptNormalizedTime: 0.22
+  comboWindowStartNormalizedTime: 0.47
   transitionNormalizedTime: 0.58
+  inputWindowDuration: 0.3
   attackBox: RightLegAttackBox
   action: 1
   damage: 10
@@ -29,5 +31,6 @@ MonoBehaviour:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
     hitStopTimeScale: 0.18
+    hitStopDuration: 0.06
   attackBoxIndex: 0
   nextSkillIndex: -1
