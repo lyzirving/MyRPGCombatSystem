@@ -11,6 +11,12 @@ public class AttackAbility : GameplayAbility
     /// and the current attack cannot be interrupted.
     /// </summary>
     private CombatDefine.EAttack m_PendingComboInput = CombatDefine.EAttack.None;   
+
+    /// <summary>
+    /// When true, combo has been logically advanced (NextSkill called) but animation switch
+    /// (ReActivate) is deferred until HitStop finishes.
+    /// </summary>
+    private bool m_DeferredReActivate = false;
     
     #region Ability API 
     public bool CanBeInterrupted(float currentNormalizedTime)
@@ -21,18 +27,21 @@ public class AttackAbility : GameplayAbility
     
     protected override void OnAbilityActivated()
     {
+        m_DeferredReActivate = false;
     }    
 
     protected override void OnAbilityCanceled()
     {
         m_Character.ChangeState(ECharacterState.Idle);
         m_PendingComboInput = CombatDefine.EAttack.None;
+        m_DeferredReActivate = false;
     }
 
     protected override void OnAbilityEnded()
     {
         m_Character.ChangeState(ECharacterState.Idle);
         m_PendingComboInput = CombatDefine.EAttack.None;
+        m_DeferredReActivate = false;
     }
 
     protected override void OnAbilityPerformed()
@@ -52,6 +61,12 @@ public class AttackAbility : GameplayAbility
         {
             EndAbility();
             return;
+        }
+
+        if (m_DeferredReActivate && !m_Character.model.isHitStopRunning)
+        {
+            m_DeferredReActivate = false;
+            ReActivate(m_Character.abilitySystemComp);
         }
 
         if (state.IsExpired())
@@ -100,30 +115,7 @@ public class AttackAbility : GameplayAbility
     public void HandleAttackEnd(in AnimationEventInfo info)
     {
         m_Character?.OnAttackEnd();
-    }
-
-    public void HandleAttackCombo(in AnimationEventInfo info)
-    {
-        //[BugFix] fix animator graph doesn't sync with logic state
-        if (info.animatorState != m_Character.attackComponent.skill.animatorState)
-            return;
-
-        m_Character.attackComponent.BeginCombo();
-
-        var pendingInput = TryConsumePendingComboInput();
-        if (pendingInput != CombatDefine.EAttack.None)
-        {
-            // Try to advance combo with the cached input
-            if (m_Character.attackComponent.TryAdvanceCombo(pendingInput))
-            {
-                // Success: re-enter the attack state with the next skill
-                ReActivate(m_Character.abilitySystemComp);
-            }
-            // If TryAdvanceCombo fails, the pending input cannot be consumed now.
-            // It was already cleared by TryConsumePendingComboInput, which is acceptable
-            // because the input might have expired between cache and now.
-        }
-    }
+    }    
 
     public void HandleComboWindowOpened()
     {
@@ -163,7 +155,19 @@ public class AttackAbility : GameplayAbility
         {
             if (m_Character.attackComponent.TryAdvanceCombo(pendingInput))
             {
-                ReActivate(m_Character.abilitySystemComp);
+                if (m_Character.model.isHitStopRunning)
+                {
+                    // HitStop is running：only advance logic, delay animation transition
+                    m_DeferredReActivate = true;
+                }
+                else
+                {
+                    ReActivate(m_Character.abilitySystemComp);
+                }
+            }
+            else
+            {
+                CachePendingComboInput(pendingInput);
             }
         }
     }

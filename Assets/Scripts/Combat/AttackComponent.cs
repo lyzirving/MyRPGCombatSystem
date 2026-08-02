@@ -12,6 +12,7 @@ public class AttackComponent : MonoBehaviour
     public bool hasNextSkill => m_Controller.hasNextSkill;
 
     public ComboSequence combo { get => m_Controller.combo; }
+    public bool isComboStart { get => m_Controller.isComboStart; }
     public SkillData skill { get => m_Controller.skill; }
     public AttackBox attackBox { get => m_AttackBox[skill.attackBoxIndex]; }
 

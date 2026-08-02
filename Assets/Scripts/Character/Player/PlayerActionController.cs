@@ -164,26 +164,34 @@ public class PlayerActionController : MonoBehaviour
     }      
 
     private void ProcessAttackInput(CombatDefine.EAttack inputType)
-    {
+    {        
         var attackComponent = m_CharacterBehavior.attackComponent;
         var asc = m_CharacterBehavior.abilitySystemComp;        
         var currentAttack = asc.GetActive<AttackAbility>();
         if (currentAttack != null)
-        {
+        {            
             // in the middle of a combo
             var attackState = m_CharacterBehavior.stateMachine.currentState as PlayerStateAttack;
             float curTime = attackState?.CurrentNormalizedTime ?? 0f; 
 
             // check if we can advance to the next skill
             if (attackComponent.TryAdvanceCombo(inputType, curTime))
-            {
+            {                
                 currentAttack.ReActivate(asc);
                 return;
             }
-            
+                        
             if(!currentAttack.CanBeInterrupted(curTime))
-            {
+            {                
                 // if the current attack cannot be interrupted, we ignore the input
+                currentAttack.CachePendingComboInput(inputType);
+                return;
+            }
+
+            if (!attackComponent.isComboStart)
+            {
+                // Combo window hasn't opened yet (e.g. delayed by HitStop).
+                // Cache the input so it can be consumed when the window opens.                
                 currentAttack.CachePendingComboInput(inputType);
                 return;
             }
@@ -193,7 +201,7 @@ public class PlayerActionController : MonoBehaviour
         }
 
         // start a new combo
-        int comboIndex = attackComponent.FindComboIndexByStartAction(inputType);
+        int comboIndex = attackComponent.FindComboIndexByStartAction(inputType);        
         if (comboIndex >= 0)
         {
             attackComponent.SetComboIndex(comboIndex);

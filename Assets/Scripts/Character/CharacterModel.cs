@@ -14,6 +14,7 @@ public class CharacterModel : MonoBehaviour
     protected event RootMotionAction m_RootMotionAc;
 
     public Animator animator => m_Animator;
+    public bool isHitStopRunning => m_HitStopRunning;
 
     #region State Methods
     private void Awake()

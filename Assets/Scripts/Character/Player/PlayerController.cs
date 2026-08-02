@@ -110,6 +110,7 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
+        base.OnHit(hitPos, source, skillData);
         var defenceState = m_StateMachine.GetCurrentState<PlayerStateDefence>();
         if (defenceState != null)
         {
