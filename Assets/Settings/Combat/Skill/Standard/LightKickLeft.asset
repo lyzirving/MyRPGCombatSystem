@@ -18,6 +18,7 @@ MonoBehaviour:
   comboWindowStartNormalizedTime: 0.47
   transitionNormalizedTime: 0.58
   inputWindowDuration: 0.3
+  minDistanceToTarget: 0.5
   attackBox: LeftFootAttackBox
   action: 1
   damage: 10

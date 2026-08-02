@@ -31,11 +31,15 @@ public class SkillData : ScriptableObject
     //|                    │                                │ <----- next skill's inputWindowDuration -----> |                                  |
     //└────────────────────┴────────────────────────────────┴────────────────────────────────────────────────┴──────────────────────────────────┴
     /// </summary>
+    
+    [Header("Root Motion Distance")]
+    [Tooltip("Minimum distance to target when locked on. Root motion forward displacement is clamped so the character never gets closer than this. 0 = no constraint.")]
+    [Range(0f, 5f)] public float minDistanceToTarget = 0f;
 
     [Header("Trigger Attributes")]
     [Tooltip("Name of the attack box, which should be mapped to the one on player")]
     public string attackBox;
-    public CombatDefine.EAttack action = CombatDefine.EAttack.None;
+    public CombatDefine.EAttack action = CombatDefine.EAttack.None;    
 
     [Header("Static Attributes")]
     public int damage = 5;

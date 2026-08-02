@@ -20,6 +20,7 @@ MonoBehaviour:
   inputWindowDuration: 0.3
   attackBox: LeftHandAttackBox
   action: 1
+  minDistanceToTarget: 0.5
   damage: 5
   hitStunTime: 0
   knockbackDistance: 0

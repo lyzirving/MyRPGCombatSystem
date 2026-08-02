@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AttackAbility : GameplayAbility
@@ -142,7 +143,49 @@ public class AttackAbility : GameplayAbility
 
     public void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
     {
-        m_Character.transform.Translate(deltaPosition, Space.World);
+        Transform lockTarget = m_Character.lockTarget;
+        SkillData skill = currentSkill;
+
+        if (lockTarget != null && skill != null && skill.minDistanceToTarget > 0f)
+        {
+            // 1. Compute direction and current distance to target (y-axis ignored)
+            Vector3 toTarget = lockTarget.position - m_Character.transform.position;
+            toTarget.y = 0;
+            float currentDist = toTarget.magnitude;
+            if (currentDist < Mathf.Epsilon)
+            {
+                // Already exactly at target position — fall back to raw root motion
+                m_Character.transform.Translate(deltaPosition, Space.World);
+                return;
+            }
+            Vector3 toTargetDir = toTarget / currentDist;
+
+            // 2. Decompose root motion into forward (toward target) and lateral components
+            //    forwardMag > 0 = moving toward target (distance decreases)
+            float forwardMag = Vector3.Dot(deltaPosition, toTargetDir);
+            Vector3 lateralDelta = deltaPosition - forwardMag * toTargetDir;
+
+            // 3. Soft clamp: prevent forward displacement from penetrating minDistance
+            if (forwardMag > 0f)
+            {
+                float maxAllowedForward = currentDist - skill.minDistanceToTarget;
+                float predictedDist = currentDist - forwardMag;
+                if (predictedDist < skill.minDistanceToTarget)
+                {
+                    // Clamp forward to stop exactly at minDistance.
+                    // If already inside the zone, maxAllowedForward is negative so forwardMag becomes 0.
+                    forwardMag = Mathf.Max(0f, maxAllowedForward);
+                }
+            }
+
+            // 4. Reconstruct and apply
+            Vector3 finalDelta = toTargetDir * forwardMag + lateralDelta;
+            m_Character.transform.Translate(finalDelta, Space.World);
+        }
+        else
+        {
+            m_Character.transform.Translate(deltaPosition, Space.World);
+        }
     }
 
     // <summary>
