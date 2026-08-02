@@ -22,6 +22,10 @@ MonoBehaviour:
     launchTime: 0.218
     triggerTime: 0
     animatorState: RightClawAttack
+  - type: 105
+    launchTime: 0.669
+    triggerTime: 0
+    animatorState: RightClawAttack
   animatorState: RightClawAttack
 --- !u!1107 &-7650148331475333070
 AnimatorStateMachine:
@@ -78,6 +82,10 @@ MonoBehaviour:
     animatorState: LeftClawAttack
   - type: 102
     launchTime: 0.812
+    triggerTime: 0
+    animatorState: LeftClawAttack
+  - type: 105
+    launchTime: 0.863
     triggerTime: 0
     animatorState: LeftClawAttack
   animatorState: LeftClawAttack

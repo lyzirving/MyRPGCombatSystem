@@ -416,6 +416,10 @@ MonoBehaviour:
     launchTime: 0.45
     triggerTime: 0
     animatorState: HeavyPunchRight1
+  - type: 105
+    launchTime: 0.5
+    triggerTime: 0
+    animatorState: HeavyPunchRight1
   animatorState: HeavyPunchRight1
 --- !u!1101 &-2604416172972099675
 AnimatorStateTransition:
@@ -514,6 +518,10 @@ MonoBehaviour:
     animatorState: HeavyPunchRight0
   - type: 104
     launchTime: 0.52
+    triggerTime: 0
+    animatorState: HeavyPunchRight0
+  - type: 105
+    launchTime: 0.58
     triggerTime: 0
     animatorState: HeavyPunchRight0
   animatorState: HeavyPunchRight0
@@ -967,6 +975,10 @@ MonoBehaviour:
     launchTime: 0.52
     triggerTime: 0
     animatorState: RightJab0
+  - type: 105
+    launchTime: 0.58
+    triggerTime: 0
+    animatorState: RightJab0
   animatorState: RightJab0
 --- !u!1102 &1399162264840342163
 AnimatorState:
@@ -1293,6 +1305,10 @@ MonoBehaviour:
     launchTime: 0.408
     triggerTime: 0
     animatorState: LightKickRight
+  - type: 105
+    launchTime: 0.47
+    triggerTime: 0
+    animatorState: LightKickRight
   animatorState: LightKickRight
 --- !u!1109 &3492092564899740644
 AnimatorTransition:
@@ -1373,6 +1389,10 @@ MonoBehaviour:
     animatorState: LightPunchRight
   - type: 104
     launchTime: 0.266
+    triggerTime: 0
+    animatorState: LightPunchRight
+  - type: 105
+    launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchRight
   animatorState: LightPunchRight
@@ -1458,6 +1478,10 @@ MonoBehaviour:
     animatorState: LightPunchLeft
   - type: 104
     launchTime: 0.266
+    triggerTime: 0
+    animatorState: LightPunchLeft
+  - type: 105
+    launchTime: 0.33
     triggerTime: 0
     animatorState: LightPunchLeft
   animatorState: LightPunchLeft

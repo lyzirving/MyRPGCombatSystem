@@ -116,11 +116,6 @@ public class AttackAbility : GameplayAbility
     public void HandleAttackEnd(in AnimationEventInfo info)
     {
         m_Character?.OnAttackEnd();
-    }    
-
-    public void HandleComboWindowOpened()
-    {
-        TryConsumePendingAndAdvance();
     }
 
     public void HandleAttackVfxBegin(in AnimationEventInfo info)
@@ -139,6 +134,19 @@ public class AttackAbility : GameplayAbility
             return;
 
         m_Character.OnAttackVfxEnd();
+    }
+
+    public void HandleAttackComboWindowOpened(in AnimationEventInfo info)
+    {
+        //[BugFix] fix animator graph doesn't sync with logic state
+        if (info.animatorState != m_Character.attackComponent.skill.animatorState)
+            return;
+
+        m_Character.attackComponent.BeginCombo();
+        if(HasPendingComboInput())
+        {
+            TryConsumePendingAndAdvance();
+        }
     }
 
     public void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
@@ -191,7 +199,7 @@ public class AttackAbility : GameplayAbility
     // <summary>
     /// if there's a pending input, try to advance combo with it.
     /// </summary>
-    private void TryConsumePendingAndAdvance()
+    public void TryConsumePendingAndAdvance()
     {
         var pendingInput = TryConsumePendingComboInput();
         if (pendingInput != CombatDefine.EAttack.None)

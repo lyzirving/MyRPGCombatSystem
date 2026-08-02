@@ -13,9 +13,7 @@ public class SkillData : ScriptableObject
 
     [Header("Combo Attributes")]
     [Tooltip("The time after the ability is activated, during which the ability cannot be interrupted by other abilities.")]
-    [Range(0f, 1f)] public float minInterruptNormalizedTime = 0.22f;    
-    [Tooltip("Normalized time at which the player can start inputting the next combo attack.")]    
-    [Range(0f, 1f)] public float comboWindowStartNormalizedTime = 0.35f;    
+    [Range(0f, 1f)] public float minInterruptNormalizedTime = 0.22f;  
     [Tooltip("Time to end current animation and transfer to another state")]
     [Range(0f, 1f)] public float transitionNormalizedTime = 1f;
     [Tooltip("Input floating window duration in seconds")]
@@ -23,7 +21,7 @@ public class SkillData : ScriptableObject
 
     /// <summary>
     /// range of one animation normalized time
-    /// 0.0                A (minInterruptNormalizedTime)   B (comboWindowStartNormalizedTime)               C (transitionNormalizedTime)      1.0
+    /// 0.0                A (minInterruptNormalizedTime)   B (AnimationEvent:AttackComboWindowOpened )      C (transitionNormalizedTime)      1.0
     //├────────────────────┼────────────────────────────────┼────────────────────────────────────────────────┼──────────────────────────────────┤
     //│ StartUp            │        Can be canceled         │    Combo input window(user input)              │                                  │
     //│ Can't be canceled  │                                │                                                │                                  │

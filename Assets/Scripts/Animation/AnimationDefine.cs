@@ -12,6 +12,7 @@ public enum AnimationEventType : UInt32
     AttackEnd,
     AttackVfxBegin,
     AttackVfxEnd,
+    AttackComboWindowOpened,
     // Events for common animation
     Common = 500,
     AnimationStart,
