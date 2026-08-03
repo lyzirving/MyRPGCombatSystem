@@ -32,6 +32,7 @@ public static class AnimationConsts
     public static int airborne { get; private set; }
     public static int hit { get; private set; }
     public static int dodge { get; private set; }
+    public static int sprint { get; private set; }
     public static int strafe { get; private set; }
     public static int defence { get; private set; }
     public static int defenceRelease { get; private set; }
@@ -60,6 +61,7 @@ public static class AnimationConsts
         airborne = Animator.StringToHash("isAirborne");
         hit = Animator.StringToHash("isHit");
         dodge = Animator.StringToHash("isDodge");
+        sprint = Animator.StringToHash("isSprint");
         strafe = Animator.StringToHash("isStrafe");
         defence = Animator.StringToHash("isDefence");
         defenceRelease = Animator.StringToHash("defenceRelease");

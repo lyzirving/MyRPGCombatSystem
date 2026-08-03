@@ -300,7 +300,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""9a940327-0156-4d4c-a303-d51130fa2a2a"",
                     ""path"": ""<Keyboard>/leftShift"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Dodge"",

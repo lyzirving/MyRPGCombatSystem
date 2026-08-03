@@ -54,6 +54,9 @@ public class PlayerController : CharacterControllerBase
             case ECharacterState.StrafeMove:
                 m_StateMachine?.ChangeState<PlayerStateStrafeMove>(args);
                 break;
+            case ECharacterState.Sprint:
+                m_StateMachine?.ChangeState<PlayerStateSprint>(args);
+                break;
             case ECharacterState.Jump:
                 m_StateMachine?.ChangeState<PlayerStateJump>(args);
                 break;

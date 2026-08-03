@@ -5,6 +5,7 @@ public enum ECharacterAction : UInt16
     None = 0,
     Idle,
     Move,
+    Sprint,
     Jump,
     Chase,
     Attack,

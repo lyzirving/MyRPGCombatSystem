@@ -5,6 +5,7 @@ public enum ECharacterState : UInt16
     Idle = 0,
     Move,
     StrafeMove,
+    Sprint,
     Jump,
     Roll,
     Falling,

@@ -38,7 +38,8 @@ public struct BufferedCommand : IComparable<BufferedCommand>
             case ECharacterAction.HeavyAttack: return 20;
             case ECharacterAction.Dodge:       return 15;
             case ECharacterAction.LightAttack: return 10;
-            case ECharacterAction.Defence:     return 5;            
+            case ECharacterAction.Defence:     return 5;
+            case ECharacterAction.Sprint:      return 2;
             default: return 0;  
         }
     }

@@ -16,6 +16,18 @@ public class PlayerActionController : MonoBehaviour
     public bool isDefenceHolding => m_IsDefenceHold;
     #endregion
 
+    #region Dodge / Sprint
+    private float m_DodgeHoldStartTime = -1f;
+    private const float DODGE_HOLD_THRESHOLD = 0.3f;
+
+    /// <summary>
+    /// True when Dodge key is held past the threshold while the player is moving,
+    /// signaling that the character should transition into Sprint.
+    /// </summary>
+    public bool shouldSprint => isMoving && m_DodgeHoldStartTime > 0f
+        && (Time.time - m_DodgeHoldStartTime) >= DODGE_HOLD_THRESHOLD;
+    #endregion
+
     #region Buffered Command
     [Header("Buffer Settings")]
     [SerializeField] private int maxCmdBufferSize = 5;
@@ -57,7 +69,8 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
         InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
         InputManager.instance.playerActions.HeavyAttack.performed += OnHeavyAttackPerformed;
-        InputManager.instance.playerActions.Dodge.performed += OnDodgePerformed;
+        InputManager.instance.playerActions.Dodge.started += OnDodgePerformed;
+        InputManager.instance.playerActions.Dodge.canceled += OnDodgeCanceled;        
         // --------------- Event Related End ----------------
     }
 
@@ -70,7 +83,8 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
         InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
         InputManager.instance.playerActions.HeavyAttack.performed -= OnHeavyAttackPerformed;
-        InputManager.instance.playerActions.Dodge.performed -= OnDodgePerformed;
+        InputManager.instance.playerActions.Dodge.started -= OnDodgePerformed;
+        InputManager.instance.playerActions.Dodge.canceled -= OnDodgeCanceled;
     }
 
     private void Update()
@@ -166,7 +180,34 @@ public class PlayerActionController : MonoBehaviour
     private void ProcessAttackInput(CombatDefine.EAttack inputType)
     {        
         var attackComponent = m_CharacterBehavior.attackComponent;
-        var asc = m_CharacterBehavior.abilitySystemComp;        
+        var asc = m_CharacterBehavior.abilitySystemComp;
+
+        // Sprint → Attack: route to dedicated sprint combo sequence
+        if (m_CharacterBehavior.stateMachine.currentState is PlayerStateSprint)
+        {
+            CombatDefine.EAttack sprintAttackType = inputType == CombatDefine.EAttack.LA
+                ? CombatDefine.EAttack.SprintLA
+                : CombatDefine.EAttack.SprintHA;
+
+            int sprintComboIndex = attackComponent.FindComboIndexByStartAction(sprintAttackType);
+            if (sprintComboIndex >= 0)
+            {
+                attackComponent.SetComboIndex(sprintComboIndex);
+                asc.TryActivateAbility<AttackAbility>();
+            }
+            else
+            {
+                // No dedicated sprint attack configured — fall back to regular attack
+                int fallbackIndex = attackComponent.FindComboIndexByStartAction(inputType);
+                if (fallbackIndex >= 0)
+                {
+                    attackComponent.SetComboIndex(fallbackIndex);
+                    asc.TryActivateAbility<AttackAbility>();
+                }
+            }
+            return;
+        }
+
         var currentAttack = asc.GetActive<AttackAbility>();
         if (currentAttack != null)
         {            
@@ -244,7 +285,25 @@ public class PlayerActionController : MonoBehaviour
 
     private void OnDodgePerformed(InputAction.CallbackContext context)
     {
-        EnqueueBufferedCommand(ECharacterAction.Dodge);
+        m_DodgeHoldStartTime = Time.time;
+    }
+
+    private void OnDodgeCanceled(InputAction.CallbackContext context)
+    {
+        // Debug.Log($"Dodge key released. Hold duration: {Time.time - m_DodgeHoldStartTime:F2}s");
+        if (m_DodgeHoldStartTime < 0f)
+            return;
+
+        float holdDuration = Time.time - m_DodgeHoldStartTime;
+        m_DodgeHoldStartTime = -1f;
+
+        if (holdDuration < DODGE_HOLD_THRESHOLD)
+        {
+            // Short press → Dodge
+            EnqueueBufferedCommand(ECharacterAction.Dodge);
+        }
+        // Long press → Sprint transition is handled by PlayerStateMove.HandleInput()
+        // via shouldSprint, so we don't enqueue anything here.
     }
     #endregion
 }

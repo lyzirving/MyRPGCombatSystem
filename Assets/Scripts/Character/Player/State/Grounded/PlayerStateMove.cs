@@ -30,6 +30,12 @@ public class PlayerStateMove : PlayerStateLocomotion
             return true;
         }
 
+        if (m_Player.action.isMoving && m_Player.action.shouldSprint)
+        {
+            m_Player.ChangeState(ECharacterState.Sprint);
+            return true;
+        }
+
         if (!m_Player.action.isMoving)
         {
             m_Player.ChangeState(ECharacterState.Idle);
