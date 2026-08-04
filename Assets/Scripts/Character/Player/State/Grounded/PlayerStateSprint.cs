@@ -33,6 +33,18 @@ public class PlayerStateSprint : PlayerStateLocomotion
             return true;
         }
 
+        if (!m_Player.action.shouldSprint)
+        {
+            m_Player.ChangeState(ECharacterState.Move);
+            return true;
+        }
+
+        if (m_Player.lockTarget != null && !(m_Player.currentState is PlayerStateStrafeMove))
+        {
+            m_Player.ChangeState(ECharacterState.StrafeMove);
+            return true;
+        }
+
         return false;
     }
 
@@ -43,9 +55,6 @@ public class PlayerStateSprint : PlayerStateLocomotion
         {
             m_SprintDirection = m_Player.GetTargetDirection();
         }
-
-        // Animation parameters: sprint speed = 3, smooth damped
-        m_Player.model.SetAnimationFloat(AnimationConsts.speed, 3f, 0.1f, Time.deltaTime);
 
         // Angular velocity for turning (same logic as Move)
         Vector3 forward = m_Player.transform.forward;

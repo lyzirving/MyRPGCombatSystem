@@ -285,12 +285,13 @@ public class PlayerActionController : MonoBehaviour
 
     private void OnDodgePerformed(InputAction.CallbackContext context)
     {
+        Debug.Log($"Dodge performed");
         m_DodgeHoldStartTime = Time.time;
     }
 
     private void OnDodgeCanceled(InputAction.CallbackContext context)
     {
-        // Debug.Log($"Dodge key released. Hold duration: {Time.time - m_DodgeHoldStartTime:F2}s");
+        Debug.Log($"Dodge key released. Hold duration: {Time.time - m_DodgeHoldStartTime:F2}s");
         if (m_DodgeHoldStartTime < 0f)
             return;
 

@@ -17,3 +17,4 @@ MonoBehaviour:
   walkModify: 0.4
   runModify: 1
   dodgeModify: 2
+  sprintModify: 1.7

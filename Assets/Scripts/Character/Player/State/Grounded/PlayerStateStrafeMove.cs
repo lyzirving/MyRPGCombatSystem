@@ -24,8 +24,8 @@ public class PlayerStateStrafeMove : PlayerStateMove
 
         if (m_Player.action.isMoving && !m_Player.sensor.WithinView(m_Player.action.cameraFwd))
         {
-            m_Player.lockTarget = null;
-            m_Player.ChangeState(ECharacterState.Move);
+            m_Player.lockTarget = null;            
+            m_Player.ChangeState(m_Player.action.shouldSprint ? ECharacterState.Sprint : ECharacterState.Move);
             return true;
         }
 
