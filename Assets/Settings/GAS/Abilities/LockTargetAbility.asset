@@ -28,4 +28,5 @@ MonoBehaviour:
   grantedTags:
   - m_TagName: Root.Combat.Locked
   requiredTags: []
-  blockedTags: []
+  blockedTags:
+  - m_TagName: Root.Locomotion.Sprint

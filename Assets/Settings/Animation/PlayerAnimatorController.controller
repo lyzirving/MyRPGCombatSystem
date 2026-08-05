@@ -1040,7 +1040,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: isLocked
+    m_ConditionEvent: isStrafe
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -690545652595820566}
@@ -1747,9 +1747,9 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -9079747260184084843}
-  - {fileID: 272863033312796082}
-  - {fileID: 6282386879002090816}
   - {fileID: 6482396657717574910}
+  - {fileID: 6282386879002090816}
+  - {fileID: 272863033312796082}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1880,7 +1880,7 @@ AnimatorStateTransition:
     m_ConditionEvent: isSprint
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: isLocked
+    m_ConditionEvent: isStrafe
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5162862129726630071}
@@ -2099,7 +2099,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isLocked
+    m_ConditionEvent: isStrafe
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5440692031510044209}

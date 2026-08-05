@@ -24,10 +24,11 @@ public class LocomotionAbility : GameplayAbility
     private PlayerController m_Player;
     private PlayerActionController m_Action;
 
-    // Cached tag indices for performance.
+    // Cached tag instances for performance.
     private GameplayTag m_TagMove;
     private GameplayTag m_TagStrafing;
     private GameplayTag m_TagSprint;
+    private GameplayTag m_TagLocked;
 
     #region Ability Lifecycle
 
@@ -41,6 +42,7 @@ public class LocomotionAbility : GameplayAbility
         m_TagMove = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.LOCOMOTION_MOVE));
         m_TagStrafing = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.LOCOMOTION_STRAFING));
         m_TagSprint = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.LOCOMOTION_SPRINT));
+        m_TagLocked = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.COMBAT_LOCKED));
     }
 
     protected override void OnAbilityPerformed()
@@ -148,26 +150,32 @@ public class LocomotionAbility : GameplayAbility
 
     /// <summary>
     /// Determines which locomotion sub-mode the player should be in based on current input and state.
-    /// Priority: StrafeMove (has lock target) > Sprint > Move.
+    /// Priority: StrafeMove (Tag.Locked active) > Sprint > Move.
+    ///
+    /// Design note:
+    ///   - Tag.Locked is granted by LockTargetAbility. If LockTargetAbility is blocked
+    ///     (e.g. by Locomotion.Sprint via blockedTags), Tag.Locked won't be present,
+    ///     and StrafeMove will NOT be entered — even if lockTarget is non-null.
+    ///   - LockTargetAbility manages the lock-target lifecycle (WithinView check,
+    ///     target null check) and will EndAbility when the lock should be released,
+    ///     which removes Tag.Locked and triggers a switch back to Move/Sprint.
+    ///   - lockTarget still serves as a secondary guard: even if Tag.Locked is stale
+    ///     (e.g. one-frame delay), a null lockTarget prevents entering StrafeMove.
     /// </summary>
     private LocomotionMode ResolveTargetMode()
     {
         if (m_Player == null || m_Action == null)
             return LocomotionMode.None;
 
-        // StrafeMove takes precedence when there is a lock target and input is moving.
-        // Exception: if the player looks away from the target, clear lock and fallback.
-        if (m_Player.lockTarget != null)
+        // StrafeMove only when LockTargetAbility has set Tag.Locked and a target exists.
+        // This respects blockedTags (e.g. Sprint blocks LockTargetAbility → Tag.Locked absent).
+        bool isLockedOn = m_Player.lockTarget != null
+            && m_ASC != null
+            && m_ASC.HasTag(m_TagLocked);
+
+        if (isLockedOn)
         {
-            if (!m_Player.sensor.WithinView(m_Action.cameraFwd))
-            {
-                // Player looked away from target — release lock.
-                m_Player.lockTarget = null;
-            }
-            else
-            {
-                return LocomotionMode.StrafeMove;
-            }
+            return LocomotionMode.StrafeMove;
         }
 
         // Sprint when shouldSprint is true (Dodge key held past threshold).

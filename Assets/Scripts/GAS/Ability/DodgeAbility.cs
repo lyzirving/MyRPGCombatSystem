@@ -1,4 +1,10 @@
 ﻿
+/// <summary>
+/// DodgeAbility is a simple ability that triggers a dodge action on the player character.
+/// It does not handle movement or state transitions directly; instead, 
+/// it relies on the PlayerController to perform the dodge action and change the character's state to Dodge.
+/// It requires Tag.locked to be activated to ensure that the player is in a state where dodging is allowed.
+/// </summary>
 public class DodgeAbility : GameplayAbility
 {
     protected override void OnAbilityActivated()
@@ -42,9 +48,9 @@ public class DodgeAbility : GameplayAbility
 
     private void ChangeStateWhenExit()
     {
-        if (m_Character.lockTarget != null)
-            m_Character.ChangeState(ECharacterState.StrafeMove);
-        else
-            m_Character.ChangeState(ECharacterState.Idle);
+        // Always return to Idle. If the player is still holding movement input,
+        // LocomotionAbility will be re-activated next frame and decide the correct
+        // locomotion mode (Move / StrafeMove / Sprint) based on current Tags and input.
+        m_Character.ChangeState(ECharacterState.Idle);
     }
 }
