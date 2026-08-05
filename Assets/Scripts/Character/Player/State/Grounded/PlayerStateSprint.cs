@@ -24,30 +24,6 @@ public class PlayerStateSprint : PlayerStateLocomotion
         return base.Exit(newState);
     }
 
-    public override bool HandleInput()
-    {
-        // Release movement key while sprinting → transition to Idle
-        if (!m_Player.action.isMoving)
-        {
-            m_Player.ChangeState(ECharacterState.Idle);
-            return true;
-        }
-
-        if (!m_Player.action.shouldSprint)
-        {
-            m_Player.ChangeState(ECharacterState.Move);
-            return true;
-        }
-
-        if (m_Player.lockTarget != null && !(m_Player.currentState is PlayerStateStrafeMove))
-        {
-            m_Player.ChangeState(ECharacterState.StrafeMove);
-            return true;
-        }
-
-        return false;
-    }
-
     public override void Update()
     {
         // Continuously update sprint direction based on input

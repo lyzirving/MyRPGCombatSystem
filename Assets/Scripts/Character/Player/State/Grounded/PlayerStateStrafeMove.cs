@@ -14,30 +14,6 @@ public class PlayerStateStrafeMove : PlayerStateMove
         return base.Exit(newState);
     }
 
-    public override bool HandleInput()
-    {
-        if (m_Player.lockTarget == null)
-        {
-            m_Player.ChangeState(ECharacterState.Move);
-            return true;
-        }
-
-        if (m_Player.action.isMoving && !m_Player.sensor.WithinView(m_Player.action.cameraFwd))
-        {
-            m_Player.lockTarget = null;            
-            m_Player.ChangeState(m_Player.action.shouldSprint ? ECharacterState.Sprint : ECharacterState.Move);
-            return true;
-        }
-
-        if (!m_Player.action.isMoving)
-        {
-            m_Player.ChangeState(ECharacterState.Idle);
-            return true;
-        }
-
-        return false;
-    }
-
     public override void FixedUpdate()
     {
         if (!m_Player.action.isMoving || m_Player.lockTarget == null)

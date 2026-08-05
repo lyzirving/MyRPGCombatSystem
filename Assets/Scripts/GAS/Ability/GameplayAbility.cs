@@ -81,7 +81,7 @@ public abstract class GameplayAbility : ScriptableObject
     public bool isInstant => Mathf.Abs(m_EndTime - m_ActiveTime) < Mathf.Epsilon;
     public bool isActive => m_IsActive;
 
-    [NonSerialized] private AbilitySystemComponent m_ASC;
+    [NonSerialized] protected AbilitySystemComponent m_ASC;
     [NonSerialized] private bool m_IsActive = false;
     [NonSerialized] private float m_ActiveTime;
     [NonSerialized] private float m_EndTime;

@@ -17,16 +17,6 @@ public class PlayerStateIdle : PlayerStateLocomotion
         m_Player.attrs.speedModify = 0f;
     }
 
-    public override bool HandleInput()
-    {
-        if (m_Player.action.isMoving)
-        {
-            m_Player.ChangeState(m_Player.lockTarget != null ? ECharacterState.StrafeMove : ECharacterState.Move);
-            return true;
-        }
-        return false;
-    }
-
     public override void Update()
     {               
         m_Player.model.SetAnimationFloat(AnimationConsts.speed, 0f, 0.1f, Time.deltaTime);

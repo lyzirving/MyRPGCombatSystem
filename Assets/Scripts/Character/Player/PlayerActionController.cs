@@ -90,6 +90,7 @@ public class PlayerActionController : MonoBehaviour
     private void Update()
     {
         CheckBufferedCommand();
+        CheckLocomotionInput();
     }
 
     private void LateUpdate()
@@ -303,8 +304,41 @@ public class PlayerActionController : MonoBehaviour
             // Short press → Dodge
             EnqueueBufferedCommand(ECharacterAction.Dodge);
         }
-        // Long press → Sprint transition is handled by PlayerStateMove.HandleInput()
+        // Long press → Sprint transition is handled by LocomotionAbility.OnAbilityUpdate()
         // via shouldSprint, so we don't enqueue anything here.
+    }
+    #endregion
+
+    #region Locomotion Input
+    /// <summary>
+    /// Drives the LocomotionAbility based on player movement input.
+    /// Called every frame in Update().
+    /// </summary>
+    private void CheckLocomotionInput()
+    {
+        if (!isMoving)
+            return;
+
+        var asc = m_CharacterBehavior.abilitySystemComp;
+        if (asc == null)
+            return;
+
+        var locomotion = asc.GetActive<LocomotionAbility>();
+        if (locomotion == null)
+        {
+            // Only activate locomotion when the state machine is in a locomotion-friendly state.
+            // Prevents re-activating locomotion while Attack/Dodge/Defence/Jump is active,
+            // which would overwrite the combat state on the next frame.
+            var currentState = m_CharacterBehavior.stateMachine.currentState;
+            if (currentState is PlayerStateIdle
+                || currentState is PlayerStateMove
+                || currentState is PlayerStateStrafeMove
+                || currentState is PlayerStateSprint)
+            {
+                asc.TryActivateAbility<LocomotionAbility>();
+            }
+        }
+        // If already active, LocomotionAbility.OnAbilityUpdate handles mode switching.
     }
     #endregion
 }

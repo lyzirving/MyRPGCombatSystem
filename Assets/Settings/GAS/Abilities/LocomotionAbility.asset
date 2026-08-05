@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9347219cbb536e46ae6dfccb87cd68d, type: 3}
-  m_Name: AttackAbility
+  m_Script: {fileID: 11500000, guid: 57b1b172810c1124ab8fad354b0c54d3, type: 3}
+  m_Name: LocomotionAbility
   m_EditorClassIdentifier: 
-  m_UniqueID: 5be7a28c-b8f8-4ee7-9bdc-dcff86af02fb
-  abilityName: AttackAbility
+  m_UniqueID: f279bd3e-baa0-41c8-8f60-7f6347f4fd0c
+  abilityName: Locomotion
   description: 
   icon: {fileID: 0}
   activationPolicy: 1
@@ -25,7 +25,6 @@ MonoBehaviour:
     m_TagName: 
   cooldownDuration: 0
   cooldownEffect: {fileID: 0}
-  grantedTags:
-  - m_TagName: Root.Combat.Attack
+  grantedTags: []
   requiredTags: []
   blockedTags: []

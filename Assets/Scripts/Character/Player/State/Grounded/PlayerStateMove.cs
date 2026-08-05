@@ -22,29 +22,6 @@ public class PlayerStateMove : PlayerStateLocomotion
         m_CurrentTime = 0f;
     }
 
-    public override bool HandleInput()
-    {
-        if (m_Player.action.isMoving && m_Player.lockTarget != null && !(m_Player.currentState is PlayerStateStrafeMove))
-        {
-            m_Player.ChangeState(ECharacterState.StrafeMove);
-            return true;
-        }
-
-        if (m_Player.action.isMoving && m_Player.action.shouldSprint)
-        {
-            m_Player.ChangeState(ECharacterState.Sprint);
-            return true;
-        }
-
-        if (!m_Player.action.isMoving)
-        {
-            m_Player.ChangeState(ECharacterState.Idle);
-            return true;
-        }
-
-        return false;
-    }
-
     public override void Update()
     {
         GetCurrentAnimationTimeInfo(out int currentLoop, out float currentTime);

@@ -16,4 +16,7 @@ public class GameplayAbilityMenuItems
 
     [MenuItem("Assets/Create/GAS/Ability/LockTargetAbility", priority = 10)]
     private static void CreateLockTargetAbility() => GameplayAbilityCreator.CreateGameplayAbility<LockTargetAbility>();
+    
+    [MenuItem("Assets/Create/GAS/Ability/LocomotionAbility", priority = 10)]
+    private static void CreateLocomotionAbility() => GameplayAbilityCreator.CreateGameplayAbility<LocomotionAbility>();
 }
