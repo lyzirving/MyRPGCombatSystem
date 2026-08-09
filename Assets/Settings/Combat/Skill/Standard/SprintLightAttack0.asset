@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
+  m_Name: SprintLightAttack0
+  m_EditorClassIdentifier: 
+  animatorState: SprintLightAttack0
+  crossFadeInTime: 0.15
+  minInterruptNormalizedTime: 0.28
+  transitionNormalizedTime: 0.63
+  inputWindowDuration: 0.2
+  minDistanceToTarget: 0.5
+  attackBox: RightElbowAttackBox
+  action: 3
+  damage: 7
+  hitStunTime: 0.5
+  knockbackDistance: 0.2
+  skillReleaseData:
+    spawnPrefab: 
+    vfxTime: 0
+    audioClip: {fileID: 8300000, guid: e68a83ddc325e4341bac2fe31f5fe5c3, type: 3}
+  skillHitData:
+    spawnPrefab: VFX/Classic/18
+    audioClip: {fileID: 0}
+    hitStopTimeScale: 0.18
+    hitStopDuration: 0.06
+  attackBoxIndex: 3
+  nextSkillIndex: -1

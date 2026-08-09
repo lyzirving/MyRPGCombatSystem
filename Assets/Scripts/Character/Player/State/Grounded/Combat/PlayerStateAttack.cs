@@ -63,7 +63,7 @@ public class PlayerStateAttack : PlayerStateCombat
         if(!IsExpired())
         {
             m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime);
-        }
+        }        
     }
 
     public override void FixedUpdate()

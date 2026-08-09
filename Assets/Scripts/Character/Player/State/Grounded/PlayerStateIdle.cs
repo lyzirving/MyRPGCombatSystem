@@ -15,6 +15,10 @@ public class PlayerStateIdle : PlayerStateLocomotion
             m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f);
         }
         m_Player.attrs.speedModify = 0f;
+
+        // Immediately kill horizontal velocity to prevent sliding during transitions
+        // (e.g. Sprint→Attack→Idle→Sprint where Idle.FixedUpdate may not run).
+        m_Player.ResetHorizontalVelocity();
     }
 
     public override void Update()

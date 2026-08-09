@@ -89,7 +89,12 @@ public class PlayerActionController : MonoBehaviour
 
     private void Update()
     {
+        // order between buffered command and locomotion input is important: 
+
+        // 1. check buffered command queue and execute the first valid command
         CheckBufferedCommand();
+
+        // 2. check locomotion input and activate LocomotionAbility if needed
         CheckLocomotionInput();
     }
 
@@ -286,13 +291,12 @@ public class PlayerActionController : MonoBehaviour
 
     private void OnDodgePerformed(InputAction.CallbackContext context)
     {
-        Debug.Log($"Dodge performed");
         m_DodgeHoldStartTime = Time.time;
     }
 
     private void OnDodgeCanceled(InputAction.CallbackContext context)
     {
-        Debug.Log($"Dodge key released. Hold duration: {Time.time - m_DodgeHoldStartTime:F2}s");
+        // Debug.Log($"Dodge key released. Hold duration: {Time.time - m_DodgeHoldStartTime:F2}s");
         if (m_DodgeHoldStartTime < 0f)
             return;
 
