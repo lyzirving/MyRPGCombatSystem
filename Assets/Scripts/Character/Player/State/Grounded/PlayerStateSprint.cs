@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStateSprint : PlayerStateLocomotion
+public class PlayerStateSprint : PlayerStateMove
 {
     private Vector3 m_SprintDirection;
 
@@ -24,7 +24,24 @@ public class PlayerStateSprint : PlayerStateLocomotion
         return base.Exit(newState);
     }
 
-    public override void Update()
+    public override void FixedUpdate()
+    {
+        if (!m_Player.action.isMoving)
+            return;
+            
+        // Rotate toward sprint direction
+        m_Player.RotateToTargetDir(m_SprintDirection, m_Player.config.move.rotateSpeed);
+
+        // Apply movement along sprint direction
+        MoveImmediately(m_SprintDirection * m_Player.speedScaler);
+    }
+
+    public override ECharacterAction GetCurrentAction()
+    {
+        return ECharacterAction.Sprint;
+    }
+
+    protected override void UpdateAnimationValue()
     {
         // Continuously update sprint direction based on input
         if (m_Player.action.isMoving)
@@ -39,19 +56,5 @@ public class PlayerStateSprint : PlayerStateLocomotion
         float angular = Mathf.Clamp(angle / 60f, 0f, 1f);
         float sign = Mathf.Sign(Vector3.Cross(forward, m_SprintDirection).y);
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, angular * sign, 0.1f, Time.deltaTime);
-    }
-
-    public override void FixedUpdate()
-    {
-        // Rotate toward sprint direction
-        m_Player.RotateToTargetDir(m_SprintDirection, m_Player.config.move.rotateSpeed);
-
-        // Apply movement along sprint direction
-        MoveImmediately(m_SprintDirection * m_Player.speedScaler);
-    }
-
-    public override ECharacterAction GetCurrentAction()
-    {
-        return ECharacterAction.Sprint;
     }
 }

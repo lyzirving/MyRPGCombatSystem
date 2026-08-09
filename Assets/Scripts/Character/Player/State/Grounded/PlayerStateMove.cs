@@ -63,37 +63,5 @@ public class PlayerStateMove : PlayerStateLocomotion
         float sign = Mathf.Sign(Vector3.Cross(forward, targetDir).y);
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, angular * sign, 0.1f, Time.deltaTime);
     }
-    #endregion
-
-    protected void GetCurrentAnimationTimeInfo(out int loop, out float time)
-    {
-        // Note: Only consider the case when entering the move animation.
-        //       If character quits the animation, the Update() will not run.
-        if (m_Player.model.animator.IsInTransition(AnimationConsts.BASE_LAYER))
-        {
-            var state = m_Player.model.animator.GetNextAnimatorStateInfo(AnimationConsts.BASE_LAYER);
-            loop = Mathf.FloorToInt(state.normalizedTime);
-            time = state.normalizedTime % 1f;
-        }
-        else
-        {
-            var state = m_Player.model.animator.GetCurrentAnimatorStateInfo(AnimationConsts.BASE_LAYER);
-            loop = Mathf.FloorToInt(state.normalizedTime);
-            time = state.normalizedTime % 1f;
-        }
-    }
-
-    protected void UpdateFootStep(int currentLoop, float currtentTime, int lastLoop, float lastTime)
-    {
-        float time = Time.time;
-        if (currentLoop != lastLoop && Mathf.Abs(currentLoop - lastLoop) == 1)
-        {
-            m_Player.OnFootStep(EFootstep.RightFootstep);
-        }
-
-        if (lastTime < 0.5f && currtentTime >= 0.5f && !Mathf.Approximately(lastTime, 0f))
-        {
-            m_Player.OnFootStep(EFootstep.LeftFootstep);
-        }
-    }  
+    #endregion          
 }
