@@ -9,7 +9,7 @@ public class AIStateAttack : AIStateCombat
     {
         base.Enter(exitState, args);       
         m_AIController.model.StartAnimation(m_AIController.attackComponent.skill.animatorState, m_AIController.attackComponent.skill.crossFadeInTime);
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.AIAnimation, AnimationEventType.AttackComboWindowOpened, HandleAttackCombo);
+        AnimationEventReceiver.instance.RegisterAction(m_AIController.model.animator, AnimationEventType.AttackComboWindowOpened, HandleAttackCombo);
         m_NormalizedTime = 0f;
         m_SubState = EAttackState.Start;
     }
@@ -31,7 +31,7 @@ public class AIStateAttack : AIStateCombat
 
     override public bool Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.AIAnimation, AnimationEventType.AttackComboWindowOpened, HandleAttackCombo);
+        AnimationEventReceiver.instance.RemoveAction(m_AIController.model.animator, AnimationEventType.AttackComboWindowOpened, HandleAttackCombo);
         base.Exit(newState);
         return true;
     }

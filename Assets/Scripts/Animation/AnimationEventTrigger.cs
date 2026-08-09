@@ -24,8 +24,6 @@ public class AnimationEventInfo : IComparable<AnimationEventInfo>
 
 public class AnimationEventTrigger : StateMachineBehaviour
 {
-    // guid of event's listener
-    public int guid = -1;
     public List<AnimationEventInfo> events = new List<AnimationEventInfo>();
     public string animatorState;
 
@@ -42,12 +40,6 @@ public class AnimationEventTrigger : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (guid < 0)
-        {
-            Debug.LogError($"AnimationEventTrigger: instance id hasn't been assigned for animator[{animator.name}]");
-            return;
-        }
-
         if (string.IsNullOrEmpty(animatorState))
         {
             Debug.LogError($"AnimationEventTrigger: animator state name hasn't been assgined for animator[{animator.name}]");
@@ -79,7 +71,10 @@ public class AnimationEventTrigger : StateMachineBehaviour
 
         currentEvent.triggerTime = time;
         if(string.IsNullOrEmpty(currentEvent.animatorState)) currentEvent.animatorState = animatorState;
-        AnimationEventReceiver.instance.OnAnimationEventTrigger(guid, currentEvent);
+
+        // Route by Animator instance
+        // Each character simply registers its handlers with the animator it owns.
+        AnimationEventReceiver.instance.OnAnimationEventTrigger(animator, currentEvent);
 
         ++m_Index;
     }

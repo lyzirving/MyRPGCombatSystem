@@ -18,12 +18,12 @@ public class PlayerStateDefence : PlayerStateCombat
         {
             m_Player.model.StartAnimation(AnimationConsts.defenceState, 0.05f, AnimationConsts.BASE_LAYER);
         }
-        AnimationEventReceiver.instance.RegisterAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
+        AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
     }
 
     public override bool Exit(StateBase newState)
     {
-        AnimationEventReceiver.instance.RemoveAction(GUIDConsts.PlayerAnimation, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
+        AnimationEventReceiver.instance.RemoveAction(m_Player.model.animator, AnimationEventType.AnimationTransit, OnDefenceEndTransition);
         m_Player.model.SetAnimationBool(AnimationConsts.defence, false);
         base.Exit(newState);
         return true;

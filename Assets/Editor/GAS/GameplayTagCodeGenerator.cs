@@ -16,7 +16,7 @@ public static class GameplayTagCodeGenerator
         }
         catch (Exception e)
         {
-            Debug.LogError($"fail to generate GUIDConsts.cs: {e.Message}");
+            Debug.LogError($"fail to generate GameplayTag.Define.cs: {e.Message}");
         }
     }
 

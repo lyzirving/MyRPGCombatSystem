@@ -14,7 +14,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CharacterModel m_Model;
     protected AbilitySystemComponent m_AbilitySystemComp;
 
-    protected int m_CharacterGUID = GUIDConsts.PlayerAnimation;
     protected ECharacterDodgeAction m_DodgeAction = ECharacterDodgeAction.None;
     protected CharacterSensor m_Sensor;
     protected AttackComponent m_AttackComponent;
@@ -183,7 +182,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #endregion
 
     #region ICharacterBehavior Methods
-    public int GUID => m_CharacterGUID;
     public Transform modelTransform => m_Model.transform;
     public Transform vfxRoot => m_VFXRoot;
     public StateMachine stateMachine => m_StateMachine;    

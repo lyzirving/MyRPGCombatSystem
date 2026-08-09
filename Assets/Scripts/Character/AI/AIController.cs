@@ -5,7 +5,6 @@ public class AIController : CharacterControllerBase
     #region State Methods
     private void Awake()
     {
-        m_CharacterGUID = GUIDConsts.AIAnimation;
         base.Init();
 
         m_Model = GetComponentInChildren<AIModel>();

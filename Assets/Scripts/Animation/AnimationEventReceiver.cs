@@ -4,22 +4,25 @@ using System.Collections.Generic;
 // Avoid reference change
 public delegate void AnimationEventHandle(in AnimationEventInfo info);
 
+/// <summary>
+/// Receives animation events from AnimationEventTrigger (StateMachineBehaviour) and
+/// dispatches them to registered handlers. Uses the Animator component as the routing key.
+/// </summary>
 public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
 {
     /// <summary>
-    /// Key: guid of the listener instance
-    /// Value: events and handlers of an instance
+    /// Key: Animator component that owns the animation
+    /// Value: event-type → handler mapping for that animator
     /// </summary>
-    private Dictionary<int, Dictionary<AnimationEventType, AnimationEventHandle>> m_InstanceMap;
+    private Dictionary<Animator, Dictionary<AnimationEventType, AnimationEventHandle>> m_InstanceMap;
 
     public override void OnInit()
     {
-        m_InstanceMap = new Dictionary<int, Dictionary<AnimationEventType, AnimationEventHandle>>();
+        m_InstanceMap = new Dictionary<Animator, Dictionary<AnimationEventType, AnimationEventHandle>>();
     }
 
     public override void OnDeInit()
     {
-        Debug.Log("AnimationEventReceiver: OnDeInit");
         if (m_InstanceMap != null)
         {
             m_InstanceMap.Clear();
@@ -27,9 +30,11 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
         }
     }
 
-    public void RegisterAction(int guid, AnimationEventType key, AnimationEventHandle action)
+    public void RegisterAction(Animator animator, AnimationEventType key, AnimationEventHandle action)
     {
-        if (m_InstanceMap.TryGetValue(guid, out var instanceMap))
+        if (animator == null) return;
+
+        if (m_InstanceMap.TryGetValue(animator, out var instanceMap))
         {
             if (instanceMap.TryGetValue(key, out var handle))
             {
@@ -44,23 +49,27 @@ public class AnimationEventReceiver : SingletonMono<AnimationEventReceiver>
         {
             instanceMap = new Dictionary<AnimationEventType, AnimationEventHandle>();
             instanceMap[key] = action;
-            m_InstanceMap.Add(guid, instanceMap);
+            m_InstanceMap.Add(animator, instanceMap);
         }
     }
 
-    public void RemoveAction(int guid, AnimationEventType key, AnimationEventHandle action)
+    public void RemoveAction(Animator animator, AnimationEventType key, AnimationEventHandle action)
     {
-        if (m_InstanceMap.TryGetValue(guid, out var map) && map.TryGetValue(key, out var handle))
+        if (animator == null) return;
+
+        if (m_InstanceMap.TryGetValue(animator, out var map) && map.TryGetValue(key, out var handle))
         {
             map[key] = handle - action;
         }
-    }    
+    }
 
-    public void OnAnimationEventTrigger(int guid, in AnimationEventInfo info)
+    public void OnAnimationEventTrigger(Animator animator, in AnimationEventInfo info)
     {
-        if (m_InstanceMap.TryGetValue(guid, out var map) && map.TryGetValue(info.type, out var handle))
+        if (animator == null) return;
+
+        if (m_InstanceMap.TryGetValue(animator, out var map) && map.TryGetValue(info.type, out var handle))
         {
             handle?.Invoke(info);
         }
-    }    
+    }
 }

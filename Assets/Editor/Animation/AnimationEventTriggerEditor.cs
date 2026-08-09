@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 
 [CustomEditor(typeof(AnimationEventTrigger))]
-public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
+public class AnimationEventTriggerEditor : Editor
 {
     private AnimationClip m_PreviewClip;
     private bool m_PreviewAnimation = false;
@@ -60,8 +60,6 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
         EditorGUILayout.ObjectField("Script", behaviour, behaviour.GetType(), false);
         EditorGUI.EndDisabledGroup();
 
-        AssignListenerGuid(behaviour);
-
         if (GUILayout.Button("Add Event"))
         {
             behaviour.events.Add(new AnimationEventInfo());
@@ -90,19 +88,6 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
         {
             behaviour.events.Clear();
         }
-    }
-
-    private void AssignListenerGuid(AnimationEventTrigger behaviour)
-    {
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.TextField("Listener GUID", $"{behaviour.guid}", EditorStyles.textField);
-        if (GUILayout.Button("Assign Guid", GUILayout.ExpandWidth(true)))
-        {
-            GUIDSelectionWindow.ShowWindow(this, behaviour.guid);
-        }
-        EditorGUILayout.EndHorizontal();
-        if(behaviour.guid < 0)
-            EditorGUILayout.HelpBox("Please assgin a guid for your listener", MessageType.Info);
     }
 
     private void DrawRemoveEventPanel(AnimationEventTrigger behaviour)
@@ -278,12 +263,5 @@ public class AnimationEventTriggerEditor : Editor, GUIDSelectionChange
         AnimationMode.StartAnimationMode();
         AnimationMode.SampleAnimationClip(Selection.activeGameObject, m_PreviewClip, m_PreviewTime * m_PreviewClip.length);
         AnimationMode.StopAnimationMode();
-    }
-
-    public void OnGUIDSelectionChange(GUIDEntry entry)
-    {
-        if (entry == null) return;
-        AnimationEventTrigger behaviour = (AnimationEventTrigger)target;
-        behaviour.guid = entry.guid;
     }
 }
