@@ -24,8 +24,8 @@ MonoBehaviour:
   hitStunTime: 0.5
   knockbackDistance: 0.2
   skillReleaseData:
-    spawnPrefab: 
-    vfxTime: 0
+    spawnPrefab: VFX/Attack/SprintLightAttack0
+    vfxTime: 0.14
     audioClip: {fileID: 8300000, guid: e68a83ddc325e4341bac2fe31f5fe5c3, type: 3}
   skillHitData:
     spawnPrefab: VFX/Classic/18

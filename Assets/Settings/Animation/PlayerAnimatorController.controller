@@ -1898,11 +1898,11 @@ MonoBehaviour:
     triggerTime: 0
     animatorState: SprintLightAttack0
   - type: 104
-    launchTime: 0.6
+    launchTime: 0.58
     triggerTime: 0
     animatorState: SprintLightAttack0
   - type: 105
-    launchTime: 0.63
+    launchTime: 0.6
     triggerTime: 0
     animatorState: SprintLightAttack0
   animatorState: SprintLightAttack0

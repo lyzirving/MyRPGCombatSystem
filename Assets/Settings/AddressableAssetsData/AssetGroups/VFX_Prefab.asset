@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df7765050fef7344c81edef87e6a755c
+    m_Address: VFX/Attack/SprintLightAttack0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e8ae6236a07007a49b77218e3e2451f9
     m_Address: VFX/Classic/18
     m_ReadOnly: 0
