@@ -336,14 +336,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7d429c5069d084fb575db7628eeee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ViewScanner:
-    interval: 0.05
-    m_ViewChecker:
-      fieldOfView: 135
-      eyeHeightOffset: 1.35
-      sightDistance: 7
-      gizmosColor: {r: 1, g: 0, b: 0.04943371, a: 1}
-      targetTag: 
+  m_ViewChecker:
+    fieldOfView: 135
+    eyeHeightOffset: 1
+    sightDistance: 7
+    gizmosColor: {r: 0, g: 0, b: 1, a: 1}
+    targetTag: Enemy
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
 --- !u!1 &91168824
@@ -2992,6 +2990,7 @@ GameObject:
   - component: {fileID: 496888510}
   - component: {fileID: 496888511}
   - component: {fileID: 496888512}
+  - component: {fileID: 496888513}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -3168,14 +3167,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7d429c5069d084fb575db7628eeee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ViewScanner:
-    interval: 0.05
-    m_ViewChecker:
-      fieldOfView: 135
-      eyeHeightOffset: 1.4
-      sightDistance: 7
-      gizmosColor: {r: 0, g: 0, b: 1, a: 1}
-      targetTag: 
+  m_ViewChecker:
+    fieldOfView: 135
+    eyeHeightOffset: 1
+    sightDistance: 7
+    gizmosColor: {r: 0, g: 0, b: 1, a: 1}
+    targetTag: 
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
 --- !u!114 &496888512
@@ -3193,6 +3190,20 @@ MonoBehaviour:
   m_GrantedAttributes: []
   m_GrantedAbility: {fileID: 11400000, guid: 17d6b165d9ce0dc4093e4572910f1a82, type: 2}
   m_Character: {fileID: 496888499}
+--- !u!114 &496888513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496888496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2daaf08bd3db97848930ccee86309668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HardLockConeHalfAngle: 30
+  m_MaxLockDistance: 30
 --- !u!1 &507923619
 GameObject:
   m_ObjectHideFlags: 0

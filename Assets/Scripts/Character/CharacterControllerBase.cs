@@ -227,18 +227,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         state?.OnExitGround();
     }
 
-    public virtual void OnTargetFind(Transform target)
-    { 
-    }
-
-    public virtual void OnTargetLost(Transform target)
-    { 
-    }
-
-    public virtual void OnTargetChange(Transform current, Transform last)
-    { 
-    }
-
     public virtual void OnTargetDistZoneChange(EDistanceZone newZone, EDistanceZone oldZone, float distance)
     { 
     }

@@ -16,8 +16,5 @@ public interface ICharacterBehavior
     public void OnFootStep(EFootstep footStep);
     public void OnContactGround(Collider collider);
     public void OnExitGround();
-    public void OnTargetFind(Transform target);
-    public void OnTargetLost(Transform target);
-    public void OnTargetChange(Transform current, Transform last);
     public void OnTargetDistZoneChange(EDistanceZone newZone, EDistanceZone oldZone, float distance);
 }

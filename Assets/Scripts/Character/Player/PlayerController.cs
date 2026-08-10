@@ -121,23 +121,5 @@ public class PlayerController : CharacterControllerBase
             defenceState.OnHit(0.2f);
         }
     }
-
-    public override void OnTargetFind(Transform target)
-    {
-        lockTarget = target;
-        m_AbilitySystemComp.TryActivateAbility<LockTargetAbility>();        
-    }
-
-    public override void OnTargetLost(Transform target)
-    {
-        lockTarget = null;
-        m_AbilitySystemComp.CancelAbility<LockTargetAbility>();
-    }
-
-    public override void OnTargetChange(Transform current, Transform last)
-    {
-        lockTarget = current;
-        m_AbilitySystemComp.TryActivateAbility<LockTargetAbility>(); 
-    }
     #endregion
 }

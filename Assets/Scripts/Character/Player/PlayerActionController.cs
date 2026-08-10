@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerActionController : MonoBehaviour
 {
     private ICharacterBehavior m_CharacterBehavior;
+    private LockTargetManager m_LockTargetManager;
 
     #region Action Toggle
     private bool m_ShouldPlayerRun = true;
@@ -65,6 +66,11 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.HoldDefence.canceled += OnDefenceCancel;
         // --------------- State Related End ----------------
 
+        // --------------- Lock Target Start --------------
+        InputManager.instance.playerActions.LockTarget.performed += OnLockTargetPerformed;
+        InputManager.instance.playerActions.SwitchTarget.performed += OnSwitchTargetPerformed;
+        // --------------- Lock Target End ----------------
+
         // --------------- Event Related Start --------------
         InputManager.instance.playerActions.Jump.performed += OnJumpPerformed;
         InputManager.instance.playerActions.LightAttack.performed += OnLightAttackPerformed;
@@ -79,6 +85,9 @@ public class PlayerActionController : MonoBehaviour
         InputManager.instance.playerActions.RunToggle.performed -= OnSwitchRunToggle;
         InputManager.instance.playerActions.HoldDefence.performed -= OnDefenceHold;
         InputManager.instance.playerActions.HoldDefence.canceled -= OnDefenceCancel;
+
+        InputManager.instance.playerActions.LockTarget.performed -= OnLockTargetPerformed;
+        InputManager.instance.playerActions.SwitchTarget.performed -= OnSwitchTargetPerformed;
 
         InputManager.instance.playerActions.Jump.performed -= OnJumpPerformed;
         InputManager.instance.playerActions.LightAttack.performed -= OnLightAttackPerformed;
@@ -115,6 +124,7 @@ public class PlayerActionController : MonoBehaviour
     public void Init(ICharacterBehavior characterBehavior)
     {
         m_CharacterBehavior = characterBehavior;
+        m_LockTargetManager = GetComponent<LockTargetManager>();
     }
 
     public Vector3 GetInputDirection()
@@ -261,6 +271,19 @@ public class PlayerActionController : MonoBehaviour
     private void OnSwitchRunToggle(InputAction.CallbackContext context)
     {
         m_ShouldPlayerRun = !m_ShouldPlayerRun;
+    }
+
+    private void OnLockTargetPerformed(InputAction.CallbackContext context)
+    {        
+        m_LockTargetManager?.ToggleLock();
+    }
+
+    private void OnSwitchTargetPerformed(InputAction.CallbackContext context)
+    {
+        // Read the right-stick (camera) direction at the time of button press.
+        // If the stick is idle, SwitchTarget falls back to sequential cycling.
+        Vector2 stickDir = cameraMovement;
+        m_LockTargetManager?.SwitchTarget(stickDir);
     }
 
     private void OnDefenceHold(InputAction.CallbackContext context)
