@@ -17,8 +17,6 @@ public class CanSeeObject : Conditional
     {
         if(target == null || target.Value == null) return TaskStatus.Failure;
 
-        if (m_Sensor.CanSeeObject(target.Value)) return TaskStatus.Success;
-
         return TaskStatus.Running;
     }
 }

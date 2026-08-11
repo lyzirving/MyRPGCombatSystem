@@ -14,18 +14,11 @@ public class ViewChecker
     public string targetTag;    
 
     private Transform m_Host;
-    private Vector3 m_Forward;
 
     public Transform host
     {
         get => m_Host;
         set => m_Host = value;
-    }
-
-    public Vector3 forward
-    {
-        get => m_Forward;
-        set => m_Forward = value;
     }
 
     public bool CanSeeObject(Transform target)
@@ -47,10 +40,12 @@ public class ViewChecker
 
     public bool IsDirectionInView(Vector3 direction)
     {
-        float dot = Vector3.Dot(direction, m_Forward);
+        if(m_Host == null) return false;
+
+        float dot = Vector3.Dot(direction, m_Host.forward);
         if (dot < 0f) return false;
 
-        float angle = Vector3.Angle(m_Forward, direction);
+        float angle = Vector3.Angle(m_Host.forward, direction);
         return angle < fieldOfView / 2f;
     }
 
@@ -136,8 +131,8 @@ public class ViewChecker
         if (m_Host == null || m_Host.gameObject == null) return;
 
         Vector3 eyePosition = m_Host.position + m_Host.up * eyeHeightOffset;
-        Vector3 dir1 = Quaternion.AngleAxis(fieldOfView / 2, m_Host.up) * m_Forward;
-        Vector3 dir2 = Quaternion.AngleAxis(-fieldOfView / 2, m_Host.up) * m_Forward;
+        Vector3 dir1 = Quaternion.AngleAxis(fieldOfView / 2, m_Host.up) * m_Host.forward;
+        Vector3 dir2 = Quaternion.AngleAxis(-fieldOfView / 2, m_Host.up) * m_Host.forward;
         dir1.Normalize();
         dir2.Normalize();
         Vector3 startPt = eyePosition + dir1 * sightDistance;
@@ -154,7 +149,7 @@ public class ViewChecker
         for (int i = 1; i < itr + 1; ++i)
         {
             currentAngle -= interval;
-            Vector3 d = Quaternion.AngleAxis(currentAngle, m_Host.up) * m_Forward;
+            Vector3 d = Quaternion.AngleAxis(currentAngle, m_Host.up) * m_Host.forward;
             d.Normalize();
             currentAnglePt = eyePosition + d * sightDistance;
             Debug.DrawLine(lastPt, currentAnglePt, gizmosColor);

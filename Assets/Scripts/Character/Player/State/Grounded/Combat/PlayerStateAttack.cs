@@ -11,7 +11,11 @@ public class PlayerStateAttack : PlayerStateCombat
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);
-        m_NormalizedTime = 0f;   
+        m_NormalizedTime = 0f;
+
+        // Soft-lock snap: instantly face toward soft-lock target before attack (max 30°)
+        SnapToSoftLockTarget();
+
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);        
 
         var ability = CurrentAttack;
@@ -85,7 +89,39 @@ public class PlayerStateAttack : PlayerStateCombat
     public override bool IsExpired()
     {
         return m_NormalizedTime >= m_Player.attackComponent.skill.transitionNormalizedTime;
-    }  
+    }
+
+    /// <summary>
+    /// Before the attack animation starts, instantly snap rotation toward
+    /// the soft-lock target (up to 30° correction). If the target is beyond
+    /// 30°, attack in the original facing direction.
+    /// Does NOT affect movement — only rotation.
+    /// </summary>
+    private void SnapToSoftLockTarget()
+    {
+        // Hard lock already handles facing in FixedUpdate; only snap for soft lock
+        if (m_Player.lockTarget != null)
+            return;
+
+        Transform softTarget = m_Player.softLockTarget;
+        if (softTarget == null)
+            return;
+
+        Vector3 toTarget = softTarget.position - m_Player.transform.position;
+        toTarget.y = 0;
+        if (toTarget.sqrMagnitude < 0.01f)
+            return;
+
+        Vector3 targetDir = toTarget.normalized;
+        float angle = Vector3.Angle(m_Player.transform.forward, targetDir);
+
+        // Max 30° correction; beyond that, attack in original direction
+        const float maxSnapAngle = 30f;
+        if (angle > maxSnapAngle)
+            return;
+
+        m_Player.transform.rotation = Quaternion.LookRotation(targetDir);
+    }
 
     public override ECharacterAction GetCurrentAction()
     {

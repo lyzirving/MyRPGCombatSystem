@@ -32,6 +32,19 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         get => m_Sensor.distZone.target;
         set => m_Sensor.distZone.target = value;
     }
+
+    /// <summary>
+    /// The current soft-lock target (nearest visible enemy in front, updated periodically).
+    /// Null when hard-locked. Delegates to LockTargetManager.
+    /// </summary>
+    public Transform softLockTarget
+    {
+        get
+        {
+            var mgr = GetComponent<LockTargetManager>();
+            return mgr != null ? mgr.SoftLockTarget : null;
+        }
+    }
     public StateBase currentState => m_StateMachine.currentState;    
     public float speedScaler => m_Config.move.baseSpeed * m_Attrs.speedModify;
     public float walkSpeedScaler => m_Config.move.baseSpeed * m_Config.move.walkModify;

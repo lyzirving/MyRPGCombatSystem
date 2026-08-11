@@ -211,8 +211,47 @@ public class AttackAbility : GameplayAbility
         }
         else
         {
-            m_Character.transform.Translate(deltaPosition, Space.World);
+            // Soft-lock homing: subtle deflection toward nearest visible target (max 15°)
+            ApplySoftLockHoming(deltaPosition);
         }
+    }
+
+    /// <summary>
+    /// Subtly deflects root motion toward the soft-lock target (~15° max).
+    /// Does NOT change character facing — only displacement direction.
+    /// </summary>
+    private void ApplySoftLockHoming(Vector3 deltaPosition)
+    {
+        Transform softTarget = m_Character.softLockTarget;
+        if (softTarget == null || deltaPosition.sqrMagnitude < 0.001f)
+        {
+            m_Character.transform.Translate(deltaPosition, Space.World);
+            return;
+        }
+
+        Vector3 toTarget = softTarget.position - m_Character.transform.position;
+        toTarget.y = 0;
+        if (toTarget.sqrMagnitude < 0.01f)
+        {
+            m_Character.transform.Translate(deltaPosition, Space.World);
+            return;
+        }
+
+        Vector3 toTargetDir = toTarget.normalized;
+        Vector3 rootMotionDir = deltaPosition.normalized;
+        float angleToTarget = Vector3.Angle(rootMotionDir, toTargetDir);
+        if (angleToTarget < 1f)
+        {
+            m_Character.transform.Translate(deltaPosition, Space.World);
+            return;
+        }
+
+        const float maxHomingAngle = 15f;
+        float homingAngle = Mathf.Min(angleToTarget, maxHomingAngle);
+        Vector3 homedDir = Vector3.RotateTowards(
+            rootMotionDir, toTargetDir, homingAngle * Mathf.Deg2Rad, 0f);
+
+        m_Character.transform.Translate(homedDir * deltaPosition.magnitude, Space.World);
     }
 
     // <summary>

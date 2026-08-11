@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class CharacterSensor : MonoBehaviour 
 {
-    [SerializeField] private ViewChecker m_ViewChecker = new ViewChecker();
     [SerializeField] private DistanceZone m_DistanceZone = new DistanceZone();
     private GroundChecker m_GroundChecker;
     private VelocityCache m_VelocityCache;
@@ -30,39 +28,7 @@ public class CharacterSensor : MonoBehaviour
         m_GroundChecker.onTouch += m_CharacterBehavior.OnContactGround;
         m_GroundChecker.onExit += m_CharacterBehavior.OnExitGround;
 
-        m_ViewChecker.host = this.transform;
-
         m_DistanceZone.host = this.transform;
-    }
-    #endregion
-
-    #region Sensor Methods
-    public bool WithinView(Vector3 direction)
-    {
-        return m_ViewChecker.IsDirectionInView(direction);
-    }
-
-    public bool CanSeeObject(Transform transform)
-    {
-        return m_ViewChecker.CanSeeObject(transform);
-    }
-
-    /// <summary>
-    /// Returns all visible AI targets sorted by distance (nearest first).
-    /// Used by LockTargetManager for target switching.
-    /// </summary>
-    public List<Transform> FindVisibleTargets()
-    {
-        return m_ViewChecker.FindVisibleTargets();
-    }
-
-    /// <summary>
-    /// Finds the best target within a cone in front of this character.
-    /// Used by LockTargetManager for initial hard-lock acquisition.
-    /// </summary>
-    public Transform FindBestTargetInCone(Vector3 forward, float halfAngleDeg, float maxDistance)
-    {
-        return m_ViewChecker.FindBestTargetInCone(forward, halfAngleDeg, maxDistance);
     }
     #endregion
 
@@ -77,11 +43,6 @@ public class CharacterSensor : MonoBehaviour
     {
         if (m_GroundChecker.isGrounded)
             m_VelocityCache.UpdateVelocity();
-    }
-
-    private void OnDrawGizmos()
-    {
-        m_ViewChecker?.DrawViewRange();
     }
     #endregion    
 }

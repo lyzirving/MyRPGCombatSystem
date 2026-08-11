@@ -338,9 +338,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ViewChecker:
     fieldOfView: 135
-    eyeHeightOffset: 1
+    eyeHeightOffset: 1.35
     sightDistance: 7
-    gizmosColor: {r: 0, g: 0, b: 1, a: 1}
+    gizmosColor: {r: 1, g: 0, b: 0.03474331, a: 1}
     targetTag: Enemy
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
@@ -3169,7 +3169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ViewChecker:
     fieldOfView: 135
-    eyeHeightOffset: 1
+    eyeHeightOffset: 1.35
     sightDistance: 7
     gizmosColor: {r: 0, g: 0, b: 1, a: 1}
     targetTag: 
