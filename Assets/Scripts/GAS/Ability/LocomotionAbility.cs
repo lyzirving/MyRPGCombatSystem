@@ -28,7 +28,7 @@ public class LocomotionAbility : GameplayAbility
     private GameplayTag m_TagMove;
     private GameplayTag m_TagStrafing;
     private GameplayTag m_TagSprint;
-    private GameplayTag m_TagLocked;
+    private GameplayTag m_TagHardLock;
 
     #region Ability Lifecycle
 
@@ -42,7 +42,7 @@ public class LocomotionAbility : GameplayAbility
         m_TagMove = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.LOCOMOTION_MOVE));
         m_TagStrafing = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.LOCOMOTION_STRAFING));
         m_TagSprint = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.LOCOMOTION_SPRINT));
-        m_TagLocked = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.COMBAT_LOCKED));
+        m_TagHardLock = GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.COMBAT_LOCKED_HARD));
     }
 
     protected override void OnAbilityPerformed()
@@ -171,7 +171,7 @@ public class LocomotionAbility : GameplayAbility
         // This respects blockedTags (e.g. Sprint blocks LockTargetAbility → Tag.Locked absent).
         bool isLockedOn = m_Player.lockTarget != null
             && m_ASC != null
-            && m_ASC.HasTag(m_TagLocked);
+            && m_ASC.HasTag(m_TagHardLock);
 
         if (isLockedOn)
         {

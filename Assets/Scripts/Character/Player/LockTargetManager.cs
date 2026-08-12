@@ -32,7 +32,7 @@ public class LockTargetManager : MonoBehaviour
     [SerializeField] private float m_SoftLockScanInterval = 0.2f;
 
     private CharacterControllerBase m_Character;
-    private CharacterSensor m_Sensor;
+    
     private AbilitySystemComponent m_ASC;
 
     // Soft-lock state
@@ -41,11 +41,13 @@ public class LockTargetManager : MonoBehaviour
     private float m_HardUnlockTime = -1f;
     private const float HARD_UNLOCK_SETTLE_DELAY = 0.3f;
 
+    /// <summary>
+    /// whether have a hard lock on target
+    /// </summary>
     public bool IsLocked => m_Character != null && m_Character.lockTarget != null;
 
     /// <summary>
-    /// The currently locked target transform (null if not locked).
-    /// Read by camera/orbit systems.
+    /// The currently hard locked target transform (null if not locked).
     /// </summary>
     public Transform LockedTarget => IsLocked ? m_Character.lockTarget : null;
 
@@ -112,6 +114,7 @@ public class LockTargetManager : MonoBehaviour
         {
             m_Character.lockTarget = m_SoftLockTarget;
             m_ASC.TryActivateAbility<LockTargetAbility>();
+            m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
             return;
         }
 
@@ -123,6 +126,7 @@ public class LockTargetManager : MonoBehaviour
         {
             m_Character.lockTarget = bestTarget;
             m_ASC.TryActivateAbility<LockTargetAbility>();
+            m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
         }
     }
 
@@ -169,6 +173,7 @@ public class LockTargetManager : MonoBehaviour
         {
             m_Character.lockTarget = nextTarget;
             m_ASC.TryActivateAbility<LockTargetAbility>();
+            m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
         }
     }
 
@@ -370,9 +375,27 @@ public class LockTargetManager : MonoBehaviour
             return;
         }
 
-        var forward = GetCameraForward();
+        var preSoftLockTarget = m_SoftLockTarget;
         m_SoftLockTarget = FindBestTargetInCone(
-            forward, m_SoftLockArcHalfAngle, m_SoftLockMaxDistance);
+            GetCameraForward(), m_SoftLockArcHalfAngle, m_SoftLockMaxDistance);
+
+        if(m_SoftLockTarget == preSoftLockTarget)
+            return;
+
+        // Sync LockTargetAbility with soft-lock state
+        if (m_SoftLockTarget != null)
+        {
+            // Found a target: ensure ability is active and in soft-lock mode
+            if (m_ASC.GetActive<LockTargetAbility>() == null)
+                m_ASC.TryActivateAbility<LockTargetAbility>();
+
+            m_ASC.GetActive<LockTargetAbility>()?.SwitchToSoftLock();
+        }
+        else
+        {
+            // No target visible: release the ability
+            m_ASC.CancelAbility<LockTargetAbility>();
+        }
     }
 
     /// <summary>

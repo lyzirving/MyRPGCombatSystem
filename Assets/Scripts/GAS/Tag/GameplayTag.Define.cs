@@ -1,6 +1,6 @@
 // ===========================================
 // Auto Generated GameplayTag Definition
-// Generated Time: 2026-08-05 21:31:53
+// Generated Time: 2026-08-12 22:08:39
 // Pelease do not manually modify this file.
 // ===========================================
 
@@ -58,5 +58,17 @@ public partial struct GameplayTag
     /// Index: 8
     /// </summary>
     public static readonly string LOCOMOTION_SPRINT = "Root.Locomotion.Sprint";
+
+    /// <summary>
+    /// Name:  Root.Combat.Locked.Hard
+    /// Index: 12
+    /// </summary>
+    public static readonly string COMBAT_LOCKED_HARD = "Root.Combat.Locked.Hard";
+
+    /// <summary>
+    /// Name:  Root.Combat.Locked.Soft
+    /// Index: 13
+    /// </summary>
+    public static readonly string COMBAT_LOCKED_SOFT = "Root.Combat.Locked.Soft";
 
 }

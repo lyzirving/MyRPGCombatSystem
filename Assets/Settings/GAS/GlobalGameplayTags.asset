@@ -16,8 +16,10 @@ MonoBehaviour:
   - m_TagName: Root.Combat
   - m_TagName: Root.Combat.Dodge
   - m_TagName: Root.Combat.Locked
-  - m_TagName: Root.Combat.Attack  
+  - m_TagName: Root.Combat.Attack
   - m_TagName: Root.Locomotion
   - m_TagName: Root.Locomotion.Move
   - m_TagName: Root.Locomotion.Strafing
   - m_TagName: Root.Locomotion.Sprint
+  - m_TagName: Root.Combat.Locked.Hard
+  - m_TagName: Root.Combat.Locked.Soft
