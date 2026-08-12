@@ -82,6 +82,19 @@ public class PlayerStateAttack : PlayerStateCombat
         else
         {
             targetDir = m_Player.GetTargetDirection();
+
+            // Soft lock: continuously blend facing toward soft-lock target (30%)
+            // so Enter()'s initial snap isn't dragged back to pure input direction.
+            Transform softTarget = m_Player.softLockTarget;
+            if (softTarget != null)
+            {
+                Vector3 toTarget = softTarget.position - m_Player.transform.position;
+                toTarget.y = 0;
+                if (toTarget.sqrMagnitude > 0.01f)
+                {
+                    targetDir = Vector3.Slerp(targetDir, toTarget.normalized, 0.3f).normalized;
+                }
+            }
         }
         m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
     }
@@ -120,7 +133,8 @@ public class PlayerStateAttack : PlayerStateCombat
         if (angle > maxSnapAngle)
             return;
 
-        m_Player.transform.rotation = Quaternion.LookRotation(targetDir);
+        // Smooth rotation (not instant LookRotation) — uses high rotate speed
+        m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed * 3f);
     }
 
     public override ECharacterAction GetCurrentAction()

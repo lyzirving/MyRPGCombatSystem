@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public partial struct GameplayTag : IEquatable<GameplayTag>
 {
     public static readonly string RootName = "Root";

@@ -209,49 +209,75 @@ public class AttackAbility : GameplayAbility
             Vector3 finalDelta = toTargetDir * forwardMag + lateralDelta;
             m_Character.transform.Translate(finalDelta, Space.World);
         }
-        else
+        else if(m_Character.softLockTarget != null && deltaPosition.sqrMagnitude > 0.001f)
         {
             // Soft-lock homing: subtle deflection toward nearest visible target (max 15°)
             ApplySoftLockHoming(deltaPosition);
         }
+        else
+        {
+            m_Character.transform.Translate(deltaPosition, Space.World);
+        }
     }
 
     /// <summary>
-    /// Subtly deflects root motion toward the soft-lock target (~15° max).
-    /// Does NOT change character facing — only displacement direction.
+    /// Soft-lock root motion: homing toward target (max 22°) + minDistance clamp.
+    /// Prevents the character from penetrating through the target during combos.
     /// </summary>
     private void ApplySoftLockHoming(Vector3 deltaPosition)
     {
         Transform softTarget = m_Character.softLockTarget;
-        if (softTarget == null || deltaPosition.sqrMagnitude < 0.001f)
-        {
-            m_Character.transform.Translate(deltaPosition, Space.World);
+        if (softTarget == null)
             return;
-        }
 
         Vector3 toTarget = softTarget.position - m_Character.transform.position;
         toTarget.y = 0;
-        if (toTarget.sqrMagnitude < 0.01f)
+        float currentDist = toTarget.magnitude;
+        if (currentDist < 0.01f)
         {
             m_Character.transform.Translate(deltaPosition, Space.World);
             return;
         }
-
         Vector3 toTargetDir = toTarget.normalized;
+
+        // 1. Homing: deflect root motion direction toward target (max 22°)
         Vector3 rootMotionDir = deltaPosition.normalized;
         float angleToTarget = Vector3.Angle(rootMotionDir, toTargetDir);
-        if (angleToTarget < 1f)
+        const float maxHomingAngle = 22f;
+        if (angleToTarget > 1f)
         {
-            m_Character.transform.Translate(deltaPosition, Space.World);
-            return;
+            float homingAngle = Mathf.Min(angleToTarget, maxHomingAngle);
+            rootMotionDir = Vector3.RotateTowards(
+                rootMotionDir, toTargetDir, homingAngle * Mathf.Deg2Rad, 0f);
         }
 
-        const float maxHomingAngle = 15f;
-        float homingAngle = Mathf.Min(angleToTarget, maxHomingAngle);
-        Vector3 homedDir = Vector3.RotateTowards(
-            rootMotionDir, toTargetDir, homingAngle * Mathf.Deg2Rad, 0f);
+        Vector3 homedDelta = rootMotionDir * deltaPosition.magnitude;
 
-        m_Character.transform.Translate(homedDir * deltaPosition.magnitude, Space.World);
+        // 2. minDistance clamp: prevent forward displacement from penetrating the target
+        //    (same logic as hard lock)
+        SkillData skill = currentSkill;
+        if (skill != null && skill.minDistanceToTarget > 0f)
+        {
+            float forwardMag = Vector3.Dot(homedDelta, toTargetDir);
+            Vector3 lateralDelta = homedDelta - forwardMag * toTargetDir;
+
+            if (forwardMag > 0f)
+            {
+                float maxAllowedForward = currentDist - skill.minDistanceToTarget;
+                float predictedDist = currentDist - forwardMag;
+                if (predictedDist < skill.minDistanceToTarget)
+                {
+                    forwardMag = Mathf.Max(0f, maxAllowedForward);
+                }
+            }
+
+            Vector3 finalDelta = toTargetDir * forwardMag + lateralDelta;
+            m_Character.transform.Translate(finalDelta, Space.World);
+        }
+        else
+        {
+            m_Character.transform.Translate(homedDelta, Space.World);
+        }
     }
 
     // <summary>
