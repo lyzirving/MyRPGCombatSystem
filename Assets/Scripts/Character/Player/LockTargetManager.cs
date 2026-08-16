@@ -41,6 +41,10 @@ public class LockTargetManager : MonoBehaviour
     private float m_HardUnlockTime = -1f;
     private const float HARD_UNLOCK_SETTLE_DELAY = 0.3f;
 
+    // Distinguish permanent (manual key press) vs temporary (attack-triggered) hard lock.
+    // Only temporary hard lock auto-downgrades to soft lock after the attack ends.
+    private bool m_IsTempLock = false;
+
     /// <summary>
     /// whether have a hard lock on target
     /// </summary>
@@ -98,8 +102,8 @@ public class LockTargetManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Lock onto the best target in front of the camera.
-    /// Does nothing if already locked (use SwitchTarget to cycle).
+    /// Lock onto the best target in front of the camera. (Permanent hard lock —
+    /// triggered by manual lock key, will NOT auto-downgrade after attacks.)
     /// </summary>
     public void TryLockTarget()
     {
@@ -115,6 +119,7 @@ public class LockTargetManager : MonoBehaviour
             m_Character.lockTarget = m_SoftLockTarget;
             m_ASC.TryActivateAbility<LockTargetAbility>();
             m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
+            m_IsTempLock = false; // manual lock = permanent
             return;
         }
 
@@ -127,7 +132,52 @@ public class LockTargetManager : MonoBehaviour
             m_Character.lockTarget = bestTarget;
             m_ASC.TryActivateAbility<LockTargetAbility>();
             m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
+            m_IsTempLock = false; // manual lock = permanent
         }
+    }
+
+    /// <summary>
+    /// Auto upgrade the current soft-lock target to a TEMPORARY hard lock.
+    /// Called when the player presses attack while in soft-lock mode.
+    /// The hard lock automatically downgrades back to soft lock after the attack ends.
+    /// </summary>
+    public void UpgradeSoftToHardLock()
+    {
+        if (m_Character == null || m_ASC == null)
+            return;
+
+        if (m_SoftLockTarget == null)
+            return;
+
+        // Only promote if the soft-lock target still meets hard-lock criteria
+        if (!IsValidHardLockTarget(m_SoftLockTarget))
+            return;
+
+        m_Character.lockTarget = m_SoftLockTarget;
+        if (m_ASC.GetActive<LockTargetAbility>() == null)
+            m_ASC.TryActivateAbility<LockTargetAbility>();
+
+        m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
+        m_IsTempLock = true; // attack-triggered = temporary
+    }
+
+    /// <summary>
+    /// Auto downgrade from a temporary hard lock back to soft lock.
+    /// Called when an attack ends. Permanent hard locks (manual) are unaffected.
+    /// </summary>
+    public void DowngradeToSoftLock()
+    {
+        if (m_Character == null || m_ASC == null)
+            return;
+
+        // Only downgrade temporary locks
+        if (!m_IsTempLock)
+            return;
+
+        // Release the hard-lock reference but keep the ability in soft-lock mode
+        m_Character.lockTarget = null;
+        m_ASC.GetActive<LockTargetAbility>()?.SwitchToSoftLock();
+        m_IsTempLock = false;
     }
 
     /// <summary>
@@ -174,6 +224,7 @@ public class LockTargetManager : MonoBehaviour
             m_Character.lockTarget = nextTarget;
             m_ASC.TryActivateAbility<LockTargetAbility>();
             m_ASC.GetActive<LockTargetAbility>()?.SwitchToHardLock();
+            m_IsTempLock = false; // manual switch = permanent lock
         }
     }
 
@@ -188,6 +239,7 @@ public class LockTargetManager : MonoBehaviour
         bool wasLocked = m_Character.lockTarget != null;
         m_Character.lockTarget = null;
         m_ASC.CancelAbility<LockTargetAbility>();
+        m_IsTempLock = false;
 
         // Mark time for hard→soft settle delay
         if (wasLocked)

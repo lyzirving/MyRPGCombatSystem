@@ -198,6 +198,17 @@ public class PlayerActionController : MonoBehaviour
         var attackComponent = m_CharacterBehavior.attackComponent;
         var asc = m_CharacterBehavior.abilitySystemComp;
 
+        // Soft→Hard auto upgrade: when attacking in soft-lock mode, promote the
+        // current soft-lock target to a temporary hard lock for this attack.
+        if (m_LockTargetManager != null)
+        {
+            var lockAbility = asc.GetActive<LockTargetAbility>();
+            if (lockAbility != null && lockAbility.IsInSoftMode)
+            {
+                m_LockTargetManager.UpgradeSoftToHardLock();
+            }
+        }
+
         // Sprint → Attack: route to dedicated sprint combo sequence
         if (m_CharacterBehavior.stateMachine.currentState is PlayerStateSprint)
         {

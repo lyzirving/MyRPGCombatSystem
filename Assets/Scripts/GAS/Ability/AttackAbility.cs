@@ -34,14 +34,29 @@ public class AttackAbility : GameplayAbility
     {
         m_PendingComboInput = CombatDefine.EAttack.None;
         m_DeferredReActivate = false;
-        TransitionToLocomotion();        
+        TransitionToLocomotion();
+        DowngradeLockAfterAttack();
     }
 
     protected override void OnAbilityEnded()
     {
         m_PendingComboInput = CombatDefine.EAttack.None;
         m_DeferredReActivate = false;
-        TransitionToLocomotion();        
+        TransitionToLocomotion();
+        DowngradeLockAfterAttack();
+    }
+
+    /// <summary>
+    /// After an attack ends, if a temporary (attack-triggered) hard lock is active,
+    /// downgrade it back to soft lock so the player regains free movement.
+    /// Permanent (manual) hard locks are unaffected.
+    /// </summary>
+    private void DowngradeLockAfterAttack()
+    {
+        var lockManager = m_Character != null
+            ? m_Character.GetComponent<LockTargetManager>()
+            : null;
+        lockManager?.DowngradeToSoftLock();
     }
 
     /// <summary>

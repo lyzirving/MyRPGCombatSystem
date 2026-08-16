@@ -336,12 +336,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7d429c5069d084fb575db7628eeee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ViewChecker:
-    fieldOfView: 135
-    eyeHeightOffset: 1.35
-    sightDistance: 7
-    gizmosColor: {r: 1, g: 0, b: 0.03474331, a: 1}
-    targetTag: Enemy
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
 --- !u!1 &91168824
@@ -3167,12 +3161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7d429c5069d084fb575db7628eeee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ViewChecker:
-    fieldOfView: 135
-    eyeHeightOffset: 1.35
-    sightDistance: 7
-    gizmosColor: {r: 0, g: 0, b: 1, a: 1}
-    targetTag: 
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
 --- !u!114 &496888512
@@ -3202,8 +3190,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2daaf08bd3db97848930ccee86309668, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTag: 
+  eyeHeightOffset: 1.35
+  gizmosColor: {r: 0, g: 0, b: 1, a: 1}
   m_HardLockConeHalfAngle: 30
   m_MaxLockDistance: 30
+  m_SoftLockArcHalfAngle: 60
+  m_SoftLockMaxDistance: 15
+  m_SoftLockScanInterval: 0.2
 --- !u!1 &507923619
 GameObject:
   m_ObjectHideFlags: 0
@@ -5808,6 +5802,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e2ae0cb7a12a146b65e431eb150436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_LookAtMaxAngle: 40
+  m_LookAtMaxWeight: 0.8
+  m_LookAtSmoothSpeed: 8
+  m_LookAtTargetHeight: 1.5
 --- !u!114 &1601179487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6836,7 +6834,7 @@ MonoBehaviour:
       - Value: 2
       - Value: 2
       - Value: 2
-      maxConnectionDistance: 0.07345668
+      maxConnectionDistance: 0.073456675
       userEdit: 0
     preBuildData:
       enabled: 0

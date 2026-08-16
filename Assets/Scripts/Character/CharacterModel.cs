@@ -32,7 +32,7 @@ public class CharacterModel : MonoBehaviour
         m_CharacterBehaviour = null;
     }
 
-    public void Init(ICharacterBehavior characterBehavior)
+    public virtual void Init(ICharacterBehavior characterBehavior)
     {
         m_CharacterBehaviour = characterBehavior;
     }
