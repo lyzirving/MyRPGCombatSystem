@@ -15,6 +15,8 @@ public class PlayerStateJump : PlayerStateAirborne
     private float m_StartVelocity;
     private float m_LastVelocity;
     private float m_JumpStartRatio;
+    private float m_AirborneTimer;
+    private float m_HoverTime;
     private System.Random m_SysRandom = new System.Random();
 
     private EJumpState m_State = EJumpState.Start;
@@ -29,6 +31,7 @@ public class PlayerStateJump : PlayerStateAirborne
         m_IsJumpPerform = false;
         m_FirstEnter = true;
         m_LastVelocity = 0f;
+        m_AirborneTimer = 0f;
 
         float feetTween;
         if (m_JumpFromMove)
@@ -85,6 +88,13 @@ public class PlayerStateJump : PlayerStateAirborne
         {
             m_IsJumpPerform = true;
             Jump(m_Player.config.jump.normalHeight);
+
+            // If an obstacle blocks the takeoff direction, drop the horizontal momentum so the
+            // character jumps straight up instead of ramming the obstacle and getting wedged.
+            Vector3 horizontal = m_Player.horizontalVelocity;
+            if (horizontal.sqrMagnitude > 0.01f && IsBlockedAhead(horizontal.normalized))
+                m_Player.ResetHorizontalVelocity();
+
             // Keep in sync with the horizontal momentum applied by Jump() to avoid a one-frame
             // mismatch between the cached air velocity and the rigidbody velocity
             m_AirHorizontalVelocity = m_Player.horizontalVelocity;
@@ -93,9 +103,33 @@ public class PlayerStateJump : PlayerStateAirborne
             return;
         }
 
+        // Anti-stuck safety net: if the jump somehow never lands (e.g. wedged against an
+        // obstacle), force a transition to the Fall state so the state machine never locks up.
+        m_AirborneTimer += Time.deltaTime;
+        if (m_AirborneTimer > m_Player.config.jump.maxAirborneTime)
+        {
+            m_Player.ChangeState(ECharacterState.Falling);
+            return;
+        }
+
         float velocity = m_Player.verticalVelocity.y;
         if (velocity < 0f)
             m_Player.rigidBody.AddForce(Physics.gravity * m_Player.config.jump.fallGravityRatio * Time.deltaTime, ForceMode.VelocityChange);
+
+        // Anti-freeze: when wedged against an obstacle and hovering (vertical speed near zero
+        // for a few frames, e.g. the rigidbody fell asleep on an obstacle's edge), force the
+        // character downward so it can never hang in the air forever.
+        if (IsBlockedAhead(m_Player.transform.forward) && Mathf.Abs(velocity) < 0.3f)
+            m_HoverTime += Time.deltaTime;
+        else
+            m_HoverTime = 0f;
+
+        if (m_HoverTime > 0.2f)
+        {
+            m_HoverTime = 0f;
+            m_Player.rigidBody.WakeUp();
+            m_Player.MoveImmediately(new Vector3(0f, -3f, 0f) - m_Player.verticalVelocity);
+        }
 
         UpdateAirborneMovement();
     }

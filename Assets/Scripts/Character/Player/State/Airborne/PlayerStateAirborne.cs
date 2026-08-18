@@ -48,11 +48,29 @@ public class PlayerStateAirborne : PlayerStateBase
         {
             Vector3 targetDir = m_Player.GetTargetDirection();
 
-            if (!m_Player.model.GetAnimationBool(AnimationConsts.locked))
-                m_Player.RotateToTargetDir(targetDir, m_Player.config.jump.airRotateSpeed);
+            // Check both the input direction and the current momentum direction: input is
+            // camera-relative and may not point exactly at the obstacle being rammed.
+            bool blocked = IsBlockedAhead(targetDir);
+            if (!blocked && m_AirHorizontalVelocity.sqrMagnitude > 0.01f)
+                blocked = IsBlockedAhead(m_AirHorizontalVelocity.normalized);
+
+            if (blocked)
+            {
+                // Wedged against an obstacle: stop horizontal velocity immediately (no damping)
+                // so the character never keeps ramming it. Movement resumes once the capsule
+                // rises past the obstacle top and the check below clears.
+                m_Player.ResetHorizontalVelocity();
+                m_AirHorizontalVelocity = Vector3.zero;
+                return;
+            }
+            else
+            {
+                if (!m_Player.model.GetAnimationBool(AnimationConsts.locked))
+                    m_Player.RotateToTargetDir(targetDir, m_Player.config.jump.airRotateSpeed);
             
-            float airSpeed = (m_Player.action.shouldRun ? m_Player.runSpeedScaler : m_Player.walkSpeedScaler) * m_Player.config.jump.airControlFactor;
-            targetVelocity = targetDir * airSpeed;
+                float airSpeed = (m_Player.action.shouldRun ? m_Player.runSpeedScaler : m_Player.walkSpeedScaler) * m_Player.config.jump.airControlFactor;
+                targetVelocity = targetDir * airSpeed;
+            }
         }
 
         // Air acceleration damping: horizontal speed changes toward the target
@@ -61,5 +79,45 @@ public class PlayerStateAirborne : PlayerStateBase
             m_Player.config.jump.airAcceleration * Time.deltaTime);
 
         m_Player.MoveImmediately(m_AirHorizontalVelocity - m_Player.horizontalVelocity);
+    }
+
+    /// <summary>
+    /// Returns true when movement along the given horizontal direction is blocked by an obstacle
+    /// the character has not yet risen above. A forward CapsuleCast provides early detection;
+    /// an OverlapCapsule fallback covers the already-touching case (CapsuleCast ignores
+    /// overlapping colliders). The ground purely below the capsule is excluded so standing on
+    /// flat ground is never treated as blocked.
+    /// </summary>
+    protected bool IsBlockedAhead(Vector3 direction)
+    {
+        CapsuleCollider capsule = m_Player.capsule;
+        Vector3 center = capsule.bounds.center;
+        float halfHeight = capsule.height * 0.5f - capsule.radius;
+        Vector3 bottom = center - Vector3.up * halfHeight;
+        Vector3 top = center + Vector3.up * halfHeight;
+        float detectRadius = capsule.radius + 0.05f; // slightly larger than the collider radius
+
+        // 1) Early scan: stops pushing just before actually touching the wall.
+        float scanDistance = detectRadius + m_Player.sensor.averageVelocity.magnitude * Time.deltaTime;
+        if (Physics.CapsuleCast(bottom, top, detectRadius, direction, scanDistance, GameConsts.Layer.Walkable))
+            return true;
+
+        // 2) Already touching the wall: CapsuleCast ignores overlapping colliders, so fall back
+        //    to OverlapCapsule. Any overlap that is not the ground below the feet blocks movement.
+        //    Intentionally direction-independent: once wedged against an obstacle the character
+        //    must stop pushing entirely, otherwise the physics solver can keep it wedged forever.
+        Collider[] overlaps = Physics.OverlapCapsule(bottom, top, detectRadius, GameConsts.Layer.Walkable);
+        float capsuleBottomY = capsule.bounds.min.y;
+        for (int i = 0; i < overlaps.Length; i++)
+        {
+            Vector3 closest = overlaps[i].ClosestPoint(center);
+            // Exclude only the floor directly under the feet: a contact point below the capsule
+            // bottom means the overlap is purely the ground. Anything at capsule level or above
+            // (walls, obstacle edges) blocks movement.
+            if (closest.y > capsuleBottomY + 0.05f)
+                return true;
+        }
+
+        return false;
     }
 }

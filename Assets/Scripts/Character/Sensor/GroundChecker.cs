@@ -77,12 +77,25 @@ public class GroundChecker
     /// <returns></returns>
     public bool SphereCheckGround(Transform transform, float radius, LayerMask layerMask, out RaycastHit hit, float skinWidth = 0f, float groundCheckOffset = 0f)
     {
-        if (Physics.SphereCast(transform.position + Vector3.up * groundCheckOffset, radius, Vector3.down, out hit,
-            Mathf.Abs(groundCheckOffset - radius) + 2f * skinWidth, layerMask))
+        const float groundSlopeLimit = 45f;
+        float checkDistance = Mathf.Abs(groundCheckOffset - radius) + 2f * skinWidth;
+        Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
+
+        // A plain SphereCast stops at its first hit, so when the character stands against a wall
+        // the sphere would hit the wall's side face (normal 90° to up) first and never see the
+        // ground below - leaving the character permanently airborne. Use SphereCastAll instead and
+        // accept the first hit whose normal faces up.
+        RaycastHit[] hits = Physics.SphereCastAll(origin, radius, Vector3.down, checkDistance, layerMask);
+        for (int i = 0; i < hits.Length; i++)
         {
-            float angle = Vector3.Angle(transform.up, hit.normal);
-            return angle < 45f;
+            if (Vector3.Angle(transform.up, hits[i].normal) < groundSlopeLimit)
+            {
+                hit = hits[i];
+                return true;
+            }
         }
+
+        hit = default;
         return false;
     }
 }

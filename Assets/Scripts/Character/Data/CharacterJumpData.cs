@@ -17,6 +17,9 @@ public class CharacterJumpData : ScriptableObject
     [Tooltip("Air horizontal acceleration (m/s²): max rate at which air speed converges toward the input target. Lower = floatier, higher = more responsive")]
     [Range(1f, 20f)] public float airAcceleration = 8f;
 
+    [Tooltip("Max airborne time (s) before the jump force-ends as a fall. Anti-stuck safety net so the state machine can never lock up.")]
+    [Range(1f, 5f)] public float maxAirborneTime = 3f;
+
     [Header("Audio")]
     public AudioClip audio;
 }
