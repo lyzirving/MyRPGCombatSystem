@@ -15,4 +15,11 @@ public class PlayerStateFall : PlayerStateAirborne
         float ratio = m_Player.model.GetAnimationFloat(AnimationConsts.jumpRatio);
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, ratio - Time.deltaTime);
     }
+
+    public override void FixedUpdate()
+    {
+        // The fall phase also responds to input with air control (speed factor / rotation
+        // damping / acceleration damping, shared with Jump)
+        UpdateAirborneMovement();
+    }
 }

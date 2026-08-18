@@ -38,7 +38,7 @@ public class PlayerStateJump : PlayerStateAirborne
         }
         else
         {
-            feetTween = ((float)m_SysRandom.NextDouble() * 2f - 1f);
+            feetTween = (float)m_SysRandom.NextDouble() * 2f - 1f;
         }
 
         m_JumpStartRatio = (m_JumpFromMove && m_Player.action.shouldRun) ? POWER_JUMP_UP_RATIO : NORMAL_JUMP_UP_RATIO;        
@@ -85,6 +85,9 @@ public class PlayerStateJump : PlayerStateAirborne
         {
             m_IsJumpPerform = true;
             Jump(m_Player.config.jump.normalHeight);
+            // Keep in sync with the horizontal momentum applied by Jump() to avoid a one-frame
+            // mismatch between the cached air velocity and the rigidbody velocity
+            m_AirHorizontalVelocity = m_Player.horizontalVelocity;
             m_State = EJumpState.Airborne;
             m_Player.PlayOneShot(m_Player.config.jump.audio);
             return;
@@ -121,19 +124,6 @@ public class PlayerStateJump : PlayerStateAirborne
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, ratio, 0.1f, Time.deltaTime);
     }
 
-    private void UpdateAirborneMovement()
-    {
-        if (!m_Player.action.isMoving)
-            return;
-
-        Vector3 targetDir = m_Player.GetTargetDirection();
-
-        if(!m_Player.model.GetAnimationBool(AnimationConsts.locked))
-            m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
-
-        float v = m_Player.sensor.averageVelocity.magnitude;
-        Move(targetDir * v);
-    }
     /// <summary>
     /// when current velocity > 0, character is jumpping up.
     /// when current velocity == 0, character is jumpping at the top

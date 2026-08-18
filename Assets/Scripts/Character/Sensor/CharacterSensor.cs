@@ -24,11 +24,11 @@ public class CharacterSensor : MonoBehaviour
 
         m_VelocityCache = new VelocityCache(GetComponent<Rigidbody>());
 
-        m_GroundChecker = new GroundChecker(this.transform, GetComponent<CapsuleCollider>());
+        m_GroundChecker = new GroundChecker(transform, GetComponent<CapsuleCollider>());
         m_GroundChecker.onTouch += m_CharacterBehavior.OnContactGround;
         m_GroundChecker.onExit += m_CharacterBehavior.OnExitGround;
 
-        m_DistanceZone.host = this.transform;
+        m_DistanceZone.host = transform;
     }
     #endregion
 

@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalHeight: 1.5
   fallGravityRatio: 1.2
+  airControlFactor: 0.7
+  airRotateSpeed: 3
+  airAcceleration: 8
   audio: {fileID: 8300000, guid: e68a83ddc325e4341bac2fe31f5fe5c3, type: 3}
