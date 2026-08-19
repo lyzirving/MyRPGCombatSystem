@@ -129,18 +129,6 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
         m_Rigidbody.linearVelocity = horizontalVelocity;
     }
 
-    public void MakeDodgeAction(Vector2 input)
-    {
-        dodgeAction = ECharacterDodgeAction.Forward;
-
-        if (input.x > 0.4f)
-            dodgeAction = ECharacterDodgeAction.Right;
-        else if (input.x < -0.4f)
-            dodgeAction = ECharacterDodgeAction.Left;
-        else if(input.y < -0.4f)
-            dodgeAction = ECharacterDodgeAction.Backward;
-    }
-
     public void PlayOneShot(AudioClip clip)
     {
         m_AudioPool?.PlayOneShot(clip);

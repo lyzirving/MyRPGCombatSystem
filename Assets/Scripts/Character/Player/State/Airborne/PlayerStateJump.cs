@@ -81,9 +81,6 @@ public class PlayerStateJump : PlayerStateAirborne
 
     public override void FixedUpdate()
     {
-        //TODO: if we have horizontal input before jump, we should check
-        //      whether there is an obstacle in that direction in case the jump might fail by physics,
-        //      and the OnContactGround won't be called.
         if (!m_IsJumpPerform)
         {
             m_IsJumpPerform = true;
@@ -100,6 +97,16 @@ public class PlayerStateJump : PlayerStateAirborne
             m_AirHorizontalVelocity = m_Player.horizontalVelocity;
             m_State = EJumpState.Airborne;
             m_Player.PlayOneShot(m_Player.config.jump.audio);
+            return;
+        }
+
+        // Grounded poll (same pattern as PlayerStateFall): the touch callback is edge-triggered,
+        // so if the grounded flag was already set when the character touches down while pressed
+        // against an obstacle, the jump would otherwise never finish on its own. Vertical
+        // velocity is checked so this never fires during the take-off frame.
+        if (m_Player.sensor.isGrounded && m_Player.verticalVelocity.y <= 0f)
+        {
+            m_State = EJumpState.Landed;
             return;
         }
 

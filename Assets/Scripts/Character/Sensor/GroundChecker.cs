@@ -5,6 +5,19 @@ public class GroundChecker
     public delegate void TouchGroundNotify(Collider collider);
     public delegate void ExitGroundNotify();
 
+    /// <summary>
+    /// Probe offsets (normalized) for the ground check, scaled by radius*0.6 around the
+    /// capsule bottom. Center + 4 cardinal points cover edge landings without a sphere sweep.
+    /// </summary>
+    private static readonly Vector3[] GROUND_PROBE_DIRS =
+    {
+        Vector3.zero,
+        Vector3.forward,
+        Vector3.back,
+        Vector3.left,
+        Vector3.right
+    };
+
     private CapsuleCollider m_CapsuleCollider;
     private Transform m_Transform;
 
@@ -79,19 +92,19 @@ public class GroundChecker
     {
         const float groundSlopeLimit = 45f;
         float checkDistance = Mathf.Abs(groundCheckOffset - radius) + 2f * skinWidth;
-        Vector3 origin = transform.position + Vector3.up * groundCheckOffset;
+        float probeRadius = radius * 0.6f;
 
-        // A plain SphereCast stops at its first hit, so when the character stands against a wall
-        // the sphere would hit the wall's side face (normal 90° to up) first and never see the
-        // ground below - leaving the character permanently airborne. Use SphereCastAll instead and
-        // accept the first hit whose normal faces up.
-        RaycastHit[] hits = Physics.SphereCastAll(origin, radius, Vector3.down, checkDistance, layerMask);
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 0; i < GROUND_PROBE_DIRS.Length; i++)
         {
-            if (Vector3.Angle(transform.up, hits[i].normal) < groundSlopeLimit)
+            // Thin rays cast straight down from the capsule bottom. They only detect what is
+            // directly below the capsule, so a side obstacle's top face can never be mistaken
+            // for the ground while the character is pressed against it (a sphere sweep would
+            // hit that top face and wrongly report "grounded").
+            Vector3 origin = transform.position + GROUND_PROBE_DIRS[i] * probeRadius + Vector3.up * groundCheckOffset;
+            if (Physics.Raycast(origin, Vector3.down, out hit, checkDistance, layerMask))
             {
-                hit = hits[i];
-                return true;
+                if (Vector3.Angle(transform.up, hit.normal) < groundSlopeLimit)
+                    return true;
             }
         }
 

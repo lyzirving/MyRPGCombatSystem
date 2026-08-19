@@ -1,29 +1,9 @@
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerStateDodge : PlayerStateLocomotion
 {
-    private RadialBlurBlitVolumeComponent m_VolumeComp;
     private EDodgeState m_State = EDodgeState.Start;
     private bool m_IsJumpPerformed = false;
-
-    private Tween m_RadialBlurTween;
-    private float m_RadialBlurIntensity;
-
-    public override void Init(IStateMachineOwner owner)
-    {
-        base.Init(owner);
-        GameObject globalVolumeObj = GameObject.Find("Global Volume");
-        if (globalVolumeObj != null)
-        {
-            Volume volume = globalVolumeObj.GetComponent<Volume>();
-            if (volume != null && volume.profile != null)
-            {
-                volume.profile.TryGet(out m_VolumeComp);
-            }
-        }
-    }
 
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
@@ -32,7 +12,6 @@ public class PlayerStateDodge : PlayerStateLocomotion
         m_Player.model.RegisterRootMotionAction(HandleRootMotion);
         m_State = EDodgeState.Start;
         m_IsJumpPerformed = false;
-        m_RadialBlurIntensity = 0f;
     }
 
     public override bool Exit(StateBase newState)
@@ -40,12 +19,10 @@ public class PlayerStateDodge : PlayerStateLocomotion
         if(m_State != EDodgeState.Stop)
             return false;
 
-        m_Player.ghostTrail.EndTrail();
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, 0f);
         m_Player.model.SetAnimationFloat(AnimationConsts.verticalAngular, 0f);
         m_Player.model.SetAnimationBool(AnimationConsts.dodge, false);
         m_Player.model.RemoveRootMotionAction(HandleRootMotion);
-        OnRadialBlurEffectExit();       
         base.Exit(newState);
         return true;
     }
@@ -55,12 +32,9 @@ public class PlayerStateDodge : PlayerStateLocomotion
         m_Player.model.animator.GetTargetAnimationTime("Dodge", AnimationConsts.BASE_LAYER, out float time);
         // Debug.Log($"PlayerStateDodge Update, SubState[{m_State}], time[{time}]");
         if (m_State == EDodgeState.Start)
-        {            
+        {
             m_State = EDodgeState.Floating;
             SetAnimationValue(m_Player.dodgeAction);
-            m_Player.ghostTrail.BeginTrail();
-            OnRadialBlurEffectEnter();
-            m_Player.PlayOneShot(m_Player.config.dodge.audio);
         }
         else if (m_State == EDodgeState.Floating && time >= 0.9f)
         {
@@ -151,47 +125,6 @@ public class PlayerStateDodge : PlayerStateLocomotion
                 break;
             default:
                 break;
-        }
-    }
-
-    private void OnRadialBlurEffectEnter()
-    {
-        if(m_VolumeComp == null) return;
-
-        m_VolumeComp.UpdateFocusCenter(Camera.main, m_Player.modelTransform.position, GetRadialBlurDirection(m_Player.dodgeAction));
-        m_RadialBlurTween?.Kill();
-        m_RadialBlurTween = DOTween.To(() => m_RadialBlurIntensity,
-            (value) => m_RadialBlurIntensity = value,
-            1f, m_VolumeComp.duration.value)
-            .SetEase(Ease.InSine)
-            .OnUpdate(OnScreenRadialUpdate);
-    }
-
-    private void OnRadialBlurEffectExit()
-    {
-        if (m_VolumeComp == null) return;
-
-        m_RadialBlurTween?.Kill();
-        m_VolumeComp.intensity.value = m_RadialBlurIntensity = 0f;
-    }
-
-    private void OnScreenRadialUpdate()
-    {        
-        m_VolumeComp.intensity.value = m_RadialBlurIntensity;
-    }
-
-    private Vector2 GetRadialBlurDirection(ECharacterDodgeAction playerAction)
-    {
-        switch (playerAction)
-        {
-            case ECharacterDodgeAction.Left:
-                return Vector2.left;
-            case ECharacterDodgeAction.Forward:
-                return Vector2.up;
-            case ECharacterDodgeAction.Backward:
-                return Vector2.down;
-            default:
-                return Vector2.right;
         }
     }
 }

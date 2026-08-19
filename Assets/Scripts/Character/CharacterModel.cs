@@ -2,6 +2,7 @@
 using UnityEngine;
 
 public delegate void RootMotionAction(Vector3 deltaPosition, Quaternion deltaRotation);
+public delegate void IKAction(int layerIndex);
 
 public class CharacterModel : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class CharacterModel : MonoBehaviour
     protected bool m_HitStopRunning = false;
     protected Coroutine m_HitStopCoroutine;
     protected event RootMotionAction m_RootMotionAc;
+    protected event IKAction m_IKAc;
 
     public Animator animator => m_Animator;
     public bool isHitStopRunning => m_HitStopRunning;
@@ -25,6 +27,14 @@ public class CharacterModel : MonoBehaviour
     private void OnAnimatorMove()
     {
         m_RootMotionAc?.Invoke(m_Animator.deltaPosition, m_Animator.deltaRotation);
+    }
+
+    /// <summary>
+    /// Animator IK Callback（should select IK Pass in animator layer）。
+    /// </summary>
+    private void OnAnimatorIK(int layerIndex)
+    {
+        m_IKAc?.Invoke(layerIndex);
     }
 
     private void OnDestroy()
@@ -135,6 +145,16 @@ public class CharacterModel : MonoBehaviour
     {
         m_RootMotionAc -= action;
     }  
+
+    public void RegisterIKAction(IKAction action)
+    {
+        m_IKAc += action;
+    }
+
+    public void RemoveIKAction(IKAction action)
+    {
+        m_IKAc -= action;
+    }
 
     public void ClearAllAction()
     {

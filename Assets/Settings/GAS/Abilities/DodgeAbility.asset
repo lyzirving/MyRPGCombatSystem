@@ -26,6 +26,5 @@ MonoBehaviour:
   cooldownDuration: 0
   cooldownEffect: {fileID: 0}
   grantedTags: []
-  requiredTags:
-  - m_TagName: Root.Combat.Locked
+  requiredTags: []
   blockedTags: []
