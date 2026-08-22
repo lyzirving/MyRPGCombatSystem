@@ -1,6 +1,6 @@
 ﻿using System;
 
-public enum ECharacterState : UInt16
+public enum ECharacterState : ushort
 {
     Idle = 0,
     Move,
@@ -21,7 +21,7 @@ public enum ECharacterState : UInt16
 /// <summary>
 /// Internal state of defence within a character
 /// </summary>
-public enum EDefenceState : UInt16
+public enum EDefenceState : ushort
 {
     Enter = 0,
     Loop,
@@ -33,7 +33,7 @@ public enum EDefenceState : UInt16
     EndAndTransit
 }
 
-public enum EAttackState : UInt16
+public enum EAttackState : ushort
 {
     Start = 0,    
     ReadyCombo,
@@ -41,21 +41,22 @@ public enum EAttackState : UInt16
     Num
 }
 
-public enum EDodgeState : UInt16
+public enum EDodgeState : ushort
 {
     Start = 0,
     Floating,
     Stop
 }
 
-public enum EJumpState : UInt16
+public enum EJumpState : ushort
 {
     Start = 0,
     Airborne,
+    DoubleJump,
     Landed
 }
 
-public enum EFootstep : UInt16
+public enum EFootstep : ushort
 {
     None = 0,
     LeftFootstep,

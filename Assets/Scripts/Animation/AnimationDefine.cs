@@ -30,6 +30,7 @@ public static class AnimationConsts
     public static int combat { get; private set; }
     public static int land { get; private set; }
     public static int airborne { get; private set; }
+    public static int doubleJump { get; private set; }
     public static int hit { get; private set; }
     public static int dodge { get; private set; }
     public static int sprint { get; private set; }
@@ -43,6 +44,7 @@ public static class AnimationConsts
     public static int verticalAngular { get; private set; }
     public static int speed { get; private set; }
     public static int jumpRatio { get; private set; }
+    public static int doubleJumpRatio { get; private set; }
     public static int feetTween { get; private set; }
     public static int hitTween { get; private set; }
     public static int hitStunning { get; private set; }
@@ -59,6 +61,7 @@ public static class AnimationConsts
         combat = Animator.StringToHash("isCombat");
         land = Animator.StringToHash("isLanding");
         airborne = Animator.StringToHash("isAirborne");
+        doubleJump = Animator.StringToHash("isDoubleJump");
         hit = Animator.StringToHash("isHit");
         dodge = Animator.StringToHash("isDodge");
         sprint = Animator.StringToHash("isSprint");
@@ -72,6 +75,7 @@ public static class AnimationConsts
         verticalAngular = Animator.StringToHash("verticalAngular");
         speed = Animator.StringToHash("speed");
         jumpRatio = Animator.StringToHash("jumpRatio");
+        doubleJumpRatio = Animator.StringToHash("doubleJumpRatio");
         feetTween = Animator.StringToHash("feetTween");
         hitTween = Animator.StringToHash("hitTween");
         hitStunning = Animator.StringToHash("hitStunning");

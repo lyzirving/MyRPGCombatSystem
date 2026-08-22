@@ -144,6 +144,11 @@ public abstract class GameplayAbility : ScriptableObject
 
     public virtual void ReActivate(AbilitySystemComponent owner, object target = null)
     {
+        // Only refresh the target when one is actually provided, so re-activations that do not
+        // pass a target (e.g. attack combos) keep their original target.
+        if (target != null)
+            m_Target = target;
+
         OnAbilityReEnter();
     }
 
@@ -173,10 +178,6 @@ public abstract class GameplayAbility : ScriptableObject
 
     public virtual bool CanActivate(AbilitySystemComponent owner)
     {
-        // prevent repeated activation
-        if (m_IsActive)
-            return false;
-
         bool hasCooldownTag = cooldownTag != null && cooldownTag.isValid && owner.HasTag(cooldownTag);
         if (hasCooldownTag || owner.IsEffectActive(cooldownEffect))
             return false;

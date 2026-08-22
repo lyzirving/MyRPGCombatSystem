@@ -310,7 +310,7 @@ public class PlayerActionController : MonoBehaviour
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
-        EnqueueBufferedCommand(ECharacterAction.Jump); 
+        EnqueueBufferedCommand(ECharacterAction.Jump);
     }
 
     private void OnLightAttackPerformed(InputAction.CallbackContext context)

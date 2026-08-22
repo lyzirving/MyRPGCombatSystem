@@ -49,4 +49,15 @@ public class PlayerStateFall : PlayerStateAirborne
         // damping / acceleration damping, shared with Jump)
         UpdateAirborneMovement();
     }
+
+    /// <summary>
+    /// Attempt a double jump while falling (only if enabled for the falling phase).
+    /// </summary>
+    public override bool TryDoubleJump()
+    {
+        if (!m_Player.config.jump.allowDoubleJumpWhileFalling)
+            return false;
+
+        return TryDoubleJumpInternal(m_Player.config.jump.doubleJumpHeight);
+    }
 }

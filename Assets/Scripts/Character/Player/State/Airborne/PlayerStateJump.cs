@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStateJump : PlayerStateAirborne
@@ -10,10 +11,10 @@ public class PlayerStateJump : PlayerStateAirborne
     private const float FALL_DOWN_RATIO = -2.1f;    
 
     private bool m_IsJumpPerform;
+    private bool m_IsDoubleJumpPerform;
     private bool m_FirstEnter;
     private bool m_JumpFromMove;
     private float m_StartVelocity;
-    private float m_LastVelocity;
     private float m_JumpStartRatio;
     private float m_AirborneTimer;
     private float m_HoverTime;
@@ -27,10 +28,11 @@ public class PlayerStateJump : PlayerStateAirborne
         base.Enter(exitState, args);
 
         m_State = EJumpState.Start;
-        m_JumpFromMove = exitState.GetType() == typeof(PlayerStateMove);
+        // move or sprint
+        m_JumpFromMove = exitState is PlayerStateMove;
         m_IsJumpPerform = false;
+        m_IsDoubleJumpPerform = false;
         m_FirstEnter = true;
-        m_LastVelocity = 0f;
         m_AirborneTimer = 0f;
 
         float feetTween;
@@ -55,6 +57,8 @@ public class PlayerStateJump : PlayerStateAirborne
         if (m_State != EJumpState.Landed && !isFall)
             return false;
 
+        m_Player.model.SetAnimationBool(AnimationConsts.doubleJump, false);
+
         if (isFall)
         {
             base.Exit(newState);
@@ -69,14 +73,25 @@ public class PlayerStateJump : PlayerStateAirborne
         if(!m_IsJumpPerform)
             return;
 
+        if(m_IsDoubleJumpPerform)
+        {           
+            m_IsDoubleJumpPerform = false;
+            // If double jump is peformed, we need to recapture the initial speed .
+            m_FirstEnter = true;
+            // the execute order between TryDoubleJump() and Update() is not clear, so we need to wait one frame
+            m_Player.model.SetAnimationBool(AnimationConsts.doubleJump, true);
+            m_Player.model.SetAnimationFloat(AnimationConsts.doubleJumpRatio, 0f);
+            return;
+        }
+
         float velocity = m_Player.verticalVelocity.y;
         if (m_FirstEnter)
         {
             m_FirstEnter = false;
             m_StartVelocity = velocity;
         }
+
         UpdateAnimationRatio(velocity);
-        m_LastVelocity = velocity;
     }
 
     public override void FixedUpdate()
@@ -156,13 +171,38 @@ public class PlayerStateJump : PlayerStateAirborne
     {
         return m_State == EJumpState.Landed;
     }
+
+    /// <summary>
+    /// Attempt a double jump while in the jump's airborne phase.
+    /// </summary>
+    public override bool TryDoubleJump()
+    {
+        // Only the airborne phase (not take-off or landing) can double jump.
+        if (m_State != EJumpState.Airborne)
+            return false;
+
+        if (!TryDoubleJumpInternal(m_Player.config.jump.doubleJumpHeight))
+            return false;
+
+        m_State = EJumpState.DoubleJump;
+        m_IsDoubleJumpPerform = true;
+        return true;
+    }
     #endregion
 
     #region Main Methods
     private void UpdateAnimationRatio(float verticalVelocity)
-    {
-        float ratio = CalcJumpRatio(verticalVelocity, m_LastVelocity, m_StartVelocity);
-        m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, ratio, 0.1f, Time.deltaTime);
+    {        
+        if (m_State == EJumpState.DoubleJump)
+        {
+            float ratio = CalcDoubleJumpRatio(verticalVelocity, m_StartVelocity);
+            m_Player.model.SetAnimationFloat(AnimationConsts.doubleJumpRatio, ratio, 0.1f, Time.deltaTime);
+        }
+        else
+        {
+            float ratio = CalcJumpRatio(verticalVelocity, m_StartVelocity);
+            m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, ratio, 0.1f, Time.deltaTime);
+        }
     }
 
     /// <summary>
@@ -171,15 +211,28 @@ public class PlayerStateJump : PlayerStateAirborne
     /// when current velocity < 0, character is falling
     /// </summary>
     /// <param name="velocity"></param>
-    /// <param name="lastVelocity"></param>
     /// <param name="startVelocity"></param>
     /// <returns>jump ratio for animation</returns>
-    private float CalcJumpRatio(float velocity, float lastVelocity, float startVelocity)
+    private float CalcJumpRatio(float velocity, float startVelocity)
     {        
         if (velocity > 0)
             return m_JumpStartRatio - (startVelocity - velocity) / (m_JumpStartRatio - JUMP_TOP_RATIO);
         else
             return JUMP_TOP_RATIO + velocity / (JUMP_TOP_RATIO - FALL_DOWN_RATIO);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="velocity"></param>
+    /// <param name="startVelocity"></param>
+    /// <returns></returns>
+    private float CalcDoubleJumpRatio(float velocity, float startVelocity)
+    {        
+        if (velocity > 0)
+            return Mathf.Clamp01(1f- velocity / startVelocity);
+        else
+            return 1f;
     }
     #endregion
 }

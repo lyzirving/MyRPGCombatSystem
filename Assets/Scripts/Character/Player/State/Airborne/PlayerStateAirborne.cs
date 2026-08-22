@@ -7,6 +7,7 @@ public class PlayerStateAirborne : PlayerStateBase
     /// then converges toward the input target speed every frame (air acceleration damping).
     /// </summary>
     protected Vector3 m_AirHorizontalVelocity;
+    protected int m_AirJumpsRemaining = 0;
 
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
@@ -14,6 +15,11 @@ public class PlayerStateAirborne : PlayerStateBase
         // Keep the horizontal momentum from the moment of leaving the ground,
         // so run-jumps and falling feel naturally continuous.
         m_AirHorizontalVelocity = m_Player.horizontalVelocity;
+
+        // Reset the remaining air jumps whenever entering the air from the ground (not when
+        // transitioning between two airborne states, e.g. Jump -> Fall).
+        if (!(exitState is PlayerStateAirborne))
+            ResetAirJumps();
     }
 
     public override bool Exit(StateBase newState)
@@ -29,6 +35,26 @@ public class PlayerStateAirborne : PlayerStateBase
     {
         m_Player.OnFootStep(EFootstep.None);
         m_Player.ChangeState(ECharacterState.Idle);
+    }
+
+    public virtual bool TryDoubleJump() => false;    
+
+    /// <summary>
+    /// Try to consume one air jump. Returns true when a double jump is still available.
+    /// </summary>
+    protected bool TryConsumeAirJump()
+    {
+        if (m_AirJumpsRemaining <= 0) return false;
+        m_AirJumpsRemaining--;
+        return true;
+    }
+
+    /// <summary>
+    /// Reset the number of remaining air jumps (called when entering the air from the ground).
+    /// </summary>
+    protected void ResetAirJumps()
+    {
+        m_AirJumpsRemaining = m_Player.config.jump.allowDoubleJump ? 1 : 0;
     }
 
     /// <summary>
@@ -119,5 +145,22 @@ public class PlayerStateAirborne : PlayerStateBase
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Shared double-jump execution: reset the vertical velocity to jump again while keeping
+    /// the current horizontal momentum. Returns false when a double jump is not available.
+    /// </summary>
+    protected bool TryDoubleJumpInternal(float height)
+    {
+        if (!m_Player.config.jump.allowDoubleJump)
+            return false;
+
+        if (!TryConsumeAirJump())
+            return false;
+
+        JumpVertical(height);
+        m_AirHorizontalVelocity = m_Player.horizontalVelocity;
+        return true;
     }
 }

@@ -20,6 +20,16 @@ public class CharacterJumpData : ScriptableObject
     [Tooltip("Max airborne time (s) before the jump force-ends as a fall. Anti-stuck safety net so the state machine can never lock up.")]
     [Range(1f, 5f)] public float maxAirborneTime = 3f;
 
+    [Header("Double Jump")]
+    [Tooltip("Whether the character can perform an extra jump while airborne.")]
+    public bool allowDoubleJump = true;
+
+    [Tooltip("Height of the double jump in meters.")]
+    [Range(0.2f, 10f)] public float doubleJumpHeight = 1.5f;
+
+    [Tooltip("Whether the double jump can be performed while falling.")]
+    public bool allowDoubleJumpWhileFalling = true;
+
     [Header("Audio")]
     public AudioClip audio;
 }

@@ -37,5 +37,17 @@ public class CharacterStateBase : AdditiveState
         m_ControllerBase.ResetVelocity();
         m_ControllerBase.rigidBody.AddForce(v, ForceMode.VelocityChange);
     }
+
+    /// <summary>
+    /// Jump by only resetting the vertical velocity while preserving the current horizontal
+    /// momentum. Used by the double jump, which must not discard the air speed already gained.
+    /// </summary>
+    public void JumpVertical(float targetHeight)
+    {
+        float target = PhysicsUtils.CalcTargetVelocity(0f, Physics.gravity.y, targetHeight);
+        Vector3 velocity = m_ControllerBase.rigidBody.linearVelocity;
+        velocity.y = target;
+        m_ControllerBase.rigidBody.linearVelocity = velocity;
+    }
     #endregion
 }

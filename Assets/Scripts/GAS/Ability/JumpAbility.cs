@@ -22,18 +22,22 @@ public class JumpAbility : GameplayAbility
 
     protected override void OnAbilityReEnter()
     {
+        // Re-activation while airborne is the double jump.
+        if(m_Character.currentState is PlayerStateAirborne stateAirborne)
+            stateAirborne.TryDoubleJump();
     }
 
     protected override void OnAbilityUpdate(float deltaTime)
     {
-        var state = m_Character.currentState as PlayerStateJump;
-        if (state == null)
+        // Keep the ability active while airborne (jump or fall) so a re-activation can trigger
+        // the double jump. It only ends once the character has left both airborne states (landed).
+        if(!(m_Character.currentState is PlayerStateAirborne))
         {
             EndAbility();
             return;
         }
 
-        if (state.IsExpired())
+        if(m_Character.currentState is PlayerStateJump stateJump && stateJump.IsExpired())
             EndAbility();
     }
 }
