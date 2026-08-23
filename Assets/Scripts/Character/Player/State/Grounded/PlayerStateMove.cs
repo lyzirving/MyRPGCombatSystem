@@ -5,7 +5,11 @@ public class PlayerStateMove : PlayerStateLocomotion
     protected int m_CurrentLoop;
     protected float m_CurrentTime;
 
-    public EFootstep currentFoopStep
+    /// <summary>
+    /// Get current footstep when moving.
+    /// The implementation is dependent on actually animation.
+    /// </summary>
+    public virtual EFootstep CurrentFootstep
     {
         get 
         {

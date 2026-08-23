@@ -968,6 +968,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: isRightFootstep
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: defenceRelease
     m_Type: 4
     m_DefaultFloat: 0
@@ -1433,15 +1439,15 @@ AnimatorState:
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
-  m_Mirror: 0
+  m_Mirror: 1
   m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
+  m_MirrorParameterActive: 1
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 5476b550fcb5415459edc732b3665be7, type: 3}
   m_Tag: 
   m_SpeedParameter: 
-  m_MirrorParameter: 
+  m_MirrorParameter: isRightFootstep
   m_CycleOffsetParameter: 
   m_TimeParameter: 
 --- !u!1102 &1852064432879390462
@@ -1820,15 +1826,15 @@ AnimatorState:
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
-  m_Mirror: 0
+  m_Mirror: 1
   m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
+  m_MirrorParameterActive: 1
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 1
   m_Motion: {fileID: 6902474315774102325, guid: f041bd6d0a427fe4195b13d1e2e5966a, type: 3}
   m_Tag: 
   m_SpeedParameter: angular
-  m_MirrorParameter: 
+  m_MirrorParameter: isRightFootstep
   m_CycleOffsetParameter: 
   m_TimeParameter: doubleJumpRatio
 --- !u!1102 &5440692031510044209

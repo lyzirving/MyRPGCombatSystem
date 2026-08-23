@@ -17,7 +17,10 @@ public class JumpAbility : GameplayAbility
 
     protected override void OnAbilityPerformed()
     {
-        m_Character.ChangeState(ECharacterState.Jump);
+        EFootstep footStep = EFootstep.None;
+        if (m_Character.currentState is PlayerStateMove stateMove)
+            footStep = stateMove.CurrentFootstep;
+        m_Character.ChangeState(ECharacterState.Jump, new ChangeStateArgs(footStep));
     }
 
     protected override void OnAbilityReEnter()

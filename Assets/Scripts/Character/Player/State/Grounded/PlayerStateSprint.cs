@@ -4,6 +4,17 @@ public class PlayerStateSprint : PlayerStateMove
 {
     private Vector3 m_SprintDirection;
 
+    public override EFootstep CurrentFootstep
+    {
+        get 
+        {
+            if(m_Player.model.animator.IsInTransition(0)) return EFootstep.None;
+            float time = m_Player.model.animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1f;
+            // implemented by actually animation
+            return time < 0.5f ? EFootstep.RightFootstep : EFootstep.LeftFootstep;
+        }
+    }
+
     public override void Enter(StateBase exitState, ChangeStateArgs args)
     {
         base.Enter(exitState, args);

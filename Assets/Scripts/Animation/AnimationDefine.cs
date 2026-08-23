@@ -35,6 +35,7 @@ public static class AnimationConsts
     public static int dodge { get; private set; }
     public static int sprint { get; private set; }
     public static int strafe { get; private set; }
+    public static int rightFootstep { get; private set; }
     public static int defence { get; private set; }
     public static int defenceRelease { get; private set; }
     public static int roar { get; private set; }
@@ -65,9 +66,10 @@ public static class AnimationConsts
         hit = Animator.StringToHash("isHit");
         dodge = Animator.StringToHash("isDodge");
         sprint = Animator.StringToHash("isSprint");
-        strafe = Animator.StringToHash("isStrafe");
-        defence = Animator.StringToHash("isDefence");
+        strafe = Animator.StringToHash("isStrafe");        
+        defence = Animator.StringToHash("isDefence");        
         defenceRelease = Animator.StringToHash("defenceRelease");
+        rightFootstep = Animator.StringToHash("isRightFootstep");
         roar = Animator.StringToHash("roar");
 
         // Ratio parameters in Animator

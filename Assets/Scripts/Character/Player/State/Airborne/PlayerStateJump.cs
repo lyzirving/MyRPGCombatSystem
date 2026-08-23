@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerStateJump : PlayerStateAirborne
@@ -18,6 +17,7 @@ public class PlayerStateJump : PlayerStateAirborne
     private float m_JumpStartRatio;
     private float m_AirborneTimer;
     private float m_HoverTime;
+    private float m_FeetTween = 1f;
     private System.Random m_SysRandom = new System.Random();
 
     private EJumpState m_State = EJumpState.Start;
@@ -35,20 +35,19 @@ public class PlayerStateJump : PlayerStateAirborne
         m_FirstEnter = true;
         m_AirborneTimer = 0f;
 
-        float feetTween;
         if (m_JumpFromMove)
         {
-            feetTween = args.footStep == EFootstep.LeftFootstep ? 1f : -1f;
-            feetTween *= m_Player.action.shouldRun ? 3f : 1f;
+            m_FeetTween = args.footStep == EFootstep.LeftFootstep ? 1f : -1f;
+            m_FeetTween *= m_Player.action.shouldRun ? 3f : 1f;
         }
         else
         {
-            feetTween = (float)m_SysRandom.NextDouble() * 2f - 1f;
+            m_FeetTween = (float)m_SysRandom.NextDouble() * 2f - 1f;
         }
 
         m_JumpStartRatio = (m_JumpFromMove && m_Player.action.shouldRun) ? POWER_JUMP_UP_RATIO : NORMAL_JUMP_UP_RATIO;        
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, m_JumpStartRatio);
-        m_Player.model.SetAnimationFloat(AnimationConsts.feetTween, feetTween);
+        m_Player.model.SetAnimationFloat(AnimationConsts.feetTween, m_FeetTween);
     }
 
     public override bool Exit(StateBase newState)
@@ -58,6 +57,7 @@ public class PlayerStateJump : PlayerStateAirborne
             return false;
 
         m_Player.model.SetAnimationBool(AnimationConsts.doubleJump, false);
+        m_Player.model.SetAnimationBool(AnimationConsts.rightFootstep, false);
 
         if (isFall)
         {
@@ -80,9 +80,10 @@ public class PlayerStateJump : PlayerStateAirborne
             m_FirstEnter = true;
             // the execute order between TryDoubleJump() and Update() is not clear, so we need to wait one frame
             m_Player.model.SetAnimationBool(AnimationConsts.doubleJump, true);
+            m_Player.model.SetAnimationBool(AnimationConsts.rightFootstep, m_FeetTween > 0f);
             m_Player.model.SetAnimationFloat(AnimationConsts.doubleJumpRatio, 0f);
             return;
-        }
+        } 
 
         float velocity = m_Player.verticalVelocity.y;
         if (m_FirstEnter)
