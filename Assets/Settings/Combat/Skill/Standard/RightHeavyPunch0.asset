@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
-  m_Name: LightPunchRight
+  m_Name: RightHeavyPunch0
   m_EditorClassIdentifier: 
-  animatorState: LightPunchRight
+  animatorState: RightHeavyPunch0
   crossFadeInTime: 0.15
   minInterruptNormalizedTime: 0.22
-  comboWindowStartNormalizedTime: 0.33
-  transitionNormalizedTime: 0.6
-  inputWindowDuration: 0.3
+  transitionNormalizedTime: 0.8
+  inputWindowDuration: 0.2
   minDistanceToTarget: 0.5
   attackBox: RightHandAttackBox
-  action: 1
-  damage: 5
+  action: 2
+  damage: 10
   hitStunTime: 0
   knockbackDistance: 0
+  airAttackFallGravityScale: 0.4
   skillReleaseData:
-    spawnPrefab: VFX/Attack/PunchRight
+    spawnPrefab: VFX/Attack/HeavyPunchRight0
     vfxTime: 0.18
     audioClip: {fileID: 8300000, guid: 4a1a6ca56ccc75042b1a9624b4567c0c, type: 3}
   skillHitData:
@@ -33,5 +33,5 @@ MonoBehaviour:
     audioClip: {fileID: 0}
     hitStopTimeScale: 0.18
     hitStopDuration: 0.06
-  attackBoxIndex: 3
+  attackBoxIndex: 2
   nextSkillIndex: 2

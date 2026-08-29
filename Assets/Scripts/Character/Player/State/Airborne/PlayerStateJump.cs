@@ -52,6 +52,9 @@ public class PlayerStateJump : PlayerStateAirborne
 
     public override bool Exit(StateBase newState)
     {
+        if(newState is PlayerStateAirborneCombat)
+            return true;
+            
         bool isFall = newState is PlayerStateFall;
         if (m_State != EJumpState.Landed && !isFall)
             return false;

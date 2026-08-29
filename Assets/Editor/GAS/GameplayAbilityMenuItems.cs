@@ -5,6 +5,9 @@ public class GameplayAbilityMenuItems
     [MenuItem("Assets/Create/GAS/Ability/AttackAbility", priority = 10)]
     private static void CreateAttackAbility() => GameplayAbilityCreator.CreateGameplayAbility<AttackAbility>();
 
+    [MenuItem("Assets/Create/GAS/Ability/AirborneAttackAbility", priority = 10)]
+    private static void CreateAirborneAttackAbility() => GameplayAbilityCreator.CreateGameplayAbility<AirborneAttackAbility>();
+
     [MenuItem("Assets/Create/GAS/Ability/JumpAbility", priority = 10)]
     private static void CreateJumpAbility() => GameplayAbilityCreator.CreateGameplayAbility<JumpAbility>();
 

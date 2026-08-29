@@ -320,6 +320,7 @@ public class LockTargetManager : MonoBehaviour
 
     public bool CanSeeObject(Transform target, float halfAngleDeg, float maxDistance)
     { 
+        // 1. Target destroyed / externally cleared
         if (target == null) return false;
 
         if (!string.IsNullOrEmpty(targetTag) && !target.gameObject.CompareTag(targetTag)) return false;
@@ -327,11 +328,13 @@ public class LockTargetManager : MonoBehaviour
         Vector3 eyePosition = transform.position + transform.up * eyeHeightOffset;
         float dist = Vector3.Distance(eyePosition, target.position);
 
+        // 2. Too far
         if (dist > maxDistance) return false;
 
         Vector3 dir = target.position - transform.position;
         dir.Normalize();
 
+        // 3. No longer visible
         return IsDirectionInView(dir, halfAngleDeg);
     }
 
@@ -357,29 +360,11 @@ public class LockTargetManager : MonoBehaviour
         if (!IsLocked)
             return;
 
-        var target = m_Character.lockTarget;
-
-        // 1. Target destroyed / externally cleared
-        if (target == null)
+        if (!CanSeeObject(m_Character.lockTarget, m_HardLockConeHalfAngle, m_MaxLockDistance))
         {
             UnlockTarget();
             return;
-        }
-
-        // 2. Too far
-        float dist = Vector3.Distance(transform.position, target.position);
-        if (dist > m_MaxLockDistance)
-        {
-            UnlockTarget();
-            return;
-        }
-
-        // 3. No longer visible
-        if (!CanSeeObject(target, m_HardLockConeHalfAngle, m_MaxLockDistance))
-        {
-            UnlockTarget();
-            return;
-        }
+        }     
     }
 
     #endregion
@@ -457,15 +442,13 @@ public class LockTargetManager : MonoBehaviour
     private bool IsValidHardLockTarget(Transform target)
     {
         if (target == null) return false;
-        if (!CanSeeObject(target, m_HardLockConeHalfAngle, m_MaxLockDistance)) return false;
 
         Vector3 toTarget = target.position - transform.position;
         toTarget.y = 0;
         float dist = toTarget.magnitude;
         if (dist > m_MaxLockDistance || dist < 0.01f) return false;
 
-        float angle = Vector3.Angle(GetCameraForward(), toTarget.normalized);
-        return angle <= m_HardLockConeHalfAngle;
+        return CanSeeObject(target, m_HardLockConeHalfAngle, m_MaxLockDistance);
     }
 
     /// <summary>

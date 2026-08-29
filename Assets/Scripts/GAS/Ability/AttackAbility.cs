@@ -10,21 +10,21 @@ public class AttackAbility : GameplayAbility
     /// Cached input when the player presses attack but combo window isn't open yet
     /// and the current attack cannot be interrupted.
     /// </summary>
-    private CombatDefine.EAttack m_PendingComboInput = CombatDefine.EAttack.None;   
+    protected CombatDefine.EAttack m_PendingComboInput = CombatDefine.EAttack.None;   
 
     /// <summary>
     /// When true, combo has been logically advanced (NextSkill called) but animation switch
     /// (ReActivate) is deferred until HitStop finishes.
     /// </summary>
-    private bool m_DeferredReActivate = false;
-    
-    #region Ability API 
+    protected bool m_DeferredReActivate = false;
+
     public bool CanBeInterrupted(float currentNormalizedTime)
     {
         var skill = currentSkill;   
         return skill != null ? currentNormalizedTime >= skill.minInterruptNormalizedTime : true;           
     }
     
+    #region Ability API     
     protected override void OnAbilityActivated()
     {
         m_DeferredReActivate = false;
@@ -44,40 +44,7 @@ public class AttackAbility : GameplayAbility
         m_DeferredReActivate = false;
         TransitionToLocomotion();
         DowngradeLockAfterAttack();
-    }
-
-    /// <summary>
-    /// After an attack ends, if a temporary (attack-triggered) hard lock is active,
-    /// downgrade it back to soft lock so the player regains free movement.
-    /// Permanent (manual) hard locks are unaffected.
-    /// </summary>
-    private void DowngradeLockAfterAttack()
-    {
-        var lockManager = m_Character != null
-            ? m_Character.GetComponent<LockTargetManager>()
-            : null;
-        lockManager?.DowngradeToSoftLock();
-    }
-
-    /// <summary>
-    /// When the player is still holding movement input after attack ends,
-    /// skip Idle and go directly to Move (or Sprint) to avoid animation blending
-    /// through Idle, which causes visible sliding.
-    /// LocomotionAbility will pick up the correct mode (Sprint/StrafeMove) 
-    /// on the next OnAbilityUpdate.
-    /// </summary>
-    private void TransitionToLocomotion()
-    {
-        var player = m_Character as PlayerController;
-        if (player != null && player.action.isMoving)
-        {
-            m_Character.ChangeState(ECharacterState.Move);
-        }
-        else
-        {
-            m_Character.ChangeState(ECharacterState.Idle);
-        }
-    }
+    }    
 
     protected override void OnAbilityPerformed()
     {        
@@ -108,6 +75,39 @@ public class AttackAbility : GameplayAbility
             EndAbility();
     }    
     #endregion
+
+    /// <summary>
+    /// After an attack ends, if a temporary (attack-triggered) hard lock is active,
+    /// downgrade it back to soft lock so the player regains free movement.
+    /// Permanent (manual) hard locks are unaffected.
+    /// </summary>
+    protected void DowngradeLockAfterAttack()
+    {
+        var lockManager = m_Character != null
+            ? m_Character.GetComponent<LockTargetManager>()
+            : null;
+        lockManager?.DowngradeToSoftLock();
+    }
+
+    /// <summary>
+    /// When the player is still holding movement input after attack ends,
+    /// skip Idle and go directly to Move (or Sprint) to avoid animation blending
+    /// through Idle, which causes visible sliding.
+    /// LocomotionAbility will pick up the correct mode (Sprint/StrafeMove) 
+    /// on the next OnAbilityUpdate.
+    /// </summary>
+    private void TransitionToLocomotion()
+    {
+        var player = m_Character as PlayerController;
+        if (player != null && player.action.isMoving)
+        {
+            m_Character.ChangeState(ECharacterState.Move);
+        }
+        else
+        {
+            m_Character.ChangeState(ECharacterState.Idle);
+        }
+    }
 
     #region  Pending input
     /// <summary>
@@ -142,17 +142,17 @@ public class AttackAbility : GameplayAbility
     #endregion
     
     #region Attack Event
-    public void HandleAttackBegin(in AnimationEventInfo info)
-    {
+    public virtual void HandleAttackBegin(in AnimationEventInfo info)
+    {        
         m_Character?.OnAttackBegin();
     }
 
-    public void HandleAttackEnd(in AnimationEventInfo info)
+    public virtual void HandleAttackEnd(in AnimationEventInfo info)
     {
         m_Character?.OnAttackEnd();
     }
 
-    public void HandleAttackVfxBegin(in AnimationEventInfo info)
+    public virtual void HandleAttackVfxBegin(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state
         if (info.animatorState != m_Character.attackComponent.skill.animatorState)
@@ -161,7 +161,7 @@ public class AttackAbility : GameplayAbility
         m_Character.OnAttackVfxBegin();
     }
 
-    public void HandleAttackVfxEnd(in AnimationEventInfo info)
+    public virtual void HandleAttackVfxEnd(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state
         if (info.animatorState != m_Character.attackComponent.skill.animatorState)
@@ -170,7 +170,7 @@ public class AttackAbility : GameplayAbility
         m_Character.OnAttackVfxEnd();
     }
 
-    public void HandleAttackComboWindowOpened(in AnimationEventInfo info)
+    public virtual void HandleAttackComboWindowOpened(in AnimationEventInfo info)
     {
         //[BugFix] fix animator graph doesn't sync with logic state
         if (info.animatorState != m_Character.attackComponent.skill.animatorState)
@@ -183,7 +183,7 @@ public class AttackAbility : GameplayAbility
         }
     }
 
-    public void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
+    public virtual void HandleRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
     {
         Transform lockTarget = m_Character.lockTarget;
         SkillData skill = currentSkill;

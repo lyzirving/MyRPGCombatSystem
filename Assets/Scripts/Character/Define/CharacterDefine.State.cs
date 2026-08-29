@@ -11,6 +11,7 @@ public enum ECharacterState : ushort
     Falling,
     Land,
     Attack,
+    AirborneAttack,
     Hurt,
     Defence,
     Dodge,

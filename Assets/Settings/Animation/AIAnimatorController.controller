@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c1cacd804a97e4bb10c8e58eebd06f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 1
   events:
   - type: 101
     launchTime: 0.157
@@ -74,7 +73,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c1cacd804a97e4bb10c8e58eebd06f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 1
   events:
   - type: 101
     launchTime: 0.768

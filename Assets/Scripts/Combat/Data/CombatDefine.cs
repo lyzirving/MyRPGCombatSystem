@@ -1,13 +1,14 @@
-﻿using System;
-
+﻿
 public class CombatDefine
 {
-    public enum EAttack : UInt16
+    public enum EAttack : ushort
     { 
         None = 0,
-        LA,      //Light Attack
-        HA,      //Heavy Attack
-        SprintLA, //Sprint Light Attack
-        SprintHA, //Sprint Heavy Attack
+        LA,           //Light Attack
+        HA,           //Heavy Attack
+        SprintLA,     //Sprint Light Attack
+        SprintHA,     //Sprint Heavy Attack
+        AirborneLA,   //Airborne Light Attack
+        AirborneHA    //Airborne Heavy Attack
     }
 }

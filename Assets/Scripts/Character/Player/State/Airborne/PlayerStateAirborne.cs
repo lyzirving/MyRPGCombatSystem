@@ -19,7 +19,10 @@ public class PlayerStateAirborne : PlayerStateBase
         // Reset the remaining air jumps whenever entering the air from the ground (not when
         // transitioning between two airborne states, e.g. Jump -> Fall).
         if (!(exitState is PlayerStateAirborne))
+        {
             ResetAirJumps();
+            m_Player.ResetAirAttack();
+        }
     }
 
     public override bool Exit(StateBase newState)

@@ -9,10 +9,28 @@ public class PlayerController : CharacterControllerBase
     private PlayerActionController m_ActionController;
     private GhostTrail m_GhostTrail;
     // -------- Component in current node end --------
+
+    #region Air Attack Lock
+    private bool m_AirAttackExhausted = false;
+
+    public bool airAttackExhausted => m_AirAttackExhausted;
+
+    /// <summary>
+    /// Reset the air-attack state when a new airborne trip begins (leaving the ground).
+    /// </summary>
+    public void ResetAirAttack() => m_AirAttackExhausted = false;
+
+    /// <summary>
+    /// Lock air attacks.
+    /// In a process between jump and land, air attack should only be performed once.
+    /// </summary>
+    public void ExhaustAirAttack() => m_AirAttackExhausted = true;
+    #endregion
+
     #region State Methods
     private void Awake()
     {
-        base.Init();
+        Init();
 
         m_Model = GetComponentInChildren<PlayerModel>();
         m_Model.Init(this);
@@ -65,6 +83,9 @@ public class PlayerController : CharacterControllerBase
                 break;
             case ECharacterState.Attack:
                 m_StateMachine?.ChangeState<PlayerStateAttack>(args);
+                break;
+            case ECharacterState.AirborneAttack:
+                m_StateMachine?.ChangeState<PlayerStateAirborneAttack>(args);
                 break;
             case ECharacterState.Defence:
                 m_StateMachine?.ChangeState<PlayerStateDefence>(args);

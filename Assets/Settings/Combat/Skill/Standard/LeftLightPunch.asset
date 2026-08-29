@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
-  m_Name: AIClawAttackRight
+  m_Name: LeftLightPunch
   m_EditorClassIdentifier: 
-  animatorState: RightClawAttack
-  crossFadeInTime: 0.05
+  animatorState: LeftLightPunch
+  crossFadeInTime: 0.15
   minInterruptNormalizedTime: 0.22
-  comboWindowStartNormalizedTime: 0.669
-  transitionNormalizedTime: 0.75
-  inputWindowDuration: 0.2
+  transitionNormalizedTime: 0.6
+  inputWindowDuration: 0.3
   minDistanceToTarget: 0.5
-  attackBox: RightHandAttackBox
+  attackBox: LeftHandAttackBox
   action: 1
   damage: 5
   hitStunTime: 0
   knockbackDistance: 0
+  airAttackFallGravityScale: 0.4
   skillReleaseData:
-    spawnPrefab: 
-    vfxTime: 0
-    audioClip: {fileID: 0}
+    spawnPrefab: VFX/Attack/PunchLeft
+    vfxTime: 0.18
+    audioClip: {fileID: 8300000, guid: 9fdbda0350403f841a355a606f656358, type: 3}
   skillHitData:
-    spawnPrefab: 
+    spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
-    hitStopTimeScale: 0
+    hitStopTimeScale: 0.18
     hitStopDuration: 0.06
   attackBoxIndex: 1
-  nextSkillIndex: -1
+  nextSkillIndex: 1

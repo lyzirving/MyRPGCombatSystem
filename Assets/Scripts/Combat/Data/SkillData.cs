@@ -44,6 +44,9 @@ public class SkillData : ScriptableObject
     public float hitStunTime = 0f;
     public float knockbackDistance = 0f;
 
+    [Tooltip("gravity ratio when falling：1 = normal gravity，< 1 decline speed when falling, maximum is 0")]
+    [Range(0f, 1f)] public float airAttackFallGravityScale = 0.4f;    
+
     [Header("Spawner Data")]
     [Tooltip("Data to be spawned when the skill is released")]
     public SkillReleaseData skillReleaseData;

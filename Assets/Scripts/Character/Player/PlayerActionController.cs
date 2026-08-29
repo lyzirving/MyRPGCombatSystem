@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -235,6 +236,64 @@ public class PlayerActionController : MonoBehaviour
             return;
         }
 
+        if (m_CharacterBehavior.stateMachine.currentState is PlayerStateAirborne)
+        {
+            var player = m_CharacterBehavior as PlayerController;
+            CombatDefine.EAttack airborneAttackType = inputType == CombatDefine.EAttack.LA
+                ? CombatDefine.EAttack.AirborneLA
+                : CombatDefine.EAttack.AirborneHA;
+
+            if (m_CharacterBehavior.stateMachine.currentState is not PlayerStateAirborneAttack)
+            {
+                // In a process between jump and land, air attack should only be performed once
+                if(player.airAttackExhausted)
+                    return;
+
+                // launch a new air attack combo
+                int airborneComboIndex = attackComponent.FindComboIndexByStartAction(airborneAttackType);
+                if (airborneComboIndex >= 0)
+                {
+                    attackComponent.SetComboIndex(airborneComboIndex);
+                    asc.TryActivateAbility<AirborneAttackAbility>();
+                }
+            }
+            else
+            {
+                var currentAbility = asc.GetActive<AirborneAttackAbility>();
+                if (currentAbility != null)
+                {
+                    // in the middle of a combo
+                    var attackState = m_CharacterBehavior.stateMachine.currentState as PlayerStateAirborneAttack;
+                    float curTime = attackState?.CurrentNormalizedTime ?? 0f;
+
+                    // check if we can advance to the next skill
+                    if (attackComponent.TryAdvanceCombo(airborneAttackType, curTime))
+                    {
+                        currentAbility.ReActivate(asc);
+                        return;
+                    }
+
+                    // In a process between jump and land, air attack should only be performed once including a combo
+                    if(!attackComponent.hasNextSkill)
+                    {                        
+                        player.ExhaustAirAttack(); 
+                        return;
+                    }
+
+                    if (!currentAbility.CanBeInterrupted(curTime) || 
+                            !attackComponent.isComboStart)
+                    {
+                        // if the current attack cannot be interrupted, we ignore the input.
+                        // if Combo window hasn't opened yet (e.g. delayed by HitStop).
+                        // Cache the input so it can be consumed when the window opens.
+                        currentAbility.CachePendingComboInput(airborneAttackType);
+                        return;
+                    }
+                }
+            }
+            return;
+        }
+
         var currentAttack = asc.GetActive<AttackAbility>();
         if (currentAttack != null)
         {            
@@ -249,17 +308,12 @@ public class PlayerActionController : MonoBehaviour
                 return;
             }
                         
-            if(!currentAttack.CanBeInterrupted(curTime))
+            if(!currentAttack.CanBeInterrupted(curTime) || 
+                    !attackComponent.isComboStart)
             {                
-                // if the current attack cannot be interrupted, we ignore the input
-                currentAttack.CachePendingComboInput(inputType);
-                return;
-            }
-
-            if (!attackComponent.isComboStart)
-            {
-                // Combo window hasn't opened yet (e.g. delayed by HitStop).
-                // Cache the input so it can be consumed when the window opens.                
+                // if the current attack cannot be interrupted, we ignore the input.
+                // if Combo window hasn't opened yet (e.g. delayed by HitStop).
+                // Cache the input so it can be consumed when the window opens.
                 currentAttack.CachePendingComboInput(inputType);
                 return;
             }

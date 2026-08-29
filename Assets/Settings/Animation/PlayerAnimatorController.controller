@@ -247,6 +247,33 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-7587787172131761961
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlaceHolder
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 5371035938323861651}
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &-7269325316679966660
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -336,6 +363,40 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-5413362394096038889
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5c1cacd804a97e4bb10c8e58eebd06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  events:
+  - type: 103
+    launchTime: 0.3
+    triggerTime: 0
+    animatorState: RightAirborneLightPunch
+  - type: 101
+    launchTime: 0.42
+    triggerTime: 0
+    animatorState: RightAirborneLightPunch
+  - type: 102
+    launchTime: 0.47
+    triggerTime: 0
+    animatorState: RightAirborneLightPunch
+  - type: 104
+    launchTime: 0.5
+    triggerTime: 0
+    animatorState: RightAirborneLightPunch
+  - type: 105
+    launchTime: 0.54
+    triggerTime: 0
+    animatorState: RightAirborneLightPunch
+  animatorState: RightAirborneLightPunch
 --- !u!1101 &-5404443835771596225
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -468,17 +529,25 @@ AnimatorStateMachine:
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: -94386268646247742}
-    m_Position: {x: 350, y: 240, z: 0}
+    m_Position: {x: 360, y: 390, z: 0}
+  - serializedVersion: 1
+    m_StateMachine: {fileID: 5510058123082477669}
+    m_Position: {x: 360, y: 240, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
   - first: {fileID: -94386268646247742}
     second:
     - {fileID: -5242928451319325262}
+    - {fileID: -407388000407890368}
+  - first: {fileID: 5510058123082477669}
+    second:
+    - {fileID: -3935755885336529020}
+    - {fileID: -847930938552034851}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 60, y: 70, z: 0}
   m_EntryPosition: {x: 60, y: 130, z: 0}
-  m_ExitPosition: {x: 60, y: 360, z: 0}
+  m_ExitPosition: {x: 60, y: 400, z: 0}
   m_ParentStateMachinePosition: {x: 300, y: 120, z: 0}
   m_DefaultState: {fileID: 4470823428438317107}
 --- !u!206 &-4250113454141231946
@@ -543,7 +612,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LightKickRight
+  m_Name: RightLightKick
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -564,6 +633,23 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1109 &-3935755885336529020
+AnimatorTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isAirborne
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 1
+  serializedVersion: 1
 --- !u!114 &-3532038820287770351
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -580,24 +666,24 @@ MonoBehaviour:
   - type: 103
     launchTime: 0.287
     triggerTime: 0
-    animatorState: HeavyPunchRight1
+    animatorState: RightHeavyPunch1
   - type: 101
     launchTime: 0.34
     triggerTime: 0
-    animatorState: HeavyPunchRight1
+    animatorState: RightHeavyPunch1
   - type: 102
     launchTime: 0.411
     triggerTime: 0
-    animatorState: HeavyPunchRight1
+    animatorState: RightHeavyPunch1
   - type: 104
     launchTime: 0.45
     triggerTime: 0
-    animatorState: HeavyPunchRight1
+    animatorState: RightHeavyPunch1
   - type: 105
     launchTime: 0.5
     triggerTime: 0
-    animatorState: HeavyPunchRight1
-  animatorState: HeavyPunchRight1
+    animatorState: RightHeavyPunch1
+  animatorState: RightHeavyPunch1
 --- !u!1101 &-2604416172972099675
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -682,24 +768,24 @@ MonoBehaviour:
   - type: 103
     launchTime: 0.38
     triggerTime: 0
-    animatorState: HeavyPunchRight0
+    animatorState: RightHeavyPunch0
   - type: 101
     launchTime: 0.43
     triggerTime: 0
-    animatorState: HeavyPunchRight0
+    animatorState: RightHeavyPunch0
   - type: 102
     launchTime: 0.5
     triggerTime: 0
-    animatorState: HeavyPunchRight0
+    animatorState: RightHeavyPunch0
   - type: 104
     launchTime: 0.52
     triggerTime: 0
-    animatorState: HeavyPunchRight0
+    animatorState: RightHeavyPunch0
   - type: 105
     launchTime: 0.58
     triggerTime: 0
-    animatorState: HeavyPunchRight0
-  animatorState: HeavyPunchRight0
+    animatorState: RightHeavyPunch0
+  animatorState: RightHeavyPunch0
 --- !u!1109 &-1844050976305117755
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -717,6 +803,31 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
+--- !u!1101 &-1161242157739440957
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isAirborneCombat
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 1
+  serializedVersion: 3
+  m_TransitionDuration: 0.15
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &-1077229990870633022
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -742,6 +853,23 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1109 &-847930938552034851
+AnimatorTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isAirborneCombat
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 4470823428438317107}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 1
 --- !u!1102 &-690545652595820566
 AnimatorState:
   serializedVersion: 6
@@ -834,6 +962,23 @@ BlendTree:
   m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 0
+--- !u!1109 &-407388000407890368
+AnimatorTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: isAirborneCombat
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -7587787172131761961}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 1
 --- !u!1101 &-378692502479584938
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -859,6 +1004,40 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-274584349745211197
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5c1cacd804a97e4bb10c8e58eebd06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  events:
+  - type: 103
+    launchTime: 0.18
+    triggerTime: 0
+    animatorState: LeftAirborneLightPunch
+  - type: 101
+    launchTime: 0.3
+    triggerTime: 0
+    animatorState: LeftAirborneLightPunch
+  - type: 102
+    launchTime: 0.45
+    triggerTime: 0
+    animatorState: LeftAirborneLightPunch
+  - type: 105
+    launchTime: 0.46
+    triggerTime: 0
+    animatorState: LeftAirborneLightPunch
+  - type: 104
+    launchTime: 0.51
+    triggerTime: 0
+    animatorState: LeftAirborneLightPunch
+  animatorState: LeftAirborneLightPunch
 --- !u!1107 &-94386268646247742
 AnimatorStateMachine:
   serializedVersion: 6
@@ -939,6 +1118,12 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: isCombat
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: isAirborneCombat
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -1204,13 +1389,13 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LightPunchLeft
+  m_Name: LeftLightPunch
   m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7657774577851757905}
   m_StateMachineBehaviours:
-  - {fileID: 4880193468257720534}
+  - {fileID: 6895482420563239525}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1477,6 +1662,34 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &1930673102241506761
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LeftAirborneLightPunch
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 4319152601445253396}
+  m_StateMachineBehaviours:
+  - {fileID: -274584349745211197}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 5254591694165116878, guid: 7394edeae755be44c80f8b4d35bfceb4, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!206 &2355742002072280285
 BlendTree:
   m_ObjectHideFlags: 1
@@ -1526,7 +1739,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HeavyPunchRight0
+  m_Name: RightHeavyPunch0
   m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions:
@@ -1563,24 +1776,24 @@ MonoBehaviour:
   - type: 103
     launchTime: 0.21
     triggerTime: 0
-    animatorState: LightKickRight
+    animatorState: RightLightKick
   - type: 101
     launchTime: 0.227
     triggerTime: 0
-    animatorState: LightKickRight
+    animatorState: RightLightKick
   - type: 102
     launchTime: 0.37
     triggerTime: 0
-    animatorState: LightKickRight
+    animatorState: RightLightKick
   - type: 104
     launchTime: 0.408
     triggerTime: 0
-    animatorState: LightKickRight
+    animatorState: RightLightKick
   - type: 105
     launchTime: 0.47
     triggerTime: 0
-    animatorState: LightKickRight
-  animatorState: LightKickRight
+    animatorState: RightLightKick
+  animatorState: RightLightKick
 --- !u!1109 &3492092564899740644
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -1648,24 +1861,49 @@ MonoBehaviour:
   - type: 103
     launchTime: 0.16
     triggerTime: 0
-    animatorState: LightPunchRight
+    animatorState: RightLightPunch
   - type: 101
     launchTime: 0.195
     triggerTime: 0
-    animatorState: LightPunchRight
+    animatorState: RightLightPunch
   - type: 102
     launchTime: 0.25
     triggerTime: 0
-    animatorState: LightPunchRight
+    animatorState: RightLightPunch
   - type: 104
     launchTime: 0.266
     triggerTime: 0
-    animatorState: LightPunchRight
+    animatorState: RightLightPunch
   - type: 105
     launchTime: 0.33
     triggerTime: 0
-    animatorState: LightPunchRight
-  animatorState: LightPunchRight
+    animatorState: RightLightPunch
+  animatorState: RightLightPunch
+--- !u!1101 &4319152601445253396
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isAirborneCombat
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 1
+  serializedVersion: 3
+  m_TransitionDuration: 0.15
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1102 &4470823428438317107
 AnimatorState:
   serializedVersion: 6
@@ -1679,6 +1917,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: -7954497067469051178}
   - {fileID: 6822076337216830865}
+  - {fileID: 8211677248357313640}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1694,40 +1933,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &4880193468257720534
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5c1cacd804a97e4bb10c8e58eebd06f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  events:
-  - type: 103
-    launchTime: 0.16
-    triggerTime: 0
-    animatorState: LightPunchLeft
-  - type: 101
-    launchTime: 0.2
-    triggerTime: 0
-    animatorState: LightPunchLeft
-  - type: 102
-    launchTime: 0.25
-    triggerTime: 0
-    animatorState: LightPunchLeft
-  - type: 104
-    launchTime: 0.266
-    triggerTime: 0
-    animatorState: LightPunchLeft
-  - type: 105
-    launchTime: 0.33
-    triggerTime: 0
-    animatorState: LightPunchLeft
-  animatorState: LightPunchLeft
 --- !u!1102 &4981209323160797304
 AnimatorState:
   serializedVersion: 6
@@ -1735,7 +1940,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HeavyPunchRight1
+  m_Name: RightHeavyPunch1
   m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions:
@@ -1837,6 +2042,31 @@ AnimatorState:
   m_MirrorParameter: isRightFootstep
   m_CycleOffsetParameter: 
   m_TimeParameter: doubleJumpRatio
+--- !u!1101 &5371035938323861651
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: isAirborneCombat
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 1
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1102 &5440692031510044209
 AnimatorState:
   serializedVersion: 6
@@ -1867,6 +2097,34 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1107 &5510058123082477669
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AirborneCombat
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: -7587787172131761961}
+    m_Position: {x: 310, y: 140, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 1930673102241506761}
+    m_Position: {x: -20, y: 180, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 8856679546320448248}
+    m_Position: {x: -20, y: 250, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 330, y: -50, z: 0}
+  m_EntryPosition: {x: 330, y: 30, z: 0}
+  m_ExitPosition: {x: 330, y: 260, z: 0}
+  m_ParentStateMachinePosition: {x: 320, y: -110, z: 0}
+  m_DefaultState: {fileID: -7587787172131761961}
 --- !u!1101 &5559169794771947556
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2099,6 +2357,40 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &6895482420563239525
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5c1cacd804a97e4bb10c8e58eebd06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  events:
+  - type: 101
+    launchTime: 0.2
+    triggerTime: 0
+    animatorState: LeftLightPunch
+  - type: 102
+    launchTime: 0.25
+    triggerTime: 0
+    animatorState: LeftLightPunch
+  - type: 104
+    launchTime: 0.266
+    triggerTime: 0
+    animatorState: LeftLightPunch
+  - type: 103
+    launchTime: 0.282
+    triggerTime: 0
+    animatorState: LeftLightPunch
+  - type: 105
+    launchTime: 0.33
+    triggerTime: 0
+    animatorState: LeftLightPunch
+  animatorState: LeftLightPunch
 --- !u!1101 &7074423780121590726
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2159,7 +2451,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LightPunchRight
+  m_Name: RightLightPunch
   m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
@@ -2275,6 +2567,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &8211677248357313640
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: isAirborneCombat
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 5510058123082477669}
+  m_DstState: {fileID: 0}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &8319672175118903876
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2300,6 +2617,34 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &8856679546320448248
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RightAirborneLightPunch
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -1161242157739440957}
+  m_StateMachineBehaviours:
+  - {fileID: -5413362394096038889}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -285785135056176150, guid: 9889450f6d80eca4d958439bc80b442d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1107 &8919230940468061372
 AnimatorStateMachine:
   serializedVersion: 6
@@ -2374,7 +2719,7 @@ AnimatorStateMachine:
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 5601012990403560395}
-    m_Position: {x: -70, y: 140, z: 0}
+    m_Position: {x: -90, y: 140, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions:
   - {fileID: 6687420175341860164}

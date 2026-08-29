@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
-  m_Name: LightKickRight
+  m_Name: LeftLightKick
   m_EditorClassIdentifier: 
-  animatorState: LightKickRight
+  animatorState: LeftLightKick
   crossFadeInTime: 0.15
   minInterruptNormalizedTime: 0.22
-  comboWindowStartNormalizedTime: 0.47
   transitionNormalizedTime: 0.58
   inputWindowDuration: 0.3
   minDistanceToTarget: 0.5
-  attackBox: RightLegAttackBox
+  attackBox: LeftFootAttackBox
   action: 1
   damage: 10
   hitStunTime: 0.3
   knockbackDistance: 0.3
+  airAttackFallGravityScale: 0.4
   skillReleaseData:
-    spawnPrefab: VFX/Attack/VFX_KickRight
-    vfxTime: 0.18
+    spawnPrefab: 
+    vfxTime: 0
     audioClip: {fileID: 8300000, guid: 48710c9d66597b4408f79bd450d96c22, type: 3}
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
     hitStopTimeScale: 0.18
     hitStopDuration: 0.06
-  attackBoxIndex: 0
+  attackBoxIndex: -1
   nextSkillIndex: -1
