@@ -30,6 +30,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78967bb5a5f91194d9e331678b143ee5
+    m_Address: VFX/Attack/LeftAirborneLightPunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 903b433ba2c26d949be4bac54e5fc89f
+    m_Address: VFX/Attack/RightAirborneLightPunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 91d57adbe8d31ab4787575db24d0d039
     m_Address: VFX/Attack/PunchRight
     m_ReadOnly: 0

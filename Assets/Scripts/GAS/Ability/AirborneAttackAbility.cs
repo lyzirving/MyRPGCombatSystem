@@ -60,7 +60,7 @@ public class AirborneAttackAbility : AttackAbility
             m_Character.ChangeState(ECharacterState.Idle);
             return;
         }
-
-        m_Character.ChangeState(ECharacterState.Falling);
+        var step = (m_Character.currentState as PlayerStateAirborneAttack)?.CurrentFootstep ?? EFootstep.None;
+        m_Character.ChangeState(ECharacterState.Falling, new ChangeStateArgs{ footStep = step});
     }
 }

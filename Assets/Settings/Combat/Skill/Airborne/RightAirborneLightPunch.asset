@@ -25,7 +25,7 @@ MonoBehaviour:
   knockbackDistance: 0
   airAttackFallGravityScale: 0.4
   skillReleaseData:
-    spawnPrefab: 
+    spawnPrefab: VFX/Attack/RightAirborneLightPunch
     vfxTime: 0.18
     audioClip: {fileID: 8300000, guid: 9fdbda0350403f841a355a606f656358, type: 3}
   skillHitData:

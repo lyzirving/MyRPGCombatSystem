@@ -4,6 +4,15 @@ using UnityEngine;
 public class PlayerStateAirborneAttack : PlayerStateAirborneCombat
 {
     private float m_NormalizedTime = 0;
+    private float m_Footstep = 0f;
+
+    public virtual EFootstep CurrentFootstep
+    {
+        get 
+        {
+            return Mathf.Approximately(m_Footstep, 0f) ? EFootstep.None : (m_Footstep > 0f ? EFootstep.LeftFootstep : EFootstep.RightFootstep);
+        }
+    }
 
     private AirborneAttackAbility CurrentAttack => m_Player.abilitySystemComp.GetActive<AirborneAttackAbility>();
 
@@ -17,15 +26,15 @@ public class PlayerStateAirborneAttack : PlayerStateAirborneCombat
         // Soft-lock snap: instantly face toward soft-lock target before attack (max 30°)
         SnapToSoftLockTarget();
 
-        m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);        
+        m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);
 
         var ability = CurrentAttack;
-        if(ability != null)
+        if (ability != null)
         {
             AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AttackVfxBegin, ability.HandleAttackVfxBegin);
             AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AttackVfxEnd, ability.HandleAttackVfxEnd);
             AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AttackStart, ability.HandleAttackBegin);
-            AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AttackEnd, ability.HandleAttackEnd); 
+            AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AttackEnd, ability.HandleAttackEnd);
             AnimationEventReceiver.instance.RegisterAction(m_Player.model.animator, AnimationEventType.AttackComboWindowOpened, ability.HandleAttackComboWindowOpened);
         }
         else
@@ -35,14 +44,14 @@ public class PlayerStateAirborneAttack : PlayerStateAirborneCombat
     }
 
     public override void ReEnter(ChangeStateArgs args)
-    {        
+    {
         m_Player.ResetAirAttack();
         m_Player.model.StartAnimation(m_Player.attackComponent.skill.animatorState, m_Player.attackComponent.skill.crossFadeInTime);
         m_NormalizedTime = 0f;
     }
 
     public override bool Exit(StateBase newState)
-    {        
+    {
         m_Player.attackComponent.EndCombo();
 
         var ability = CurrentAttack;
@@ -65,10 +74,11 @@ public class PlayerStateAirborneAttack : PlayerStateAirborneCombat
 
     public override void Update()
     {
-        if(!IsExpired())
+        if (!IsExpired())
         {
             m_Player.model.animator.GetTargetAnimationTime(m_Player.attackComponent.skill.animatorState, AnimationConsts.BASE_LAYER, out m_NormalizedTime);
-        }        
+            SampleFootstep();
+        }
     }
 
     public override void FixedUpdate()
@@ -103,5 +113,39 @@ public class PlayerStateAirborneAttack : PlayerStateAirborneCombat
     {
         m_Player.OnFootStep(EFootstep.None);
         CurrentAttack.EndAbility();
+    }
+
+    /// <summary>
+    /// Sample the "footstep" curve from the current air-attack clip.
+    /// The curve is bound to PlayerModel.footstep and driven automatically by the Animator,
+    /// so reading the field at this moment is the sample value.
+    /// </summary>
+    private void SampleFootstep()
+    {
+        // Default: reset before sampling so stale values never leak into m_Footstep.
+        m_Footstep = 0f;
+
+        var animator = m_Player.model.animator;
+        if (animator == null)
+            return;
+
+        int layer = AnimationConsts.BASE_LAYER;
+
+        // Match GetTargetAnimationTime's behaviour: during a transition, sample the *next* clip,
+        // otherwise sample the current clip.
+        AnimatorClipInfo[] clipInfos = animator.IsInTransition(layer)
+            ? animator.GetNextAnimatorClipInfo(layer)
+            : animator.GetCurrentAnimatorClipInfo(layer);
+
+        if (clipInfos == null || clipInfos.Length == 0)
+            return;
+
+        AnimationClip clip = clipInfos[0].clip;
+        if (clip == null)
+            return;
+
+        // The curve drives PlayerModel.footstep automatically; just read the current value.
+        m_Footstep = (m_Player.model as PlayerModel)?.footstep ?? 0;
+        //Debug.Log($"foot step {m_Footstep}");
     }
 }

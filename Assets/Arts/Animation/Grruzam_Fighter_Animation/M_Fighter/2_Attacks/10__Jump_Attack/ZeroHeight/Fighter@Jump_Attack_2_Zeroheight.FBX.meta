@@ -1171,7 +1171,50 @@ ModelImporter:
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
+      curves:
+      - name: footstep
+        curve:
+          serializedVersion: 2
+          curve:
+          - serializedVersion: 3
+            time: 0
+            value: -1
+            inSlope: 0
+            outSlope: -0.12986608
+            tangentMode: 1
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.21965505
+          - serializedVersion: 3
+            time: 0.78162354
+            value: -1
+            inSlope: 0.046049878
+            outSlope: 14.064258
+            tangentMode: 1
+            weightedMode: 0
+            inWeight: 0.20774217
+            outWeight: 1
+          - serializedVersion: 3
+            time: 0.8
+            value: 1
+            inSlope: 17.386137
+            outSlope: -0.09216428
+            tangentMode: 1
+            weightedMode: 0
+            inWeight: 0.073568076
+            outWeight: 0.49035075
+          - serializedVersion: 3
+            time: 1.0021057
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          preInfinity: 3
+          postInfinity: 3
+          rotationOrder: 4
       events: []
       transformMask:
       - path: 
