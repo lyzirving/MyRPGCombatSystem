@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,10 +11,10 @@ public class PlayerActionController : MonoBehaviour
     private bool m_ShouldPlayerRun = true;
     private bool m_IsDefenceHold = false;
 
-    public Vector2 playerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
-    public bool shouldRun => m_ShouldPlayerRun;
-    public bool isMoving => playerMovement != Vector2.zero;
-    public bool isDefenceHolding => m_IsDefenceHold;
+    public Vector2 PlayerMovement => InputManager.instance.playerActions.Move.ReadValue<Vector2>();
+    public bool ShouldRun => m_ShouldPlayerRun;
+    public bool IsMoving => PlayerMovement != Vector2.zero;
+    public bool IsDefenceHolding => m_IsDefenceHold;
     #endregion
 
     #region Dodge / Sprint
@@ -26,7 +25,7 @@ public class PlayerActionController : MonoBehaviour
     /// True when Dodge key is held past the threshold while the player is moving,
     /// signaling that the character should transition into Sprint.
     /// </summary>
-    public bool shouldSprint => isMoving && m_DodgeHoldStartTime > 0f
+    public bool ShouldSprint => IsMoving && m_DodgeHoldStartTime > 0f
         && (Time.time - m_DodgeHoldStartTime) >= DODGE_HOLD_THRESHOLD;
     #endregion
 
@@ -34,7 +33,7 @@ public class PlayerActionController : MonoBehaviour
     [Header("Buffer Settings")]
     [SerializeField] private int maxCmdBufferSize = 5;
     [SerializeField] private float bufferWindow = 0.3f;
-    private MaxHeap<BufferedCommand> m_BufferedCommand = new MaxHeap<BufferedCommand>();
+    private MaxHeap<BufferedCommand> m_BufferedCommand = new();
     #endregion
 
     #region Camera Control
@@ -52,10 +51,10 @@ public class PlayerActionController : MonoBehaviour
     private float m_CinemachineTargetPitch = 0f;
     private float m_CinemachineTargetYaw = 0f;
 
-    public Vector2 cameraMovement => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
-    public Quaternion cameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
-    public Vector3 cameraFwd => Camera.main.transform.forward;
-    public bool isCameraMoving => cameraMovement != Vector2.zero;
+    public Vector2 CameraMovement => InputManager.instance.playerActions.CameraMove.ReadValue<Vector2>();
+    public Quaternion CameraRotation => Quaternion.Euler(new Vector3(0f, Camera.main.transform.eulerAngles.y, 0f));
+    public Vector3 CameraFwd => Camera.main.transform.forward;
+    public bool IsCameraMoving => CameraMovement != Vector2.zero;
     #endregion
 
     #region State Methods
@@ -113,7 +112,7 @@ public class PlayerActionController : MonoBehaviour
         if (m_FollowTarget == null || !InputManager.instance.isEnabled)
             return;
 
-        var input = cameraMovement;
+        var input = CameraMovement;
         m_CinemachineTargetPitch = UpdateRotation(m_CinemachineTargetPitch, input.y, m_BottomClamp, m_TopClamp, true, m_VerticalRotationSpeed);
         m_CinemachineTargetYaw = UpdateRotation(m_CinemachineTargetYaw, input.x, float.MinValue, float.MaxValue, false, m_HorizontalRotationSpeed);
         ApplyRotations(m_CinemachineTargetPitch, m_CinemachineTargetYaw);
@@ -131,7 +130,7 @@ public class PlayerActionController : MonoBehaviour
     public Vector3 GetInputDirection()
     {
         Vector3 move = Vector3.zero;
-        Vector2 input = playerMovement;
+        Vector2 input = PlayerMovement;
         move.x = input.x;
         move.z = input.y;
         move = Vector3.ClampMagnitude(move, 1f);
@@ -153,6 +152,9 @@ public class PlayerActionController : MonoBehaviour
     #region Buffered Command Methods
     private void EnqueueBufferedCommand(ECharacterAction action)
     {
+        if(m_IsDefenceHold)
+            return;
+
         while (m_BufferedCommand.count >= maxCmdBufferSize)
         {
             m_BufferedCommand.Dequeue();
@@ -347,7 +349,7 @@ public class PlayerActionController : MonoBehaviour
     {
         // Read the right-stick (camera) direction at the time of button press.
         // If the stick is idle, SwitchTarget falls back to sequential cycling.
-        Vector2 stickDir = cameraMovement;
+        Vector2 stickDir = CameraMovement;
         m_LockTargetManager?.SwitchTarget(stickDir);
     }
 
@@ -408,7 +410,7 @@ public class PlayerActionController : MonoBehaviour
     /// </summary>
     private void CheckLocomotionInput()
     {
-        if (!isMoving)
+        if (!IsMoving)
             return;
 
         var asc = m_CharacterBehavior.abilitySystemComp;

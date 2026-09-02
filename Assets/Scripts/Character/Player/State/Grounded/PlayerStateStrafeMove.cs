@@ -16,13 +16,13 @@ public class PlayerStateStrafeMove : PlayerStateMove
 
     public override void FixedUpdate()
     {
-        if (!m_Player.action.isMoving || m_Player.lockTarget == null)
+        if (!m_Player.action.IsMoving || m_Player.lockTarget == null)
             return;
 
         m_Player.attrs.speedModify = m_Player.config.move.runModify;
-        m_Player.RotateToTargetDir(m_Player.action.cameraFwd.NormalizeIgnoreY(), m_Player.config.move.rotateSpeed);        
+        m_Player.RotateToTargetDir(m_Player.action.CameraFwd.NormalizeIgnoreY(), m_Player.config.move.rotateSpeed);        
 
-        Vector2 input = m_Player.action.playerMovement;
+        Vector2 input = m_Player.action.PlayerMovement;
         Vector3 moveDir = m_Player.transform.right * input.x + m_Player.transform.forward * input.y;
         moveDir.y = 0;
         moveDir.Normalize();
@@ -31,7 +31,7 @@ public class PlayerStateStrafeMove : PlayerStateMove
 
     protected override void UpdateAnimationValue()
     {
-        Vector2 input = m_Player.action.playerMovement;
+        Vector2 input = m_Player.action.PlayerMovement;
         m_Player.model.SetAnimationFloat(AnimationConsts.speed, input.y, 0.1f, Time.deltaTime);
         m_Player.model.SetAnimationFloat(AnimationConsts.angular, input.x, 0.1f, Time.deltaTime);
     }

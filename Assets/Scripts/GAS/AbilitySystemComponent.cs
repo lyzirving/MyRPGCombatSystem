@@ -19,6 +19,7 @@ public class AbilitySystemComponent : MonoBehaviour
     private Dictionary<int, ActiveGameplayEffect> m_ActiveEffects = new Dictionary<int, ActiveGameplayEffect>();
     private Dictionary<int, GameplayAbility> m_ActiveAbilities = new Dictionary<int, GameplayAbility>();
     private List<GameplayAbility> m_AbilitiesToBeRemove = new List<GameplayAbility>();
+    private List<GameplayAbility> m_UpdateSnapshot = new List<GameplayAbility>();
 
     private GameplayAttributeSet m_AttributeSet = new GameplayAttributeSet();
     private GameplayTagContainer m_ActiveTags = new GameplayTagContainer();
@@ -171,7 +172,14 @@ public class AbilitySystemComponent : MonoBehaviour
     private void UpdateAbilities()
     {
         m_AbilitiesToBeRemove.Clear();
-        foreach (var ability in m_ActiveAbilities.Values)
+
+        // Snapshot the values first: an ability's OnUpdate may activate another ability
+        // (which mutates m_ActiveAbilities), so enumerating the live collection would throw
+        // "Collection was modified".
+        m_UpdateSnapshot.Clear();
+        m_UpdateSnapshot.AddRange(m_ActiveAbilities.Values);
+
+        foreach (var ability in m_UpdateSnapshot)
         {
             if (ability.isActive)
                 ability.OnUpdate(Time.deltaTime);

@@ -57,7 +57,7 @@ public class AirborneAttackAbility : AttackAbility
     {
         if(m_Character.sensor.isGrounded)
         {
-            m_Character.ChangeState(ECharacterState.Idle);
+            m_Character.ChangeToLocomotionState();
             return;
         }
         var step = (m_Character.currentState as PlayerStateAirborneAttack)?.CurrentFootstep ?? EFootstep.None;

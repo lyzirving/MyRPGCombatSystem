@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AttackBox : MonoBehaviour
 {

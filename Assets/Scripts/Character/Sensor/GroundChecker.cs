@@ -1,28 +1,26 @@
 using UnityEngine;
+using System;
 
+/// <summary>
+/// Ground detection driven by physics collision contacts instead of raycasts.
+/// A contact whose normal faces up (within a slope limit) means the character is
+/// standing on something - ground, a cube, an AI's head, a moving platform, etc.
+/// This removes the layer-based "Walkable" assumption, so any collider the character
+/// physically collides with can be stood on.
+/// </summary>
+[Serializable]
 public class GroundChecker
 {
     public delegate void TouchGroundNotify(Collider collider);
     public delegate void ExitGroundNotify();
 
-    /// <summary>
-    /// Probe offsets (normalized) for the ground check, scaled by radius*0.6 around the
-    /// capsule bottom. Center + 4 cardinal points cover edge landings without a sphere sweep.
-    /// </summary>
-    private static readonly Vector3[] GROUND_PROBE_DIRS =
-    {
-        Vector3.zero,
-        Vector3.forward,
-        Vector3.back,
-        Vector3.left,
-        Vector3.right
-    };
-
-    private CapsuleCollider m_CapsuleCollider;
-    private Transform m_Transform;
+    public float GROUND_SLOPE_LIMIT = 45f;
 
     private bool m_IsGrounded = false;
-    private bool m_FirstEnter = true;
+
+    // Contact collected during the current physics step.
+    private bool m_GroundedThisStep = false;
+    private Collider m_GroundCollider = null;
 
     private TouchGroundNotify m_TouchGroundNotify;
     private ExitGroundNotify m_ExitGroundNotify;
@@ -41,74 +39,42 @@ public class GroundChecker
 
     public bool isGrounded => m_IsGrounded;
 
-    public GroundChecker(Transform transform, CapsuleCollider collider)
-    { 
-        m_Transform = transform;
-        m_CapsuleCollider = collider;
-        m_FirstEnter = true;
-        m_IsGrounded = false;
-    }
-
-    public bool CheckTouchGround(LayerMask layerMask)
+    /// <summary>
+    /// Call once per physics frame (in FixedUpdate, before the next physics step):
+    /// resolves the grounded state from the previous step's contacts, fires onTouch/onExit,
+    /// then resets the per-step flag.
+    /// </summary>
+    public void Tick()
     {
-        bool touchGround = SphereCheckGround(layerMask, out RaycastHit hit);
-        if (m_IsGrounded != touchGround || m_FirstEnter)
+        if (m_IsGrounded != m_GroundedThisStep)
         {
-            m_FirstEnter = false;
-            m_IsGrounded = touchGround;
+            m_IsGrounded = m_GroundedThisStep;
 
             if (m_IsGrounded)
-                m_TouchGroundNotify?.Invoke(hit.collider);
+                m_TouchGroundNotify?.Invoke(m_GroundCollider);
             else
                 m_ExitGroundNotify?.Invoke();
         }
-        return touchGround;
+
+        m_GroundedThisStep = false;
+        m_GroundCollider = null;
     }
 
     /// <summary>
-    /// SphereCheckGround using Character's attribute
+    /// Feed collision contacts (from CharacterSensor.OnCollisionStay). Any contact whose
+    /// normal faces up marks the character as grounded this step.
     /// </summary>
-    /// <param name="layerMask"></param>
-    /// <param name="raycastHit"></param>
-    /// <param name="skinWidth"></param>
-    /// <param name="groundCheckOffset"></param>
-    /// <returns></returns>
-    public bool SphereCheckGround(LayerMask layerMask, out RaycastHit raycastHit, float skinWidth = 0.1f, float groundCheckOffset = 0.5f)
+    public void OnCollisionStay(Collision collision)
     {
-        return SphereCheckGround(m_Transform, m_CapsuleCollider.radius, layerMask, out raycastHit, skinWidth, groundCheckOffset);
-    }
-
-    /// <summary>
-    /// Check whether the character touches the ground
-    /// </summary>
-    /// <param name="transform"></param>
-    /// <param name="radius"></param>
-    /// <param name="layerMask"></param>
-    /// <param name="hit"></param>
-    /// <param name="skinWidth"></param>
-    /// <param name="groundCheckOffset"></param>
-    /// <returns></returns>
-    public bool SphereCheckGround(Transform transform, float radius, LayerMask layerMask, out RaycastHit hit, float skinWidth = 0f, float groundCheckOffset = 0f)
-    {
-        const float groundSlopeLimit = 45f;
-        float checkDistance = Mathf.Abs(groundCheckOffset - radius) + 2f * skinWidth;
-        float probeRadius = radius * 0.6f;
-
-        for (int i = 0; i < GROUND_PROBE_DIRS.Length; i++)
+        for (int i = 0; i < collision.contactCount; i++)
         {
-            // Thin rays cast straight down from the capsule bottom. They only detect what is
-            // directly below the capsule, so a side obstacle's top face can never be mistaken
-            // for the ground while the character is pressed against it (a sphere sweep would
-            // hit that top face and wrongly report "grounded").
-            Vector3 origin = transform.position + GROUND_PROBE_DIRS[i] * probeRadius + Vector3.up * groundCheckOffset;
-            if (Physics.Raycast(origin, Vector3.down, out hit, checkDistance, layerMask))
+            ContactPoint contact = collision.GetContact(i);
+            if (Vector3.Angle(Vector3.up, contact.normal) < GROUND_SLOPE_LIMIT)
             {
-                if (Vector3.Angle(transform.up, hit.normal) < groundSlopeLimit)
-                    return true;
+                m_GroundedThisStep = true;
+                m_GroundCollider = collision.collider;
+                return;
             }
         }
-
-        hit = default;
-        return false;
     }
 }

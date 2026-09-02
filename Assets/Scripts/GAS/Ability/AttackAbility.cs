@@ -34,7 +34,7 @@ public class AttackAbility : GameplayAbility
     {
         m_PendingComboInput = CombatDefine.EAttack.None;
         m_DeferredReActivate = false;
-        TransitionToLocomotion();
+        m_Character.ChangeToLocomotionState();
         DowngradeLockAfterAttack();
     }
 
@@ -42,7 +42,7 @@ public class AttackAbility : GameplayAbility
     {
         m_PendingComboInput = CombatDefine.EAttack.None;
         m_DeferredReActivate = false;
-        TransitionToLocomotion();
+        m_Character.ChangeToLocomotionState();
         DowngradeLockAfterAttack();
     }    
 
@@ -87,26 +87,6 @@ public class AttackAbility : GameplayAbility
             ? m_Character.GetComponent<LockTargetManager>()
             : null;
         lockManager?.DowngradeToSoftLock();
-    }
-
-    /// <summary>
-    /// When the player is still holding movement input after attack ends,
-    /// skip Idle and go directly to Move (or Sprint) to avoid animation blending
-    /// through Idle, which causes visible sliding.
-    /// LocomotionAbility will pick up the correct mode (Sprint/StrafeMove) 
-    /// on the next OnAbilityUpdate.
-    /// </summary>
-    private void TransitionToLocomotion()
-    {
-        var player = m_Character as PlayerController;
-        if (player != null && player.action.isMoving)
-        {
-            m_Character.ChangeState(ECharacterState.Move);
-        }
-        else
-        {
-            m_Character.ChangeState(ECharacterState.Idle);
-        }
     }
 
     #region  Pending input

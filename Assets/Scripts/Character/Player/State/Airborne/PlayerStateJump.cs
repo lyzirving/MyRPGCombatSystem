@@ -38,14 +38,14 @@ public class PlayerStateJump : PlayerStateAirborne
         if (m_JumpFromMove)
         {
             m_FeetTween = args.footStep == EFootstep.LeftFootstep ? 1f : -1f;
-            m_FeetTween *= m_Player.action.shouldRun ? 3f : 1f;
+            m_FeetTween *= m_Player.action.ShouldRun ? 3f : 1f;
         }
         else
         {
             m_FeetTween = (float)m_SysRandom.NextDouble() * 2f - 1f;
         }
 
-        m_JumpStartRatio = (m_JumpFromMove && m_Player.action.shouldRun) ? POWER_JUMP_UP_RATIO : NORMAL_JUMP_UP_RATIO;        
+        m_JumpStartRatio = (m_JumpFromMove && m_Player.action.ShouldRun) ? POWER_JUMP_UP_RATIO : NORMAL_JUMP_UP_RATIO;        
         m_Player.model.SetAnimationFloat(AnimationConsts.jumpRatio, m_JumpStartRatio);
         m_Player.model.SetAnimationFloat(AnimationConsts.feetTween, m_FeetTween);
     }

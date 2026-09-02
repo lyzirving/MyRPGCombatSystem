@@ -45,7 +45,7 @@ public class DodgeAbility : GameplayAbility
             return;
         }
 
-        MakeDodgeAction(player, player.action.playerMovement);
+        MakeDodgeAction(player, player.action.PlayerMovement);
         m_Character.ChangeState(ECharacterState.Dodge);
 
         OnDodgeFeedbackEnter(player);

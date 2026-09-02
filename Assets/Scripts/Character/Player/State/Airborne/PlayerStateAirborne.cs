@@ -73,7 +73,7 @@ public class PlayerStateAirborne : PlayerStateBase
         // Without input, keep current momentum as the target (preserve forward drift, no deceleration)
         Vector3 targetVelocity = m_AirHorizontalVelocity;
 
-        if (m_Player.action.isMoving)
+        if (m_Player.action.IsMoving)
         {
             Vector3 targetDir = m_Player.GetTargetDirection();
 
@@ -97,7 +97,7 @@ public class PlayerStateAirborne : PlayerStateBase
                 if (!m_Player.model.GetAnimationBool(AnimationConsts.locked))
                     m_Player.RotateToTargetDir(targetDir, m_Player.config.jump.airRotateSpeed);
             
-                float airSpeed = (m_Player.action.shouldRun ? m_Player.runSpeedScaler : m_Player.walkSpeedScaler) * m_Player.config.jump.airControlFactor;
+                float airSpeed = (m_Player.action.ShouldRun ? m_Player.runSpeedScaler : m_Player.walkSpeedScaler) * m_Player.config.jump.airControlFactor;
                 targetVelocity = targetDir * airSpeed;
             }
         }
@@ -139,7 +139,9 @@ public class PlayerStateAirborne : PlayerStateBase
         float capsuleBottomY = capsule.bounds.min.y;
         for (int i = 0; i < overlaps.Length; i++)
         {
-            Vector3 closest = overlaps[i].ClosestPoint(center);
+            // Use bounds.ClosestPoint instead of Collider.ClosestPoint: the latter throws on
+            // non-convex MeshColliders (e.g. the ground mesh), while bounds works on any collider.
+            Vector3 closest = overlaps[i].bounds.ClosestPoint(center);
             // Exclude only the floor directly under the feet: a contact point below the capsule
             // bottom means the overlap is purely the ground. Anything at capsule level or above
             // (walls, obstacle edges) blocks movement.

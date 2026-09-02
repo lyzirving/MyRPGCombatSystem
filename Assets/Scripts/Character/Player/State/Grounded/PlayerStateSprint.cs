@@ -37,7 +37,7 @@ public class PlayerStateSprint : PlayerStateMove
 
     public override void FixedUpdate()
     {
-        if (!m_Player.action.isMoving)
+        if (!m_Player.action.IsMoving)
             return;
             
         // Rotate toward sprint direction
@@ -55,7 +55,7 @@ public class PlayerStateSprint : PlayerStateMove
     protected override void UpdateAnimationValue()
     {
         // Continuously update sprint direction based on input
-        if (m_Player.action.isMoving)
+        if (m_Player.action.IsMoving)
         {
             m_SprintDirection = m_Player.GetTargetDirection();
         }

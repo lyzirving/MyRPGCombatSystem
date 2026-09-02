@@ -12,7 +12,7 @@ public class LocomotionAbility : GameplayAbility
     /// <summary>
     /// Current sub-mode of locomotion.
     /// </summary>
-    private enum LocomotionMode
+    public enum LocomotionMode
     {
         None,
         Move,
@@ -54,7 +54,7 @@ public class LocomotionAbility : GameplayAbility
         }
 
         // Determine initial mode based on current input / lock state.
-        LocomotionMode targetMode = ResolveTargetMode();
+        LocomotionMode targetMode = ResolveLocomotionMode(m_Player, m_Action, m_ASC);
         ApplyMode(targetMode);
     }
 
@@ -75,15 +75,14 @@ public class LocomotionAbility : GameplayAbility
         }
 
         // 2. If the player stopped moving, end locomotion entirely.
-        if (!m_Action.isMoving)
+        if (!m_Action.IsMoving)
         {
             EndAbility();
             return;
         }
 
         // 3. Resolve which locomotion mode we should be in.
-        LocomotionMode targetMode = ResolveTargetMode();
-
+        LocomotionMode targetMode = ResolveLocomotionMode(m_Player, m_Action, m_ASC);
         // 4. Apply the mode if it changed.
         if (targetMode != m_CurrentMode)
         {
@@ -121,7 +120,7 @@ public class LocomotionAbility : GameplayAbility
 
         // Re-evaluate the target mode.
         m_CurrentMode = LocomotionMode.None;
-        LocomotionMode targetMode = ResolveTargetMode();
+        LocomotionMode targetMode = ResolveLocomotionMode(m_Player, m_Action, m_ASC);
         ApplyMode(targetMode);
     }
 
@@ -147,7 +146,6 @@ public class LocomotionAbility : GameplayAbility
     #endregion
 
     #region Mode Resolution
-
     /// <summary>
     /// Determines which locomotion sub-mode the player should be in based on current input and state.
     /// Priority: StrafeMove (Tag.Locked active) > Sprint > Move.
@@ -162,16 +160,16 @@ public class LocomotionAbility : GameplayAbility
     ///   - lockTarget still serves as a secondary guard: even if Tag.Locked is stale
     ///     (e.g. one-frame delay), a null lockTarget prevents entering StrafeMove.
     /// </summary>
-    private LocomotionMode ResolveTargetMode()
+    public static LocomotionMode ResolveLocomotionMode(PlayerController player, PlayerActionController action, AbilitySystemComponent asc)
     {
-        if (m_Player == null || m_Action == null)
+        if (player == null || action == null || !action.IsMoving)
             return LocomotionMode.None;
 
         // StrafeMove only when LockTargetAbility has set Tag.Locked and a target exists.
         // This respects blockedTags (e.g. Sprint blocks LockTargetAbility → Tag.Locked absent).
-        bool isLockedOn = m_Player.lockTarget != null
-            && m_ASC != null
-            && m_ASC.HasTag(m_TagHardLock);
+        bool isLockedOn = player.lockTarget != null
+            && asc != null
+            && asc.HasTag(GameplayTag.CreateTag(GameplayTagManager.instance.GetIndex(GameplayTag.COMBAT_LOCKED_HARD)));
 
         if (isLockedOn)
         {
@@ -179,11 +177,10 @@ public class LocomotionAbility : GameplayAbility
         }
 
         // Sprint when shouldSprint is true (Dodge key held past threshold).
-        if (m_Action.shouldSprint)
+        if (action.ShouldSprint)
         {
             return LocomotionMode.Sprint;
         }
-
         return LocomotionMode.Move;
     }
 
@@ -199,21 +196,13 @@ public class LocomotionAbility : GameplayAbility
         RemoveModeTag(m_CurrentMode);
 
         // Switch state machine.
-        ECharacterState state;
-        switch (targetMode)
+        var state = targetMode switch
         {
-            case LocomotionMode.StrafeMove:
-                state = ECharacterState.StrafeMove;
-                break;
-            case LocomotionMode.Sprint:
-                state = ECharacterState.Sprint;
-                break;
-            case LocomotionMode.Move:
-            default:
-                state = ECharacterState.Move;
-                break;
-        }
-
+            LocomotionMode.StrafeMove => ECharacterState.StrafeMove,
+            LocomotionMode.Sprint => ECharacterState.Sprint,
+            LocomotionMode.Move => ECharacterState.Move,
+            _ => ECharacterState.Idle,
+        };
         m_Player.ChangeState(state);
         AddModeTag(targetMode);
         m_CurrentMode = targetMode;
@@ -250,17 +239,13 @@ public class LocomotionAbility : GameplayAbility
 
     private GameplayTag GetTagForMode(LocomotionMode mode)
     {
-        switch (mode)
+        return mode switch
         {
-            case LocomotionMode.Move:
-                return m_TagMove;
-            case LocomotionMode.StrafeMove:
-                return m_TagStrafing;
-            case LocomotionMode.Sprint:
-                return m_TagSprint;
-            default:
-                return GameplayTag.RootTag; // invalid tag
-        }
+            LocomotionMode.Move => m_TagMove,
+            LocomotionMode.StrafeMove => m_TagStrafing,
+            LocomotionMode.Sprint => m_TagSprint,
+            _ => GameplayTag.RootTag,// invalid tag
+        };
     }
 
     #endregion

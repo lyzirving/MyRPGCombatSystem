@@ -51,10 +51,10 @@ public class PlayerController : CharacterControllerBase
     #region Main Methods
     public Vector3 GetTargetDirection()
     {
-        if (!m_ActionController.isMoving)
+        if (!m_ActionController.IsMoving)
             return this.transform.forward;
 
-        return m_ActionController.cameraRotation * m_ActionController.GetInputDirection();
+        return m_ActionController.CameraRotation * m_ActionController.GetInputDirection();
     }
     #endregion
 
@@ -96,6 +96,19 @@ public class PlayerController : CharacterControllerBase
             default:
                 break;
         }
+    }
+
+    override public void ChangeToLocomotionState(ChangeStateArgs args = default)
+    {
+        var targetMode = LocomotionAbility.ResolveLocomotionMode(this, m_ActionController, m_AbilitySystemComp);
+        var state = targetMode switch
+        {
+            LocomotionAbility.LocomotionMode.StrafeMove => ECharacterState.StrafeMove,
+            LocomotionAbility.LocomotionMode.Sprint => ECharacterState.Sprint,
+            LocomotionAbility.LocomotionMode.Move => ECharacterState.Move,
+            _ => ECharacterState.Idle,
+        };
+        ChangeState(state, args);
     }
     #endregion
 

@@ -39,10 +39,10 @@ public class PlayerStateMove : PlayerStateLocomotion
 
     public override void FixedUpdate()
     {
-        if (!m_Player.action.isMoving)
+        if (!m_Player.action.IsMoving)
             return;
 
-        m_Player.attrs.speedModify = m_Player.action.shouldRun ? m_Player.config.move.runModify : m_Player.config.move.walkModify;
+        m_Player.attrs.speedModify = m_Player.action.ShouldRun ? m_Player.config.move.runModify : m_Player.config.move.walkModify;
         Vector3 targetDir = m_Player.GetTargetDirection();
 
         m_Player.RotateToTargetDir(targetDir, m_Player.config.move.rotateSpeed);
@@ -57,7 +57,7 @@ public class PlayerStateMove : PlayerStateLocomotion
     #region Virtual Method
     protected virtual void UpdateAnimationValue()
     {
-        float speed = m_Player.action.shouldRun ? 2f : 1f;
+        float speed = m_Player.action.ShouldRun ? 2f : 1f;
         m_Player.model.SetAnimationFloat(AnimationConsts.speed, speed, 0.1f, Time.deltaTime);
 
         Vector3 forward = m_Player.transform.forward;

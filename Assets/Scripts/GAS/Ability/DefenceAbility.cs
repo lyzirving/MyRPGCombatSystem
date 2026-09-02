@@ -7,31 +7,13 @@ public class DefenceAbility : GameplayAbility
 
     protected override void OnAbilityCanceled()
     {
-        TransitionToLocomotion();
+        m_Character.ChangeToLocomotionState();
     }
 
     protected override void OnAbilityEnded()
     {
-        TransitionToLocomotion();
-    }
-
-    /// <summary>
-    /// When the player is still holding movement input after defence ends,
-    /// skip Idle and go directly to Move to avoid animation blending
-    /// through Idle, which causes visible sliding.
-    /// </summary>
-    private void TransitionToLocomotion()
-    {
-        var player = m_Character as PlayerController;
-        if (player != null && player.action.isMoving)
-        {
-            m_Character.ChangeState(ECharacterState.Move);
-        }
-        else
-        {
-            m_Character.ChangeState(ECharacterState.Idle);
-        }
-    }
+        m_Character.ChangeToLocomotionState();
+    }    
 
     protected override void OnAbilityPerformed()
     {
@@ -44,8 +26,7 @@ public class DefenceAbility : GameplayAbility
 
     protected override void OnAbilityUpdate(float deltaTime)
     {
-        var state = m_Character.currentState as PlayerStateDefence;
-        if (state == null)
+        if (m_Character.currentState is not PlayerStateDefence state)
         {
             EndAbility();
             return;

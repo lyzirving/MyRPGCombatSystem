@@ -12,6 +12,7 @@ public class PlayerStateDefence : PlayerStateCombat
         base.Enter(exitState, args);
         MonoManager.Stop(m_RestoreAttackCoroutine);
         m_SubState = EDefenceState.Enter;
+        m_Player.ResetHorizontalVelocity();
         m_Player.model.SetAnimationBool(AnimationConsts.defenceRelease, false);
         m_Player.model.SetAnimationBool(AnimationConsts.defence, true);
         if (args.playMode == ChangeStateArgs.EAnimationPlayMode.Manual)
@@ -31,12 +32,12 @@ public class PlayerStateDefence : PlayerStateCombat
 
     public override void Update()
     {
-        if (m_Player.action.isDefenceHolding && m_SubState == EDefenceState.Enter && m_Player.model.animator.IsTransitToState("DefenceHold", AnimationConsts.BASE_LAYER))
+        if (m_Player.action.IsDefenceHolding && m_SubState == EDefenceState.Enter && m_Player.model.animator.IsTransitToState("DefenceHold", AnimationConsts.BASE_LAYER))
         {
             m_SubState = EDefenceState.Loop;
             return;
         }
-        else if (!m_Player.action.isDefenceHolding && m_SubState != EDefenceState.End)
+        else if (!m_Player.action.IsDefenceHolding && m_SubState != EDefenceState.End)
         {
             m_SubState = EDefenceState.End;
             m_Player.model.SetAnimationBool(AnimationConsts.defenceRelease, true);            
@@ -46,7 +47,7 @@ public class PlayerStateDefence : PlayerStateCombat
 
     public override void FixedUpdate()
     {
-        if (!m_Player.action.isMoving)
+        if (!m_Player.action.IsMoving)
             return;
 
         Vector3 targetDir = m_Player.GetTargetDirection();

@@ -21,6 +21,25 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     protected CapsuleCollider m_CapsuleCollider;    
     protected AudioPool m_AudioPool;
 
+    private static PhysicsMaterial s_ZeroFrictionMaterial;
+
+    /// <summary>
+    /// A shared zero-friction physics material so characters slide off round tops
+    /// (e.g. an AI's head) instead of sticking to them.
+    /// </summary>
+    private static PhysicsMaterial GetZeroFrictionMaterial()
+    {
+        if (s_ZeroFrictionMaterial == null)
+        {
+            s_ZeroFrictionMaterial = new PhysicsMaterial();
+            s_ZeroFrictionMaterial.name = "ZeroFriction";
+            s_ZeroFrictionMaterial.dynamicFriction = 0f;
+            s_ZeroFrictionMaterial.staticFriction = 0f;
+            s_ZeroFrictionMaterial.frictionCombine = PhysicsMaterialCombine.Minimum;
+        }
+        return s_ZeroFrictionMaterial;
+    }
+
     public CharacterConfig config => m_Config;
     public CharacterAttrs attrs => m_Attrs;
     public CharacterModel model => m_Model;
@@ -146,7 +165,13 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
             m_VFXRoot = this.transform;
 
         m_Rigidbody = GetComponent<Rigidbody>();
+        // Never sleep: collision-callback ground detection (OnCollisionStay) needs the
+        // rigidbody to stay awake. A stationary character (e.g. while defending) would
+        // otherwise be wrongly detected as leaving the ground. Threshold 0 = never auto-sleep.
+        m_Rigidbody.sleepThreshold = 0f;
         m_CapsuleCollider = GetComponent<CapsuleCollider>();
+        // Zero friction so characters slide off round tops instead of sticking (e.g. an AI's head).
+        m_CapsuleCollider.material = GetZeroFrictionMaterial();
 
         m_Sensor = GetComponent<CharacterSensor>();
         m_Sensor.Init(this);
@@ -164,8 +189,13 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
     #endregion
 
     #region IStateMachineOwner Methods
-    public virtual void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs))
+    public virtual void ChangeState(ECharacterState state, ChangeStateArgs args = default)
     {        
+    }
+
+    public virtual void ChangeToLocomotionState(ChangeStateArgs args = default)
+    {
+        ChangeState(ECharacterState.Idle);
     }
 
     public void ExitCurrentState()

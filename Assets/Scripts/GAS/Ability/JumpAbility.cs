@@ -7,12 +7,12 @@ public class JumpAbility : GameplayAbility
 
     protected override void OnAbilityCanceled()
     {
-        m_Character.ChangeState(ECharacterState.Idle);
+        m_Character.ChangeToLocomotionState();
     }
 
     protected override void OnAbilityEnded()
     {
-        m_Character.ChangeState(ECharacterState.Idle);
+       m_Character.ChangeToLocomotionState();
     }
 
     protected override void OnAbilityPerformed()
