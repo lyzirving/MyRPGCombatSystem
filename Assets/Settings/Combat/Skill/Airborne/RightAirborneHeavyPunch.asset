@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
-  m_Name: LeftAirborneLightPunch
+  m_Name: RightAirborneHeavyPunch
   m_EditorClassIdentifier: 
   attackBehavior: 1
-  animatorState: LeftAirborneLightPunch
+  animatorState: RightAirborneHeavyPunch
   crossFadeInTime: 0.15
-  minInterruptNormalizedTime: 0.18
-  transitionNormalizedTime: 0.9
-  inputWindowDuration: 0.2
+  minInterruptNormalizedTime: 0.2
+  transitionNormalizedTime: 0.7
+  inputWindowDuration: 0.5
   minDistanceToTarget: 0.5
-  attackBox: LeftHandAttackBox
-  action: 5
-  damage: 5
+  attackBox: RightLegAttackBox
+  action: 6
+  damage: 10
   hitStunTime: 0
   knockbackDistance: 0
   airAttackFallGravityScale: 0.4
@@ -29,7 +29,7 @@ MonoBehaviour:
   plungeMinAnimSpeed: 0.5
   plungeMaxAnimSpeed: 2
   skillReleaseData:
-    spawnPrefab: VFX/Attack/LeftAirborneLightPunch
+    spawnPrefab: VFX/Attack/VFX_RightAirborneHeavyPunch
     vfxTime: 0.18
     audioClip: {fileID: 8300000, guid: 9fdbda0350403f841a355a606f656358, type: 3}
   skillHitData:
@@ -37,5 +37,5 @@ MonoBehaviour:
     audioClip: {fileID: 0}
     hitStopTimeScale: 0.18
     hitStopDuration: 0.06
-  attackBoxIndex: 1
-  nextSkillIndex: 1
+  attackBoxIndex: 0
+  nextSkillIndex: -1

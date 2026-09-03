@@ -10,9 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55ddd3417a726f145aecd6638d442f21, type: 3}
-  m_Name: AirborneAttackCombo
+  m_Name: AirborneAttackCombo 1
   m_EditorClassIdentifier: 
   skillConfigs:
-  - {fileID: 11400000, guid: 57bb921f46c8935459965354a265cf71, type: 2}
-  - {fileID: 11400000, guid: a7063ba4d9fbfab40a183e43a5923397, type: 2}
   - {fileID: 11400000, guid: 6f192f0138c2b09448b489892f10040e, type: 2}

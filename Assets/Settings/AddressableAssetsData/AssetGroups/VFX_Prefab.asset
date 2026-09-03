@@ -50,6 +50,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dad4ce326adfe674aa4e9952b22e6035
+    m_Address: VFX/Attack/VFX_RightAirborneHeavyPunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: df7765050fef7344c81edef87e6a755c
     m_Address: VFX/Attack/SprintLightAttack0
     m_ReadOnly: 0

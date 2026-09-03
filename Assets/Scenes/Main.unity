@@ -338,6 +338,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
+  m_GroundChecker:
+    GROUND_SLOPE_LIMIT: 45
 --- !u!1 &91168824
 GameObject:
   m_ObjectHideFlags: 0
@@ -3115,6 +3117,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1256d165c1d430b44920e63d92b835b6, type: 2}
   - {fileID: 11400000, guid: 0aabe6b502d29eb4a847255eb15df4d9, type: 2}
   - {fileID: 11400000, guid: fcb4e3de92fe0d847b95d918b5d1a83d, type: 2}
+  - {fileID: 11400000, guid: 430b11887dfc12b4793855bb62516c97, type: 2}
 --- !u!114 &496888506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3166,6 +3169,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DistanceZone:
     m_Settings: {fileID: 11400000, guid: 7af86b5be9f89d44eb412d784145253f, type: 2}
+  m_GroundChecker:
+    GROUND_SLOPE_LIMIT: 45
 --- !u!114 &496888512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5883,6 +5888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e2ae0cb7a12a146b65e431eb150436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  footstep: 0
 --- !u!114 &1601179487
 MonoBehaviour:
   m_ObjectHideFlags: 0

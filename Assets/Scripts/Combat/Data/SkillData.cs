@@ -3,9 +3,18 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
+public enum EAttackBehavior
+{
+    Normal = 0,
+    Airborne = 1,
+    Plunge = 2
+}
+
 [CreateAssetMenu(fileName = "SkillData", menuName = "Config/SkillData")]
 public class SkillData : ScriptableObject
 {
+    public EAttackBehavior attackBehavior = EAttackBehavior.Normal;
+
     [Header("Animation Attributes")]
     [Tooltip("Name of the animator state")]
     public string animatorState;
@@ -44,8 +53,13 @@ public class SkillData : ScriptableObject
     public float hitStunTime = 0f;
     public float knockbackDistance = 0f;
 
+    [Header("Airborne Attack")]
     [Tooltip("gravity ratio when falling：1 = normal gravity，< 1 decline speed when falling, maximum is 0")]
-    [Range(0f, 1f)] public float airAttackFallGravityScale = 0.4f;    
+    [Range(0f, 1f)] public float airAttackFallGravityScale = 0.4f;
+
+    [Header("Plunge Attribute")]
+    [Tooltip("Plunge only: fall gravity multiplier (>1 accelerates descent)")]
+    [Range(0.5f, 5f)] public float plungeFallGravityScale = 2.5f;
 
     [Header("Spawner Data")]
     [Tooltip("Data to be spawned when the skill is released")]

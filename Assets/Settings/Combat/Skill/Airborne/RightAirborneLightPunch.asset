@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
   m_Name: RightAirborneLightPunch
   m_EditorClassIdentifier: 
+  attackBehavior: 1
   animatorState: RightAirborneLightPunch
   crossFadeInTime: 0.15
   minInterruptNormalizedTime: 0.2
@@ -24,6 +25,9 @@ MonoBehaviour:
   hitStunTime: 0
   knockbackDistance: 0
   airAttackFallGravityScale: 0.4
+  plungeFallGravityScale: 2.5
+  plungeMinAnimSpeed: 0.5
+  plungeMaxAnimSpeed: 2
   skillReleaseData:
     spawnPrefab: VFX/Attack/RightAirborneLightPunch
     vfxTime: 0.18
