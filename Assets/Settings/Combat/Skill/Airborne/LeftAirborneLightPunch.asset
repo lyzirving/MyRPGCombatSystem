@@ -26,8 +26,6 @@ MonoBehaviour:
   knockbackDistance: 0
   airAttackFallGravityScale: 0.4
   plungeFallGravityScale: 2.5
-  plungeMinAnimSpeed: 0.5
-  plungeMaxAnimSpeed: 2
   skillReleaseData:
     spawnPrefab: VFX/Attack/LeftAirborneLightPunch
     vfxTime: 0.18
@@ -35,7 +33,8 @@ MonoBehaviour:
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
-    hitStopTimeScale: 0.18
+    hitStopTimeScale: 0.6
+    hitStopAnimSpeed: 0.18
     hitStopDuration: 0.06
   attackBoxIndex: 1
   nextSkillIndex: 1

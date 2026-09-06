@@ -125,9 +125,11 @@ public class SkillReleaseData
 public class SkillHitData
 {
     public string spawnPrefab;
-    public AudioClip audioClip;
-    [Tooltip("Animator speed multiplier during hit stop. 0 = complete freeze, 1 = no effect. Typical value: 0.05~0.2")]
-    [Range(0f, 1f)] public float hitStopTimeScale = 0.1f;
+    public AudioClip audioClip;   
+    [Tooltip("Time.timeScale during hit stop. 0 = complete freeze, 1 = no effect.")] 
+    [Range(0f, 1f)] public float hitStopTimeScale = 0.4f;
+    [Tooltip("Animator speed during hit stop. 0 = complete freeze, 1 = no effect. Typical value: 0.05~0.2")]
+    [Range(0f, 1f)] public float hitStopAnimSpeed = 0.18f;
     [Tooltip("Duration of hit stop in real-time seconds. Typical values: light attack 0.03~0.06s, heavy attack 0.08~0.15s")]
     [Range(0f, 0.5f)] public float hitStopDuration = 0.06f;
 }

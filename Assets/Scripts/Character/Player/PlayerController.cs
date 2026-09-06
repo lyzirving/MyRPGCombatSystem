@@ -52,14 +52,14 @@ public class PlayerController : CharacterControllerBase
     public Vector3 GetTargetDirection()
     {
         if (!m_ActionController.IsMoving)
-            return this.transform.forward;
+            return transform.forward;
 
         return m_ActionController.CameraRotation * m_ActionController.GetInputDirection();
     }
     #endregion
 
     #region IStateMachineOwner Methods
-    public override void ChangeState(ECharacterState state, ChangeStateArgs args = default(ChangeStateArgs))
+    public override void ChangeState(ECharacterState state, ChangeStateArgs args = default)
     {
         switch (state)
         {
@@ -124,7 +124,7 @@ public class PlayerController : CharacterControllerBase
         var hitData = m_AttackComponent.skill.skillHitData;
         if (hitData != null && hitData.hitStopDuration > 0f)
         {
-            m_Model.HitStop(hitData.hitStopTimeScale, hitData.hitStopDuration);
+            m_Model.HitStop(hitData.hitStopTimeScale, hitData.hitStopAnimSpeed, hitData.hitStopDuration);
         }
         target?.OnHit(hitPos, this, m_AttackComponent.skill);
         VFXManager.instance.Play(m_AttackComponent.skill.skillHitData.spawnPrefab, hitPos, Quaternion.identity);
@@ -147,7 +147,6 @@ public class PlayerController : CharacterControllerBase
 
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
-        base.OnHit(hitPos, source, skillData);
         var defenceState = m_StateMachine.GetCurrentState<PlayerStateDefence>();
         if (defenceState != null)
         {

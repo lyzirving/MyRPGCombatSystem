@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
   m_Name: LeftLightPunch
   m_EditorClassIdentifier: 
+  attackBehavior: 0
   animatorState: LeftLightPunch
   crossFadeInTime: 0.15
   minInterruptNormalizedTime: 0.22
@@ -24,6 +25,7 @@ MonoBehaviour:
   hitStunTime: 0
   knockbackDistance: 0
   airAttackFallGravityScale: 0.4
+  plungeFallGravityScale: 2.5
   skillReleaseData:
     spawnPrefab: VFX/Attack/PunchLeft
     vfxTime: 0.18
@@ -31,7 +33,8 @@ MonoBehaviour:
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
-    hitStopTimeScale: 0.18
+    hitStopTimeScale: 0.6
+    hitStopAnimSpeed: 0.18
     hitStopDuration: 0.06
   attackBoxIndex: 1
   nextSkillIndex: 1

@@ -72,7 +72,6 @@ public class AIController : CharacterControllerBase
     #region ICharacterBehavior Methods
     public override void OnHit(Vector3 hitPos, in ICharacterBehavior source, in SkillData skillData)
     {
-        base.OnHit(hitPos, source, skillData);
         AddAdditiveState(ECharacterState.Hurt, new ChangeStateArgs(source, skillData, hitPos));
     }
     #endregion

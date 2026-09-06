@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8610fdb4e0aa84340b63a317a0f0c238, type: 3}
   m_Name: SprintLightAttack0
   m_EditorClassIdentifier: 
+  attackBehavior: 0
   animatorState: SprintLightAttack0
   crossFadeInTime: 0.15
   minInterruptNormalizedTime: 0.28
@@ -23,6 +24,8 @@ MonoBehaviour:
   damage: 7
   hitStunTime: 0.5
   knockbackDistance: 0.2
+  airAttackFallGravityScale: 0.4
+  plungeFallGravityScale: 2.5
   skillReleaseData:
     spawnPrefab: VFX/Attack/SprintLightAttack0
     vfxTime: 0.14
@@ -30,7 +33,8 @@ MonoBehaviour:
   skillHitData:
     spawnPrefab: VFX/Classic/18
     audioClip: {fileID: 0}
-    hitStopTimeScale: 0.18
+    hitStopTimeScale: 0.6
+    hitStopAnimSpeed: 0.18
     hitStopDuration: 0.06
   attackBoxIndex: 3
   nextSkillIndex: -1

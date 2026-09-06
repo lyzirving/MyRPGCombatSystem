@@ -325,13 +325,11 @@ public class LockTargetManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(targetTag) && !target.gameObject.CompareTag(targetTag)) return false;
 
-        Vector3 eyePosition = transform.position + transform.up * eyeHeightOffset;
-        float dist = Vector3.Distance(eyePosition, target.position);
-
         // 2. Too far
-        if (dist > maxDistance) return false;
+        if (Vector3.Distance(transform.position, target.position) > maxDistance) return false;
 
         Vector3 dir = target.position - transform.position;
+        dir.y = 0;
         dir.Normalize();
 
         // 3. No longer visible
