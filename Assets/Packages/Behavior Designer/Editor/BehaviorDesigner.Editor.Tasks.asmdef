@@ -1,0 +1,16 @@
+{
+    "name": "BehaviorDesigner.Editor.Tasks",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5550ff32b843be043950f9a39bf4656c"
+    ],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
