@@ -1,17 +1,17 @@
-Shader "Custom/BezierBlade"
+Shader "Custom/GrassBlade"
 {
     Properties
-    {        
-        [Header(Shape)]        
+    {
+        [Header(Shape)]
         _Height ("Height", Float) = 1
         // Controlling the degree of bending of the grass
-        _Tilt ("Tilt", Range(0, 1)) = 0.9
+        _Tilt ("Tilt", Float) = 0.9
         _BladeWidth ("BladeWidth", Float) = 0.1
         // Control the degree of convergence of the bottom width of the grass towards the top.
-        _TaperAmount ("Taper Amount", Float) = 0
+        _TaperAmount ("Taper Amount", Float) = 0        
         _p1Offset ("p1Offset", Float) = 1
-        _p2Offset ("p2Offset", Float) = 1        
-        _CurvedNormalAmount("Curved Normal Amount", Range(0, 5)) = 1        
+        _p2Offset ("p2Offset", Float) = 1
+        _CurvedNormalAmount("Curved Normal Amount", Range(0, 5)) = 1
 
         [Header(Shading)]
         _TopColor ("Top Color", Color) = (.25, .5, .5, 1)
@@ -30,7 +30,7 @@ Shader "Custom/BezierBlade"
 
             Cull Off
 
-            HLSLPROGRAM            
+            HLSLPROGRAM
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _SHADOWS_SOFT
 
@@ -43,14 +43,22 @@ Shader "Custom/BezierBlade"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "CubicBezier.hlsl"
 
+            struct GrassBlade {
+                float3 position;
+            };
+
+            StructuredBuffer<GrassBlade> _GrassBlades;
+            StructuredBuffer<int> Triangles;
+            StructuredBuffer<float4> Colors;
+            StructuredBuffer<float2> Uvs;
+
             float _Height;
             float _Tilt;
             float _BladeWidth;
-            float _TaperAmount;            
+            float _TaperAmount;
+            float _CurvedNormalAmount;
             float _p1Offset;
             float _p2Offset;
-            float _CurvedNormalAmount;
-            
             float4 _TopColor;
             float4 _BottomColor;
 
@@ -61,9 +69,8 @@ Shader "Custom/BezierBlade"
 
             struct Attributes
             {
-                float4 positionOS : POSITION;
-                float4 color : COLOR;
-                float2 texcoord : TEXCOORD0;
+                uint vertexID : SV_VertexID;
+                uint instanceID : SV_InstanceID;
             };
 
             struct Varyings
@@ -91,7 +98,7 @@ Shader "Custom/BezierBlade"
             }
 
             void GetP1P2(float3 p0, float3 p3, out float3 p1, out float3 p2)
-            {        
+            {
                 p1 = lerp(p0, p3, 0.33);
                 p2 = lerp(p0, p3, 0.66);
 
@@ -114,15 +121,21 @@ Shader "Custom/BezierBlade"
                 float3 p2 = float3(0,0,0);
                 GetP1P2(p0, p3, p1, p2);
 
-                float t = IN.color.r;
+                int positionIndex = Triangles[IN.vertexID];
+                float4 vertColor = Colors[positionIndex];
+                float2 uv = Uvs[positionIndex];
+
+                GrassBlade blade = _GrassBlades[IN.instanceID];
+
+                float t = vertColor.r;
                 float3 centerPos = CubicBezier(p0, p1, p2, p3, t);
-                
-                // t: 0 => 1, the higher, the width is smaller                
+
+                // t: 0 => 1, the higher, the width is smaller
                 float width = _BladeWidth * (1 - _TaperAmount * t);
 
-                // IN.color.g: 0 => left side, 1 => right side
-                float side = IN.color.g * 2 - 1;
-                float3 vertexPos = centerPos + float3(0, 0, side * width);
+                // color.g: 0 => left side, 1 => right side
+                float side = vertColor.g * 2 - 1;
+                float3 worldPos = blade.position + centerPos + float3(0, 0, side * width);
 
                 float3 tangent = CubicBezierTangent(p0, p1, p2, p3, t);
                 float3 normal = normalize(cross(tangent, float3(0,0,1)));
@@ -131,11 +144,11 @@ Shader "Custom/BezierBlade"
                 curvedNorm.z += side * _CurvedNormalAmount;
                 curvedNorm = normalize(curvedNorm);
 
-                OUT.positionCS = TransformObjectToHClip(vertexPos);
-                OUT.curvedNorm = TransformObjectToWorldNormal(curvedNorm);
-                OUT.originalNorm = TransformObjectToWorldNormal(normal);
-                OUT.positionWS = TransformObjectToWorld(vertexPos);
-                OUT.uv = IN.texcoord;
+                OUT.positionCS = TransformWorldToHClip(worldPos);
+                OUT.curvedNorm = curvedNorm;
+                OUT.originalNorm = normal;
+                OUT.positionWS = worldPos;
+                OUT.uv = uv;
                 OUT.t = t;
 
                 return OUT;

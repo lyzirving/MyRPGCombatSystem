@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_GrassBlade
-  m_Shader: {fileID: 4800000, guid: cf1bac8947ad6d141adf6bba3b51a24a, type: 3}
+  m_Shader: {fileID: 4800000, guid: 260df7ce2f956af4fa04abdef843f93d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
