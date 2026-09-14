@@ -5,6 +5,7 @@ public class Grass : MonoBehaviour
     public ComputeShader computeShader;
     public Material material;
     public Camera cam;
+    public Terrain terrain;
 
     public float grassSpacing = 0.1f;
     public int resolution = 100;
@@ -14,8 +15,15 @@ public class Grass : MonoBehaviour
     private static readonly int
         grassBladesBufferID = Shader.PropertyToID("_GrassBlades"),
         resolutionID = Shader.PropertyToID("_Resolution"),
+        grassPosition = Shader.PropertyToID("_GrassPosition"),
         grassSpacingID = Shader.PropertyToID("_GrassSpacing"),
-        jitterStrengthID = Shader.PropertyToID("_JitterStrength");
+        jitterStrengthID = Shader.PropertyToID("_JitterStrength"),
+        heightMapID = Shader.PropertyToID("_HeightMap"),
+        detailMapID = Shader.PropertyToID("_DetailMap"),
+        terrainPositionID = Shader.PropertyToID("_TerrainPosition"),        
+        heightMapScaleID = Shader.PropertyToID("_HeightMapScale"),// transform world position to height map's uv
+        heightMapMultiplierID = Shader.PropertyToID("_HeightMapMultiplier"),
+        hasTerrainID = Shader.PropertyToID("_HasTerrain");
 
     private const int ARGS_STRIDE = sizeof(int) * 5;
     private ComputeBuffer m_GrassBladesBuffer;
@@ -25,6 +33,11 @@ public class Grass : MonoBehaviour
     private ComputeBuffer m_ArgsBuffer;    
     private Mesh m_ClonedMesh;
     private Bounds m_Bounds;
+
+    // Largest resolution the currently allocated append buffer can hold.
+    // The buffer only needs to grow when resolution increases beyond this,
+    // otherwise appends are silently dropped once the old capacity is reached.
+    private int m_AllocatedResolution;
 
     void Awake()
     {
@@ -58,8 +71,22 @@ public class Grass : MonoBehaviour
     {
         m_GrassBladesBuffer = new ComputeBuffer(resolution * resolution, sizeof(float) * 3, ComputeBufferType.Append);
         m_GrassBladesBuffer.SetCounterValue(0);
+        m_AllocatedResolution = resolution;
 
         m_ArgsBuffer = new ComputeBuffer(1, ARGS_STRIDE, ComputeBufferType.IndirectArguments);
+    }
+
+    private void ReallocateGrassBladesBuffer()
+    {
+        DisposeBuffer(m_GrassBladesBuffer);
+
+        m_GrassBladesBuffer = new ComputeBuffer(resolution * resolution, sizeof(float) * 3, ComputeBufferType.Append);
+        m_GrassBladesBuffer.SetCounterValue(0);
+        m_AllocatedResolution = resolution;
+
+        // The material reads _GrassBlades during the indirect draw, so rebind
+        // the newly allocated buffer in addition to the per-frame compute bind.
+        material.SetBuffer(grassBladesBufferID, m_GrassBladesBuffer);
     }
 
     private void SetupMeshBuffers()
@@ -98,6 +125,9 @@ public class Grass : MonoBehaviour
 
     private void UpdateGpuParameters()
     {
+        if (resolution > m_AllocatedResolution)
+            ReallocateGrassBladesBuffer();
+
         m_GrassBladesBuffer.SetCounterValue(0);
 
         SetupComputeShader();
@@ -114,6 +144,30 @@ public class Grass : MonoBehaviour
         computeShader.SetBuffer(0, grassBladesBufferID, m_GrassBladesBuffer);
         computeShader.SetFloat(grassSpacingID, grassSpacing);
         computeShader.SetFloat(jitterStrengthID, jitterStrength);
+        computeShader.SetVector(grassPosition, transform.position);
+
+        if (terrain != null)
+        {
+            computeShader.SetInt(hasTerrainID, 1);
+            computeShader.SetVector(terrainPositionID, terrain.transform.position);
+            computeShader.SetTexture(0, heightMapID, terrain.terrainData.heightmapTexture);
+            // blending weight
+            if (terrain.terrainData.alphamapTextures.Length > 0)
+                computeShader.SetTexture(0, detailMapID, terrain.terrainData.alphamapTextures[0]);
+            computeShader.SetFloat(heightMapScaleID, terrain.terrainData.size.x);
+            computeShader.SetFloat(heightMapMultiplierID, terrain.terrainData.size.y);
+        }
+        else
+        {
+            // No terrain assigned: place grass flat on the XZ plane and still
+            // bind fallback textures so the kernel doesn't report "not set".
+            computeShader.SetInt(hasTerrainID, 0);
+            computeShader.SetTexture(0, heightMapID, Texture2D.whiteTexture);
+            computeShader.SetTexture(0, detailMapID, Texture2D.whiteTexture);
+            computeShader.SetVector(terrainPositionID, Vector3.zero);
+            computeShader.SetFloat(heightMapScaleID, 1f);
+            computeShader.SetFloat(heightMapMultiplierID, 1f);
+        }
     }
 
     private void RenderGrass()

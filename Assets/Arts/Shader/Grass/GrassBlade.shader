@@ -176,7 +176,12 @@ Shader "Custom/GrassBlade"
                 half alpha = 1;
 
                 InitializeBRDFData(albedo, 0, half3(1, 1, 1), gloss, alpha, brdfData);
-                float3 directBRDF = DirectBRDF(brdfData, n, mainLight.direction, v) * mainLight.color;
+
+                // DirectBRDF returns only the BRDF reflectance (diffuse + specular), it does NOT
+                // include the cosine/NdotL falloff. Without this factor the diffuse term has no
+                // dependency on the light direction, so rotating the sun changes nothing.
+                float NdotL = saturate(dot(n, mainLight.direction));
+                float3 directBRDF = DirectBRDF(brdfData, n, mainLight.direction, v) * mainLight.color * NdotL;
 
                 // Final color calculation
                 float3 finalColor = GI * albedo + directBRDF * (mainLight.shadowAttenuation * mainLight.distanceAttenuation);

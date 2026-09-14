@@ -165,9 +165,8 @@ public class CharacterControllerBase : MonoBehaviour, IStateMachineOwner, IChara
             m_VFXRoot = this.transform;
 
         m_Rigidbody = GetComponent<Rigidbody>();
-        // Never sleep: collision-callback ground detection (OnCollisionStay) needs the
-        // rigidbody to stay awake. A stationary character (e.g. while defending) would
-        // otherwise be wrongly detected as leaving the ground. Threshold 0 = never auto-sleep.
+        // Never sleep: a player character must stay awake so movement (AddForce), gravity
+        // and slope collision keep being applied every frame. Threshold 0 = never auto-sleep.
         m_Rigidbody.sleepThreshold = 0f;
         m_CapsuleCollider = GetComponent<CapsuleCollider>();
         // Zero friction so characters slide off round tops instead of sticking (e.g. an AI's head).

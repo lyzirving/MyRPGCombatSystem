@@ -1,5 +1,7 @@
 #pragma kernel Main
 
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+
 struct GrassBlade
 {
     float3 position;
@@ -8,8 +10,21 @@ struct GrassBlade
 AppendStructuredBuffer<GrassBlade> _GrassBlades;
 
 uint _Resolution;
+float3 _GrassPosition;
 float _GrassSpacing;
 float _JitterStrength;
+
+// Terrain parameters
+Texture2D<float4> _HeightMap;
+Texture2D<float4> _DetailMap;
+// one texture can have different sampler state
+// SRP ShaderLibrary predefine some commonly used sampler state, such as LinearClampSampler, PointClampSampler.
+SamplerState LinearClampSampler;
+
+float3 _TerrainPosition;
+float _HeightMapScale;
+float _HeightMapMultiplier;
+int _HasTerrain;
 
 float2 HashFloat2(float2 p)
 {
@@ -18,18 +33,49 @@ float2 HashFloat2(float2 p)
     return frac(sin(q) * 43758.5453);
 }
 
+// In hlsl, there are two ways to sample texture
+// 1) Sample(sampler, uv): this method will automatically calculate mipmap level.
+// 2) SampleLevel(sampler, uv, lod): explicitly specify mipmap levels.
+float SampleGrassRelativeHeight(float2 normalizedPos)
+{
+    float height = UnpackHeightmap(_HeightMap.SampleLevel(LinearClampSampler, normalizedPos, 0));
+    return height * _HeightMapMultiplier * 2;
+}
+
+float SampleGrassWeight(float2 normalizedPos)
+{
+    float value = _DetailMap.SampleLevel(LinearClampSampler, normalizedPos, 0).r;
+    return value;
+}
+
 [numthreads(8, 8, 1)]
 void Main(uint3 id : SV_DispatchThreadID)
 {
-    if (id.x < _Resolution && id.y < _Resolution)
-    {
-        float3 position = float3(id.x, 0, id.y) * _GrassSpacing;
-        float2 hash = HashFloat2(id.xy);
-        float2 jitter = ((hash * 2) - 1) * _JitterStrength;
-        position.xz += jitter;
+    if (id.x >= _Resolution || id.y >= _Resolution)
+        return;
 
-        GrassBlade blade;
-        blade.position = position;
-        _GrassBlades.Append(blade);
-    }
+    float3 position = float3(id.x, 0, id.y) * _GrassSpacing;
+    float2 hash = HashFloat2(id.xy);
+    float2 jitter = ((hash * 2) - 1) * _JitterStrength;
+    position.xz += jitter;
+
+    // translate world position to terrain's normalized uv which is in [0, 1]
+    float2 normalizedPos = (position.xz - _TerrainPosition.xz) / _HeightMapScale;
+
+    bool hasTerrain = _HasTerrain != 0;
+    // step returns 1 if weight >= 0.5, otherwise 0.
+    float mask = step(0.5, SampleGrassWeight(normalizedPos));
+
+    // With a terrain assigned, only append a blade where the weight map allows
+    // it. Without a terrain, fall back to placing the full grid flat at y = 0.
+    if (hasTerrain && mask < 0.5)
+        return;
+
+    position.y = hasTerrain
+        ? _TerrainPosition.y + SampleGrassRelativeHeight(normalizedPos)
+        : 0.0;
+
+    GrassBlade blade;
+    blade.position = position;
+    _GrassBlades.Append(blade);
 }
