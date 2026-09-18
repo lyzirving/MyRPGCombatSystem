@@ -26,6 +26,16 @@ float _HeightMapScale;
 float _HeightMapMultiplier;
 int _HasTerrain;
 
+// Culling parameters
+float3 _WSpaceCameraPos;
+float _DistanceCullStartDist;
+float _DistanceCullEndDist;
+float _DistanceCullMinimumGrassAmount;
+
+float4x4 _VP_MATRIX;
+float _FrustumCullNearOffset;
+float _FrustumCullEdgeOffset;
+
 float2 HashFloat2(float2 p)
 {
     float t = dot(p, float2(12.9898, 78.233));
@@ -48,13 +58,45 @@ float SampleGrassWeight(float2 normalizedPos)
     return value;
 }
 
+uint DistanceCull(float3 worldPos, float hash)
+{
+    float d = distance(worldPos, _WSpaceCameraPos);
+    // make near end 1 and far end 0
+    float distanceSmoothStep = 1 - smoothstep(_DistanceCullStartDist, _DistanceCullEndDist, d);
+    // the following code equals: distanceSmoothStep = lerp(distanceSmoothStep, 1, _DistanceCullMinimumGrassAmount)
+    // when distanceSmoothStep = 0, newValue = _DistanceCullMinimumGrassAmount, when distanceSmoothStep = 1, new value = 1
+    // so distanceSmoothStep changes from [1, 0] to [1, _DistanceCullMinimumGrassAmount], as 1 is near end, and _DistanceCullMinimumGrassAmount is far end.
+
+    // while _DistanceCullMinimumGrassAmount < distanceSmoothStep < 1
+    // so 0 < 1 - distanceSmoothStep < 1 -_DistanceCullMinimumGrassAmount
+    distanceSmoothStep = (distanceSmoothStep * (1 - _DistanceCullMinimumGrassAmount)) + _DistanceCullMinimumGrassAmount;
+    return hash > (1 - distanceSmoothStep) ? 1 : 0;
+}
+
+uint FrustumCull(float3 worldPos)
+{
+    float4 clipPos = mul(_VP_MATRIX, float4(worldPos, 1));
+
+    // in clip space, valid z range is [0, clipPos.w]
+    // valid x range is [-clipPos.w, clipPos.w]
+    // valid y range is [-clipPos.w, clipPos.w]
+    return (clipPos.z > clipPos.w
+         || clipPos.z < 0
+         || clipPos.x < -clipPos.w + _FrustumCullEdgeOffset
+         || clipPos.x > clipPos.w - _FrustumCullEdgeOffset
+         || clipPos.y < -clipPos.w + _FrustumCullNearOffset
+         || clipPos.y > clipPos.w)
+            ? 0 : 1;
+}
+
 [numthreads(8, 8, 1)]
 void Main(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= _Resolution || id.y >= _Resolution)
         return;
 
-    float3 position = float3(id.x, 0, id.y) * _GrassSpacing;
+    // Offset by the grass object's world position so the grid isn't stuck at world origin.
+    float3 position = _GrassPosition + float3(id.x, 0, id.y) * _GrassSpacing;
     float2 hash = HashFloat2(id.xy);
     float2 jitter = ((hash * 2) - 1) * _JitterStrength;
     position.xz += jitter;
@@ -75,7 +117,12 @@ void Main(uint3 id : SV_DispatchThreadID)
         ? _TerrainPosition.y + SampleGrassRelativeHeight(normalizedPos)
         : 0.0;
 
-    GrassBlade blade;
-    blade.position = position;
-    _GrassBlades.Append(blade);
+    uint distanceCull = DistanceCull(position, hash.x);
+    uint frustumCull = FrustumCull(position);
+    if (distanceCull == 1 && frustumCull == 1)
+    {
+        GrassBlade blade;
+        blade.position = position;
+        _GrassBlades.Append(blade);
+    }
 }

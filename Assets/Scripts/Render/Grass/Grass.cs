@@ -9,8 +9,15 @@ public class Grass : MonoBehaviour
 
     public float grassSpacing = 0.1f;
     public int resolution = 100;
-
     [SerializeField, Range(0, 2)] public float jitterStrength;
+
+    [Header("Culling")]
+    public float distanceCullStartDistance = 0;
+    public float distanceCullEndDistance = 30;
+    [Range(0f, 1f)]
+    public float distanceCullMinimumGrassAmount = 0.188f;
+    public float frustumCullNearOffset = -3;
+    public float frustumCullEdgeOffset = -1;
 
     private static readonly int
         grassBladesBufferID = Shader.PropertyToID("_GrassBlades"),
@@ -23,7 +30,14 @@ public class Grass : MonoBehaviour
         terrainPositionID = Shader.PropertyToID("_TerrainPosition"),        
         heightMapScaleID = Shader.PropertyToID("_HeightMapScale"),// transform world position to height map's uv
         heightMapMultiplierID = Shader.PropertyToID("_HeightMapMultiplier"),
-        hasTerrainID = Shader.PropertyToID("_HasTerrain");
+        hasTerrainID = Shader.PropertyToID("_HasTerrain"),
+        distanceCullStartDistID = Shader.PropertyToID("_DistanceCullStartDist"),
+        distanceCullEndDistID = Shader.PropertyToID("_DistanceCullEndDist"),
+        distanceCullMinimumGrassAmountlID = Shader.PropertyToID("_DistanceCullMinimumGrassAmount"),
+        worldSpaceCameraPositionID = Shader.PropertyToID("_WSpaceCameraPos"),
+        vpMatrixID = Shader.PropertyToID("_VP_MATRIX"),
+        frustumCullNearOffsetID = Shader.PropertyToID("_FrustumCullNearOffset"),
+        frustumCullEdgeOffsetID = Shader.PropertyToID("_FrustumCullEdgeOffset");
 
     private const int ARGS_STRIDE = sizeof(int) * 5;
     private ComputeBuffer m_GrassBladesBuffer;
@@ -145,6 +159,17 @@ public class Grass : MonoBehaviour
         computeShader.SetFloat(grassSpacingID, grassSpacing);
         computeShader.SetFloat(jitterStrengthID, jitterStrength);
         computeShader.SetVector(grassPosition, transform.position);
+
+        computeShader.SetFloat(distanceCullStartDistID, distanceCullStartDistance);
+        computeShader.SetFloat(distanceCullEndDistID, distanceCullEndDistance);
+        computeShader.SetFloat(distanceCullMinimumGrassAmountlID, distanceCullMinimumGrassAmount);
+        computeShader.SetFloat(frustumCullNearOffsetID, frustumCullNearOffset);
+        computeShader.SetFloat(frustumCullEdgeOffsetID, frustumCullEdgeOffset);
+
+        Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(cam.projectionMatrix, false);
+        Matrix4x4 viewProjectionMatrix = projectionMatrix * cam.worldToCameraMatrix;
+        computeShader.SetMatrix(vpMatrixID, viewProjectionMatrix);
+        computeShader.SetVector(worldSpaceCameraPositionID, cam.transform.position);
 
         if (terrain != null)
         {

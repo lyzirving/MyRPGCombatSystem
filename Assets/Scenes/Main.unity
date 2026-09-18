@@ -4035,11 +4035,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   computeShader: {fileID: 7200000, guid: 4d987489e1ef0424d9f7b42391c48032, type: 3}
   material: {fileID: 2100000, guid: 2d993be4f3691fd48a90a0dfc4e2bea7, type: 2}
-  cam: {fileID: 0}
+  cam: {fileID: 330585545}
   terrain: {fileID: 814506602}
   grassSpacing: 0.1
   resolution: 1000
   jitterStrength: 0.6
+  distanceCullStartDistance: 0
+  distanceCullEndDistance: 30
+  distanceCullMinimumGrassAmount: 0.188
+  frustumCullNearOffset: -3
+  frustumCullEdgeOffset: -1
 --- !u!1 &843851530
 GameObject:
   m_ObjectHideFlags: 0
